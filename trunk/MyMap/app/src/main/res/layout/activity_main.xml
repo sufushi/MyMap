@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    tools:context="com.rdc.mymap.activity.MainActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
+        <com.baidu.mapapi.map.MapView
+            android:id="@+id/mv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/ll_topBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="3dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/bg_title"
+                android:showDividers="middle">
+
+                <ImageView
+                    android:id="@+id/iv_user"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/user" />
+
+                <EditText
+                    android:id="@+id/et_search"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_toRightOf="@+id/iv_user"
+                    android:background="@drawable/bg_edittext_normal"
+                    android:hint="  搜索路线"
+                    android:editable="false"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/ll_topBar">
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:padding="6dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/traffic"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/bg_button"/>
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:padding="6dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/overallview"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/bg_button"/>
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:padding="6dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/setting"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/bg_button"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/ll_bottomBar"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#f4f2f2"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/location"
+                    android:layout_margin="10dp"
+                    android:layout_gravity="center" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="附近发现...."
+                    android:textSize="15sp"
+                    android:layout_margin="10dp"
+                    android:layout_gravity="center"/>
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/go"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="10dp"/>
+            </LinearLayout>
+
+        </RelativeLayout>
+        <include layout="@layout/layout_satmenu"/>
+    </FrameLayout>
+
+</RelativeLayout>
