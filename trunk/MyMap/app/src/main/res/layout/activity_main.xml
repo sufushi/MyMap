@@ -69,6 +69,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_below="@+id/ll_topBar">
                 <ImageView
+                    android:id="@+id/iv_traffic_mode"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:padding="6dp"
@@ -77,14 +78,16 @@
                     android:layout_marginBottom="15dp"
                     android:background="@drawable/bg_button"/>
                 <ImageView
+                    android:id="@+id/iv_overview_mode"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:padding="6dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/overallview"
+                    android:src="@drawable/overview"
                     android:layout_marginBottom="15dp"
                     android:background="@drawable/bg_button"/>
                 <ImageView
+                    android:id="@+id/iv_setting_mode"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:padding="6dp"

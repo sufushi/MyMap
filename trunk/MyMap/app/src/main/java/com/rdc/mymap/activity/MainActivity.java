@@ -1,7 +1,9 @@
 package com.rdc.mymap.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Bundle;
 
@@ -33,6 +35,8 @@ import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.poi.PoiDetailResult;
+import com.baidu.mapapi.search.poi.PoiSearch;
 import com.baidu.mapapi.utils.CoordinateConverter;
 import com.baidu.platform.comapi.map.K;
 import com.rdc.mymap.R;
@@ -43,6 +47,11 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
     private SatMenu mSatMenu;
     private ImageView mUserImageView;
     private LinearLayout mBottomLinearLayout;
+    private ImageView mTrafficModeImageView;
+    private ImageView mOverviewModeImageView;
+    private ImageView mSettingModeImageView;
+
+    private Boolean isTrafficMode = false;
 
     private MapView mMapView;
     private BaiduMap mBaiduMap;
@@ -90,6 +99,12 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
         mUserImageView.setOnClickListener(this);
         mBottomLinearLayout = (LinearLayout) findViewById(R.id.ll_bottomBar);
         mBottomLinearLayout.setOnClickListener(this);
+        mTrafficModeImageView = (ImageView) findViewById(R.id.iv_traffic_mode);
+        mTrafficModeImageView.setOnClickListener(this);
+        mOverviewModeImageView = (ImageView) findViewById(R.id.iv_overview_mode);
+        mOverviewModeImageView.setOnClickListener(this);
+        mSettingModeImageView = (ImageView) findViewById(R.id.iv_setting_mode);
+        mSettingModeImageView.setOnClickListener(this);
 
         mMapView = (MapView) findViewById(R.id.mv);
         int count = mMapView.getChildCount();
@@ -186,6 +201,16 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
             case R.id.ll_bottomBar :
                 Intent nearbyIntent = new Intent(MainActivity.this, NearbyActivity.class);
                 startActivity(nearbyIntent);
+            case R.id.iv_traffic_mode :
+                isTrafficMode = !isTrafficMode;
+                mBaiduMap.setTrafficEnabled(isTrafficMode);
+                break;
+            case R.id.iv_overview_mode :
+                Intent panoramaIntent = new Intent(MainActivity.this, PanoramaActivity.class);
+                startActivity(panoramaIntent);
+                break;
+            case R.id.iv_setting_mode :
+                break;
             default:
                 break;
         }
@@ -206,6 +231,10 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
             coordinateConverter.coord(mCurLatLng);
             coordinateConverter.from(CoordinateConverter.CoordType.COMMON);
             LatLng latLng = coordinateConverter.convert();
+
+            SharedPreferences posSharedPreferences = getSharedPreferences("position", Context.MODE_PRIVATE);
+            posSharedPreferences.edit().putFloat("longitude", (float) latLng.longitude)
+            .putFloat("latitude", (float) latLng.latitude).commit();
             /*OverlayOptions overlayOptions = new MarkerOptions().position(latLng)//
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.location))//
                 .zIndex(4)//
@@ -218,7 +247,7 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
                     .longitude(latLng.longitude).build();
             mBaiduMap.setMyLocationData(myLocationData);
             mCurMarker = BitmapDescriptorFactory.fromResource(R.drawable.location);
-            MyLocationConfiguration myLocationConfiguration = new MyLocationConfiguration(MyLocationConfiguration.LocationMode.COMPASS, true, mCurMarker);
+            MyLocationConfiguration myLocationConfiguration = new MyLocationConfiguration(MyLocationConfiguration.LocationMode.FOLLOWING, true, mCurMarker);
             mBaiduMap.setMyLocationConfigeration(myLocationConfiguration);
 
             mMapStatusUpdate = MapStatusUpdateFactory.newLatLngZoom(latLng, 18.0f);
