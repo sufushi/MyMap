@@ -1,6 +1,8 @@
 package com.rdc.mymap.activity;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,13 +11,24 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.busline.BusLineResult;
 import com.rdc.mymap.R;
+import com.rdc.mymap.adapter.MySearchHistoryAdapter;
 import com.rdc.mymap.adapter.MyViewPagerAdapter;
+import com.rdc.mymap.utils.BusLineSearchUtil;
+import com.rdc.mymap.utils.PoiSearchUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RouteActivity extends Activity implements View.OnClickListener{
@@ -35,6 +48,21 @@ public class RouteActivity extends Activity implements View.OnClickListener{
     private View mWalkView;
     private View mTaxiView;
     private ImageView mBackImageView;
+    private ImageView mSearchImageView;
+    private ImageView mPlusImageView;
+    private LinearLayout mPassLinearLayout;
+
+    private ListView mSearchHistoryListView;
+    private MySearchHistoryAdapter mMySearchHistoryAdapter;
+    private List<String> mSearchHistoryList;
+    private String[] mSearchHistory = {"大夫山森林公园", "广州大学城", "GoGo新天地", "珠江新城", "广州博物馆", "广州塔", "天河客运站", "白云山", "番禺广场", "万胜围"};
+
+    private Boolean isExpand = false;
+
+    private PoiSearchUtil mPoiSearchUtil;
+    private BusLineSearchUtil mBusLineSearchUtil;
+    private List<String> mBusLineIdList = new ArrayList<String>();
+    private List<BusLineResult> mBusLineResultList = new ArrayList<BusLineResult>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,8 +75,70 @@ public class RouteActivity extends Activity implements View.OnClickListener{
     private void init() {
         initTextView();
         initViewPager();
+        initImageView();
+        searchBusLineIdList();
+    }
+
+    private void searchBusLineIdList() {
+        mPoiSearchUtil = new PoiSearchUtil();
+        mBusLineSearchUtil = new BusLineSearchUtil();
+        SharedPreferences posSharedPreferences = getSharedPreferences("position", Context.MODE_PRIVATE);
+        LatLng latlng = new LatLng((double) posSharedPreferences.getFloat("latitude", 0),
+                (double) posSharedPreferences.getFloat("longitude", 0));
+        //mPoiSearchUtil.searchNearby("车站", latlng, 1000);
+        mPoiSearchUtil.searchInCity("384路", "广州市");
+        new Thread() {
+            @Override
+            public void run() {
+                while(true) {
+                    if((mBusLineIdList = mPoiSearchUtil.getBusLineIdList()).size() > 0) {
+                        Log.e("error", "busLineId:" + mPoiSearchUtil.getBusLineIdList().size());
+                        break;
+                    }
+                }
+                onGetBusLineIdList();
+            }
+        }.start();
+    }
+
+    private void onGetBusLineIdList() {
+        for(int i = 0; i < mBusLineIdList.size(); i ++) {
+            Log.e("error", mBusLineIdList.get(i));
+            mBusLineSearchUtil.searchBusLine(mBusLineIdList.get(i));
+        }
+        new Thread() {
+            @Override
+            public void run() {
+                while(true) {
+                    if((mBusLineResultList = mBusLineSearchUtil.getBusLineResultList()).size() == mBusLineIdList.size()) {
+                        Log.e("error", "busLineResultList:" + mBusLineResultList.size());
+                        break;
+                    }
+                }
+                onGetBusLineResultList();
+            }
+        }.start();
+    }
+
+    private void onGetBusLineResultList() {
+        for(int i = 0; i < mBusLineResultList.size(); i ++) {
+            BusLineResult busLineResult = mBusLineResultList.get(i);
+            Log.e("error", "name" + busLineResult.getBusLineName() +
+                    "direction" + busLineResult.getLineDirection() +
+                    "price" + busLineResult.getBasePrice() +
+                    "stations" + busLineResult.getStations() +
+                    "steps" + busLineResult.getSteps());
+        }
+    }
+
+    private void initImageView() {
         mBackImageView = (ImageView) findViewById(R.id.iv_back);
         mBackImageView.setOnClickListener(this);
+        mSearchImageView = (ImageView) findViewById(R.id.iv_search);
+        mSearchImageView.setOnClickListener(this);
+        mPlusImageView = (ImageView) findViewById(R.id.iv_plus);
+        mPlusImageView.setOnClickListener(this);
+        mPassLinearLayout = (LinearLayout) findViewById(R.id.ll_pass_by);
     }
 
     private void initViewPager() {
@@ -68,6 +158,13 @@ public class RouteActivity extends Activity implements View.OnClickListener{
         mViewPager.setAdapter(new MyViewPagerAdapter(mViewList));
         mViewPager.setCurrentItem(0);
         mViewPager.setOnPageChangeListener(new MyOnPageChangeListener());
+
+        mSearchHistoryListView = (ListView) mBusView.findViewById(R.id.lv_search_history);
+        mSearchHistoryList = new ArrayList<String>();
+        mSearchHistoryList = Arrays.asList(mSearchHistory);
+        mMySearchHistoryAdapter = new MySearchHistoryAdapter(mSearchHistoryList, this);
+        mSearchHistoryListView.setAdapter(mMySearchHistoryAdapter);
+
     }
 
     private void initTextView() {
@@ -90,9 +187,32 @@ public class RouteActivity extends Activity implements View.OnClickListener{
             case R.id.iv_back :
                 finish();
                 break;
+            case R.id.iv_plus :
+                plus();
+                break;
+            case R.id.iv_search :
+
+                break;
             default:
                 break;
         }
+    }
+
+    private void plus() {
+        if(!isExpand) {
+            mPassLinearLayout.setVisibility(View.VISIBLE);
+            RotateAnimation rotateAnimation = new RotateAnimation(0, 45f, Animation.RELATIVE_TO_SELF, 0.5f ,Animation.RELATIVE_TO_SELF, 0.5f);
+            rotateAnimation.setDuration(200);
+            rotateAnimation.setFillAfter(true);
+            mPlusImageView.setAnimation(rotateAnimation);
+        } else {
+            mPassLinearLayout.setVisibility(View.GONE);
+            RotateAnimation rotateAnimation = new RotateAnimation(45f, 0, Animation.RELATIVE_TO_SELF, 0.5f ,Animation.RELATIVE_TO_SELF, 0.5f);
+            rotateAnimation.setDuration(200);
+            rotateAnimation.setFillAfter(true);
+            mPlusImageView.setAnimation(rotateAnimation);
+        }
+        isExpand = !isExpand;
     }
 
 
@@ -125,7 +245,6 @@ public class RouteActivity extends Activity implements View.OnClickListener{
         @Override
         public void onPageScrollStateChanged(int state) {
             mCurIndex = mViewPager.getCurrentItem();
-            Log.e("error", mCurIndex + "");
             if(mPreIndex == mCurIndex) {
                 return;
             }

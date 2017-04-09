@@ -1,13 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#e9e7e7"
+    android:layout_marginTop="3dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffff"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/bus_station"
+            android:padding="8dp"
+            android:layout_margin="4dp"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="附近公交"
+            android:textSize="20sp"
+            android:textColor="#000033"
+            android:gravity="center_vertical"
+            android:layout_marginRight="5dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="查看"
+            android:textSize="16sp"
+            android:textColor="#406ffa"
+            android:gravity="center_vertical"
+            android:layout_marginRight="8dp"/>
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/go"
+            android:padding="10dp"
+            android:layout_margin="4dp"
+            android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#efeeee"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="12dp">
+
+    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Bus"
-        android:textSize="40sp"
+        android:layout_height="45dp"
+        android:background="#ffffff"
+        android:text="清除历史记录"
         android:gravity="center"/>
+
+    <ListView
+        android:id="@+id/lv_search_history"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginTop="0.5dp"
+        android:background="#ffffff"
+        android:divider="#d6d3d3"
+        android:dividerHeight="0.01dp">
+
+    </ListView>
 
 </LinearLayout>

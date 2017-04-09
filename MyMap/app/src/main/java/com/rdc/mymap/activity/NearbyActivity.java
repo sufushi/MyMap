@@ -1,6 +1,7 @@
 package com.rdc.mymap.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -56,7 +57,36 @@ public class NearbyActivity extends Activity implements View.OnClickListener{
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                Intent intent = new Intent(NearbyActivity.this, NearbyInfoActivity.class);
+                switch (position) {
+                    case 0 :
+                        intent.putExtra("category", "food");
+                        break;
+                    case 1 :
+                        intent.putExtra("category", "interest");
+                        break;
+                    case 2 :
+                        intent.putExtra("category", "hotel");
+                        break;
+                    case 3 :
+                        intent.putExtra("category", "entertainment");
+                        break;
+                    case 4 :
+                        intent.putExtra("category", "movie");
+                        break;
+                    case 5 :
+                        intent.putExtra("category", "market");
+                        break;
+                    case 6 :
+                        intent.putExtra("category", "wc");
+                        break;
+                    case 7 :
+                        intent.putExtra("category", "station");
+                        break;
+                    default:
+                        break;
+                }
+                startActivity(intent);
             }
         });
     }
