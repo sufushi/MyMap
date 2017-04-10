@@ -12,6 +12,16 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
+    <style name="EditTextStyle" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">#e3222222</item>
+        <item name="colorControlActivated">#e3000000</item>
+    </style>
+
+    <style name="TextInputLayoutStyle" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#e3222222</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
     <style name="AppBaseTheme" parent="android:Theme.Holo.Light.NoActionBar.TranslucentDecor"/>
 
 </resources>
