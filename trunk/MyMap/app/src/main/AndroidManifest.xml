@@ -49,10 +49,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.RouteActivity" />
+        <activity android:name=".activity.RouteActivity"/>
         <activity android:name=".activity.PersonCenterActivity" />
         <activity android:name=".activity.NearbyActivity" />
         <activity android:name=".activity.NearbyInfoActivity" />
+        <activity android:name=".activity.DetailsActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
+        <activity android:name=".activity.LoginActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
         <activity
             android:name=".activity.PanoramaActivity"
             android:screenOrientation="sensor"
