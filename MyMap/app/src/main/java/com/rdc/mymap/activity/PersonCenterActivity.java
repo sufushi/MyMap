@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,10 +21,15 @@ import com.rdc.mymap.view.CircleImageView;
 public class PersonCenterActivity extends Activity implements View.OnClickListener{
 
     private static final String TAG = "PersonCenterActivity";
+
     private ImageView mBackImageView;
     private CircleImageView mPhotoCircleImageView;
     private TextView mLoginTextView;
     private TextView mUsernameTextView;
+    private LinearLayout mMessageLinearlayout;
+    private LinearLayout mWalletLinearlayout;
+    private LinearLayout mTicketLinearlayout;
+
     private DataBaseHelper mDataBaseHelper;
     private SharedPreferences mPreferences;
     private SharedPreferences.Editor mEditor;
@@ -38,11 +44,28 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
         init();
     }
 
+    @Override
+    protected void onResume() {
+        init();
+        super.onResume();
+    }
+
     private void init() {
+        mMessageLinearlayout = (LinearLayout) findViewById(R.id.ll_message);
+        mMessageLinearlayout.setOnClickListener(this);
+
+        mWalletLinearlayout = (LinearLayout) findViewById(R.id.ll_wallet);
+        mWalletLinearlayout.setOnClickListener(this);
+
+        mTicketLinearlayout = (LinearLayout) findViewById(R.id.ll_ticket);
+        mTicketLinearlayout.setOnClickListener(this);
+
         mBackImageView = (ImageView) findViewById(R.id.iv_back);
         mBackImageView.setOnClickListener(this);
+
         mPhotoCircleImageView = (CircleImageView) findViewById(R.id.civ_photo);
         mPhotoCircleImageView.setOnClickListener(this);
+
         mLoginTextView = (TextView) findViewById(R.id.tv_login);
         mUsernameTextView = (TextView) findViewById(R.id.tv_username);
         mLoginTextView.setOnClickListener(this);
@@ -73,6 +96,13 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
                     startLoginActivity();
                 }
                 break;
+            case R.id.ll_message:
+                break;
+            case R.id.ll_wallet:
+                startWalletActivity();
+                break;
+            case R.id.ll_ticket:
+                break;
             default:
                 break;
         }
@@ -80,12 +110,14 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
     private void startLoginActivity(){
         Intent intent = new Intent(PersonCenterActivity.this,LoginActivity.class);
         startActivity(intent);
-        finish();
     }
     private void startDetailsActivity(){
         Intent intent = new Intent(PersonCenterActivity.this,DetailsActivity.class);
         startActivity(intent);
-        finish();
+    }
+    private void startWalletActivity(){
+        Intent intent = new Intent(PersonCenterActivity.this,WalletActivity.class);
+        startActivity(intent);
     }
     private void isLogin(){
         mPreferences = getSharedPreferences("main",MODE_PRIVATE);
@@ -93,7 +125,7 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
         if(mPreferences.getBoolean(SharePreferencesConfig.ISLOGIN_BOOLEAN,false)){
             Log.d(TAG,"Logined!");
             mLoginTextView.setText("登出");
-            Bitmap bm = mDataBaseHelper.getPhoto(mPreferences.getInt(SharePreferencesConfig.ID_INT,-1));
+            Bitmap bm = mDataBaseHelper.getPhotoToBitmap(mPreferences.getInt(SharePreferencesConfig.ID_INT,-1));
             mUsernameTextView.setText(mPreferences.getString(SharePreferencesConfig.USERNAME_STRING,""));
             if (bm != null)mPhotoCircleImageView.setImageBitmap(bm);
         }else{

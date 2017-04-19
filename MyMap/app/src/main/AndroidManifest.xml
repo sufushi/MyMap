@@ -50,7 +50,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.PhotoDialogActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/DialogStyleBottom" >
+        </activity>
         <activity android:name=".activity.RouteActivity"/>
+        <activity android:name=".activity.WalletActivity"/>
         <activity android:name=".activity.PersonCenterActivity" />
         <activity android:name=".activity.NearbyActivity" />
         <activity android:name=".activity.NearbyInfoActivity" />

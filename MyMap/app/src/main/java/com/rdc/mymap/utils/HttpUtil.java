@@ -10,6 +10,9 @@ import com.rdc.mymap.config.SharePreferencesConfig;
 import com.rdc.mymap.config.URLConfig;
 
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -20,6 +23,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by wsoyz on 2017/4/11.
@@ -30,6 +34,7 @@ public class HttpUtil {
 
     SharedPreferences mPreferences;
     SharedPreferences.Editor mEditor;
+
     public HttpUtil() {
 
     }
@@ -41,7 +46,7 @@ public class HttpUtil {
             URL url;
             InputStream is = null;
             String urlS = URLConfig.PIURL + URLConfig.ACTION_PHOTO + i + ".jpg";
-            Log.d(TAG,"getting photo from "+urlS);
+            Log.d(TAG, "getting photo from " + urlS);
             url = new URL(urlS);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
@@ -62,8 +67,79 @@ public class HttpUtil {
         }
         return bm;
     }
-    public static String submitPostDataWithCookie(Map<String, String> params, String cookie, String Action){
-        Log.d(TAG,"sending cookie:"+cookie);
+
+    public static String submitPostPhoto(byte[] photo, String cookie) {
+        String BOUNDARY = UUID.randomUUID().toString(); // 边界标识 随机生成
+        String PREFIX = "--", LINE_END = "\r\n";
+        String CONTENT_TYPE = "multipart/form-data"; // 内容类型
+        try {
+            URL url = new URL(URLConfig.PIURL + URLConfig.ACTION_UPLOAD);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(3000);
+            conn.setConnectTimeout(3000);
+            conn.setDoInput(true); // 允许输入流
+            conn.setDoOutput(true); // 允许输出流
+            conn.setUseCaches(false); // 不允许使用缓存
+            conn.setRequestMethod("POST"); // 请求方式
+            conn.setRequestProperty("Charset", "utf-8"); // 设置编码
+            conn.setRequestProperty("connection", "keep-alive");
+            conn.setRequestProperty("Cookie", cookie);
+            conn.setRequestProperty("Content-Type", CONTENT_TYPE + ";boundary=" + BOUNDARY);
+
+            /**
+             * 当文件不为空，把文件包装并且上传
+             */
+            DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
+            StringBuffer sb = new StringBuffer();
+            sb.append(PREFIX);
+            sb.append(BOUNDARY);
+            sb.append(LINE_END);
+            /**
+             * 这里重点注意： name里面的值为服务端需要key 只有这个key 才可以得到对应的文件
+             * filename是文件的名字，包含后缀名的 比如:abc.png
+             */
+
+
+            sb.append("Content-Disposition: form-data; name=\"file\"; filename=\""
+                    + "photo.jpg" + "\"" + LINE_END);
+            sb.append("Content-Type: application/octet-stream; charset=" + "utf-8" + LINE_END);
+            sb.append(LINE_END);
+            dos.write(sb.toString().getBytes());
+            if (photo != null) dos.write(photo, 0, photo.length);
+            dos.write(LINE_END.getBytes());
+            byte[] end_data = (PREFIX + BOUNDARY + PREFIX + LINE_END).getBytes();
+            dos.write(end_data);
+            dos.flush();
+            /**
+             * 获取响应码 200=成功 当响应成功，获取响应的流
+             */
+            int res = conn.getResponseCode();
+            Log.e(TAG, "response code:" + res);
+            if (res == 200) {
+                Log.e(TAG, "request success");
+                InputStream input = conn.getInputStream();
+//                    StringBuffer sb1 = new StringBuffer();
+//                    int ss;
+//                    while ((ss = input.read()) != -1) {
+//                        sb1.append((char) ss);
+//                    }
+//                    result = sb1.toString();
+//                    Log.e(TAG, "result : " + result);
+                return dealResponseResult(input);
+            } else {
+                Log.e(TAG, "request error");
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
+        return "";
+    }
+
+    public static String submitPostDataWithCookie(Map<String, String> params, String cookie, String Action) {
+        Log.d(TAG, "sending cookie:" + cookie);
         byte[] data = getRequestData(params, "utf-8").toString().getBytes();                             //获得请求体
         try {
             URL url = new URL(URLConfig.PIURL + Action);
@@ -89,8 +165,9 @@ public class HttpUtil {
         }
         return "";
     }
+
     public static String submitPostData(Map<String, String> params, String encode, String Action) {
-        if(null == encode) encode = "utf-8";
+        if (null == encode) encode = "utf-8";
         byte[] data = getRequestData(params, "utf-8").toString().getBytes();                             //获得请求体
         try {
             URL url = new URL(URLConfig.PIURL + Action);
@@ -107,8 +184,8 @@ public class HttpUtil {
             int response = httpURLConnection.getResponseCode();                                         //获得服务器的响应码
             if (response == HttpURLConnection.HTTP_OK) {
                 String cookie = httpURLConnection.getHeaderField("set-cookie");
-                if(encode.equals(SharePreferencesConfig.COOKIE_STRING)) return cookie;
-                Log.d(TAG,"cookie:"+cookie);
+                if (encode.equals(SharePreferencesConfig.COOKIE_STRING)) return cookie;
+                Log.d(TAG, "cookie:" + cookie);
                 InputStream inptStream = httpURLConnection.getInputStream();
                 return dealResponseResult(inptStream);                                                  //处理服务器的响应结果
             }

@@ -10,7 +10,7 @@
         android:id="@+id/rl_title"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="#2d4ce6">
+        android:background="@color/colorActionbar">
         <ImageView
             android:id="@+id/iv_back"
             android:layout_width="25dp"
@@ -81,6 +81,7 @@
                 android:layout_below="@+id/rl_detail"
                 android:background="#ffffff">
                 <LinearLayout
+                    android:id="@+id/ll_message"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -101,6 +102,7 @@
                         android:layout_marginTop="5dp"/>
                 </LinearLayout>
                 <LinearLayout
+                    android:id="@+id/ll_wallet"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -121,6 +123,7 @@
                         android:layout_marginTop="5dp"/>
                 </LinearLayout>
                 <LinearLayout
+                    android:id="@+id/ll_ticket"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -157,6 +160,7 @@
                     android:layout_margin="8dp"
                     android:layout_gravity="center" />
                 <TextView
+                    android:textColor="@android:color/black"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -186,6 +190,7 @@
                     android:layout_margin="8dp"
                     android:layout_gravity="center" />
                 <TextView
+                    android:textColor="@android:color/black"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -215,6 +220,7 @@
                     android:layout_margin="8dp"
                     android:layout_gravity="center" />
                 <TextView
+                    android:textColor="@android:color/black"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -244,6 +250,7 @@
                     android:layout_margin="8dp"
                     android:layout_gravity="center" />
                 <TextView
+                    android:textColor="@android:color/black"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -273,6 +280,7 @@
                     android:layout_margin="8dp"
                     android:layout_gravity="center" />
                 <TextView
+                    android:textColor="@android:color/black"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
