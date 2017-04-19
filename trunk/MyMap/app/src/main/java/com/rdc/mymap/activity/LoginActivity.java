@@ -39,11 +39,9 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
 
     private final static String TAG = "LoginActivity";
     private final static int STATE_NETWORK = 1;
+
     private final static int STATE_REGISTER = 1;
     private final static int STATE_LOGIN = 2;
-//    private final static int STATE_NETWORK = 2;
-//    private final static int STATE_NETWORK = 3;
-//    private final static int STATE_NETWORK = 4;
 
 
     private SharedPreferences mPreferences;
@@ -186,8 +184,6 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
                             mEditor.putString(SharePreferencesConfig.USERNAME_STRING,userObject.getUsername());
                             mEditor.putString(SharePreferencesConfig.COOKIE_STRING,HttpUtil.submitPostData(params, SharePreferencesConfig.COOKIE_STRING, URLConfig.ACTION_LOGIN));
                             mEditor.commit();
-                            startPersonCenterActivity();
-                            startDetailsActivity();
                             finish();
                         }
                         Log.d(TAG,userObject.toString());
@@ -255,10 +251,12 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
     private void startDetailsActivity(){
         Intent intent = new Intent(LoginActivity.this,DetailsActivity.class);
         startActivity(intent);
+        finish();
     }
     private void startPersonCenterActivity(){
         Intent intent = new Intent(LoginActivity.this,PersonCenterActivity.class);
         startActivity(intent);
+        finish();
     }
 
     @Override

@@ -84,7 +84,34 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         System.out.println("updataBase");
     }
 
-    public Bitmap getPhoto(int id) {
+    public boolean savePhoto(int id, Bitmap bitmap) {
+        if (bitmap == null || id < 0) return false;
+        Log.d(TAG, "saving Photo id = " + id);
+        sqLiteDatabase = getWritableDatabase();
+        Cursor cursor = sqLiteDatabase.query("Friends", null, "userid = ?", new String[]{id + ""}, null, null, null);
+        if (cursor.moveToFirst()) {
+            Log.d(TAG, "cursor not empty");
+            values.clear();
+            values.put("userid", cursor.getInt(cursor.getColumnIndex("userid")));
+            values.put("username",cursor.getString(cursor.getColumnIndex("username")));
+            values.put("gender", cursor.getInt(cursor.getColumnIndex("gender")));
+            values.put("address", cursor.getString(cursor.getColumnIndex("address")));
+            values.put("money",cursor.getInt(cursor.getColumnIndex("money")));
+            values.put("phonenumber",cursor.getString(cursor.getColumnIndex("phonenumber")));
+            values.put("signature", cursor.getString(cursor.getColumnIndex("signature")));
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            values.put("photo", baos.toByteArray());
+            values.put("hasphoto", 1);
+            sqLiteDatabase.replace("Friends", null, values);
+        } else {
+            Log.d(TAG, "cursor is empty");
+        }
+        return false;
+    }
+
+    public Bitmap getPhotoToBitmap(int id) {
         Log.d(TAG, "gettingPhoto id = " + id);
         sqLiteDatabase = getWritableDatabase();
         Cursor cursor = sqLiteDatabase.query("Friends", null, "userid = ?", new String[]{id + ""}, null, null, null);
@@ -93,6 +120,21 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             if (cursor.getInt(cursor.getColumnIndex("hasphoto")) == 1) {
                 byte[] pic = cursor.getBlob(cursor.getColumnIndex("photo"));
                 return BitmapFactory.decodeByteArray(pic, 0, pic.length);
+            }
+        } else {
+            Log.d(TAG, "cursor is empty");
+        }
+        return null;
+    }
+    public byte[] getPhotoToByte(int id) {
+        Log.d(TAG, "gettingPhoto id = " + id);
+        sqLiteDatabase = getWritableDatabase();
+        Cursor cursor = sqLiteDatabase.query("Friends", null, "userid = ?", new String[]{id + ""}, null, null, null);
+        if (cursor.moveToFirst()) {
+            Log.d(TAG, "cursor not empty");
+            if (cursor.getInt(cursor.getColumnIndex("hasphoto")) == 1) {
+                byte[] pic = cursor.getBlob(cursor.getColumnIndex("photo"));
+                return pic;
             }
         } else {
             Log.d(TAG, "cursor is empty");
@@ -113,7 +155,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndex("phonenumber")),
                     cursor.getString(cursor.getColumnIndex("signature")),
                     cursor.getInt(cursor.getColumnIndex("money"))
-                    );
+            );
             return userObject;
 //            int userId, String username, int gender, String address, String phoneNumber, String signature, int money
         } else {
@@ -121,11 +163,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
         return null;
     }
-    public boolean clear(){
+
+    public boolean clear() {
         sqLiteDatabase = getWritableDatabase();
         sqLiteDatabase.execSQL("DELETE FROM Friends");
         return true;
     }
+
     public boolean refreshPhoto(int id) {
         return true;
     }

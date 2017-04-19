@@ -71,6 +71,12 @@ public class DetailsActivity extends Activity implements View.OnClickListener, A
         init();
     }
 
+    @Override
+    protected void onResume() {
+        init();
+        super.onResume();
+    }
+
     private void init() {
         mPreferences = getSharedPreferences("main", MODE_PRIVATE);
         if (!mPreferences.getBoolean(SharePreferencesConfig.ISLOGIN_BOOLEAN, false)) {
@@ -85,7 +91,8 @@ public class DetailsActivity extends Activity implements View.OnClickListener, A
         mBackImageView = (ImageView) findViewById(R.id.iv_back);
         mBackImageView.setOnClickListener(this);
         mPhotoCircleImageView = (CircleImageView) findViewById(R.id.civ_photo);
-        Bitmap bm = mDataBaseHelper.getPhoto(mPreferences.getInt(SharePreferencesConfig.ID_INT, 0));
+        mPhotoCircleImageView.setOnClickListener(this);
+        Bitmap bm = mDataBaseHelper.getPhotoToBitmap(mPreferences.getInt(SharePreferencesConfig.ID_INT, 0));
         if (bm != null) mPhotoCircleImageView.setImageBitmap(bm);
         else mPhotoCircleImageView.setImageResource(R.drawable.pikaqiu);
 
@@ -116,9 +123,9 @@ public class DetailsActivity extends Activity implements View.OnClickListener, A
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.civ_photo:
+                startPhotoDialogActivity();
                 break;
             case R.id.iv_back:
-                startPersonCenterActivity();
                 finish();
                 break;
             case R.id.pb_change:
@@ -189,6 +196,10 @@ public class DetailsActivity extends Activity implements View.OnClickListener, A
 
     private void startPersonCenterActivity() {
         Intent intent = new Intent(DetailsActivity.this, PersonCenterActivity.class);
+        startActivity(intent);
+    }
+    private void startPhotoDialogActivity() {
+        Intent intent = new Intent(DetailsActivity.this, PhotoDialogActivity.class);
         startActivity(intent);
     }
     @Override
