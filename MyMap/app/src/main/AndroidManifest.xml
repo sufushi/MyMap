@@ -55,6 +55,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/DialogStyleBottom" >
         </activity>
+        <activity
+            android:name=".activity.PayActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/DialogStyleBottom" >
+        </activity>
         <activity android:name=".activity.RouteActivity"/>
         <activity android:name=".activity.WalletActivity"/>
         <activity android:name=".activity.PersonCenterActivity" />

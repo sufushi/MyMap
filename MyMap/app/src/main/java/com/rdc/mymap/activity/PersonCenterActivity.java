@@ -99,7 +99,11 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
             case R.id.ll_message:
                 break;
             case R.id.ll_wallet:
-                startWalletActivity();
+                if(mPreferences.getBoolean(SharePreferencesConfig.ISLOGIN_BOOLEAN,false)){
+                    startWalletActivity();
+                }else{
+                    Toast.makeText(this,"请先登录",Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.ll_ticket:
                 break;

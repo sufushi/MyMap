@@ -9,4 +9,6 @@ public class SharePreferencesConfig {
     public final static String ID_INT = "id";
     public final static String USERNAME_STRING = "username";
     public final static String COOKIE_STRING = "cookie";
+    public final static String MONEY_INT = "money";
+    public final static String PASSWORD_STRING = "password";
 }
