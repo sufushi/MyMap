@@ -29,7 +29,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             "address String," +
             "phonenumber String," +
             "signature String," +
-            "money integer," +
             "hasphoto integer," +
             "photo BLOB)";
     private SQLiteDatabase sqLiteDatabase;
@@ -59,7 +58,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         values.put("username", userObject.getUsername());
         values.put("gender", userObject.getGender());
         values.put("address", userObject.getaddress());
-        values.put("money", userObject.getMoney());
         values.put("phonenumber", userObject.getPhoneNumber());
         values.put("signature", userObject.getSignature());
         Bitmap bm = HttpUtil.getPhpop(userObject.getUserId());
@@ -74,6 +72,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             values.put("hasphoto", 0);
             Log.d(TAG, " save:" + userObject.getUsername() + " id:" + userObject.getUserId() + " and photo undone!");
         }
+
+
         sqLiteDatabase.replace("Friends", null, values);
         return true;
     }
@@ -93,11 +93,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             Log.d(TAG, "cursor not empty");
             values.clear();
             values.put("userid", cursor.getInt(cursor.getColumnIndex("userid")));
-            values.put("username",cursor.getString(cursor.getColumnIndex("username")));
+            values.put("username", cursor.getString(cursor.getColumnIndex("username")));
             values.put("gender", cursor.getInt(cursor.getColumnIndex("gender")));
             values.put("address", cursor.getString(cursor.getColumnIndex("address")));
-            values.put("money",cursor.getInt(cursor.getColumnIndex("money")));
-            values.put("phonenumber",cursor.getString(cursor.getColumnIndex("phonenumber")));
+            values.put("phonenumber", cursor.getString(cursor.getColumnIndex("phonenumber")));
             values.put("signature", cursor.getString(cursor.getColumnIndex("signature")));
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             baos = new ByteArrayOutputStream();
@@ -126,6 +125,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
         return null;
     }
+
     public byte[] getPhotoToByte(int id) {
         Log.d(TAG, "gettingPhoto id = " + id);
         sqLiteDatabase = getWritableDatabase();
@@ -153,8 +153,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     cursor.getInt(cursor.getColumnIndex("gender")),
                     cursor.getString(cursor.getColumnIndex("address")),
                     cursor.getString(cursor.getColumnIndex("phonenumber")),
-                    cursor.getString(cursor.getColumnIndex("signature")),
-                    cursor.getInt(cursor.getColumnIndex("money"))
+                    cursor.getString(cursor.getColumnIndex("signature"))
             );
             return userObject;
 //            int userId, String username, int gender, String address, String phoneNumber, String signature, int money

@@ -181,7 +181,9 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
                             mEditor = mPreferences.edit();
                             mEditor.putBoolean(SharePreferencesConfig.ISLOGIN_BOOLEAN,true);
                             mEditor.putInt(SharePreferencesConfig.ID_INT,userObject.getUserId());
+                            mEditor.putInt(SharePreferencesConfig.MONEY_INT,jsonObject.getInt("money"));
                             mEditor.putString(SharePreferencesConfig.USERNAME_STRING,userObject.getUsername());
+                            mEditor.putString(SharePreferencesConfig.PASSWORD_STRING,mPasswordEditText.getText().toString());
                             mEditor.putString(SharePreferencesConfig.COOKIE_STRING,HttpUtil.submitPostData(params, SharePreferencesConfig.COOKIE_STRING, URLConfig.ACTION_LOGIN));
                             mEditor.commit();
                             finish();

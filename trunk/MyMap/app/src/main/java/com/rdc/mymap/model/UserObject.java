@@ -17,7 +17,6 @@ public class UserObject {
     private String address = "";
     private String phoneNumber = "";
     private String signature = "";
-    private int money = 0;
     private boolean isEmpty = true;
 
     public boolean isEmpty() {
@@ -41,7 +40,6 @@ public class UserObject {
             this.address = jsonObject.getString("address");
             this.phoneNumber = jsonObject.getString("phoneNumber");
             this.signature = jsonObject.getString("signature");
-            this.money = jsonObject.getInt("money");
         } catch (JSONException e) {
             e.printStackTrace();
             setEmpty(true);
@@ -49,14 +47,13 @@ public class UserObject {
         setEmpty(false);
     }
 
-    public UserObject(int userId, String username, int gender, String address, String phoneNumber, String signature, int money) {
+    public UserObject(int userId, String username, int gender, String address, String phoneNumber, String signature) {
         this.userId = userId;
         this.username = username;
         this.gender = gender;
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.signature = signature;
-        this.money = money;
         setEmpty(false);
     }
 
@@ -108,14 +105,6 @@ public class UserObject {
         this.signature = signature;
     }
 
-    public int getMoney() {
-        return money;
-    }
-
-    public void setMoney(int money) {
-        this.money = money;
-    }
-
     @Override
     public String toString() {
         return "UserObject{" +
@@ -125,7 +114,6 @@ public class UserObject {
                 ", address='" + address + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", signature='" + signature + '\'' +
-                ", money=" + money +
                 ", isEmpty=" + isEmpty +
                 '}';
     }
