@@ -18,9 +18,9 @@ public class MyNearbyListAdapter extends BaseAdapter {
     private List<NearbyInfo> mFoodInfoList;
     private Context mContext;
 
-    public MyNearbyListAdapter(List<NearbyInfo> mFoodInfoList, Context mContext) {
-        this.mFoodInfoList = mFoodInfoList;
-        this.mContext = mContext;
+    public MyNearbyListAdapter(List<NearbyInfo> nearbyInfoList, Context context) {
+        this.mFoodInfoList = nearbyInfoList;
+        this.mContext = context;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class MyNearbyListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if(convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_food_listview, null, false);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_nearby_info_listview, null, false);
             viewHolder = new ViewHolder();
             viewHolder.pictureImageView = (ImageView) convertView.findViewById(R.id.iv_picture);
             viewHolder.restaurantTextView = (TextView) convertView.findViewById(R.id.tv_restaurant);

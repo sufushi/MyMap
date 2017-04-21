@@ -5,9 +5,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.TextView;
 
-public class UnderlineEditText extends EditText {
+public class UnderlineEditText extends TextView {
 
     private Paint mPaint;
     private Context mContext;

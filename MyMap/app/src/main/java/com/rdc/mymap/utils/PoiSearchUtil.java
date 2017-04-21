@@ -87,7 +87,7 @@ public class PoiSearchUtil {
             }
             mPoiInfoList.addAll(poiResult.getAllPoi());
             for(PoiInfo poiInfo : poiResult.getAllPoi()) {
-                Log.e("error", "type:" + poiInfo.type);
+                //Log.e("error", "type:" + poiInfo.type);
                 if(poiInfo.type == PoiInfo.POITYPE.BUS_LINE || poiInfo.type == PoiInfo.POITYPE.SUBWAY_LINE) {
                     mBusLineIdList.add(poiInfo.uid);
                 }

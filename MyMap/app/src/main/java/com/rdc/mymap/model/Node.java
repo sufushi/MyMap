@@ -13,6 +13,11 @@ public class Node {
         this.mLatLng = latLng;
     }
 
+    public Node(String city, String place) {
+        this.mCity = city;
+        this.mPlace = place;
+    }
+
     public String getCity() {
         return mCity;
     }
