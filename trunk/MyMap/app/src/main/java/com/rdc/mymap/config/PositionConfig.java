@@ -1,6 +1,6 @@
 package com.rdc.mymap.config;
 
-public class PostionConfig {
+public class PositionConfig {
 
     public static final int POS_LEFT_TOP = 0;
     public static final int POS_LEFT_BOTTOM = 1;

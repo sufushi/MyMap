@@ -2,11 +2,16 @@ package com.rdc.mymap.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +19,8 @@ import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -21,15 +28,20 @@ import android.widget.TextView;
 
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.busline.BusLineResult;
+import com.baidu.mapapi.search.sug.SuggestionResult;
 import com.rdc.mymap.R;
 import com.rdc.mymap.adapter.MySearchHistoryAdapter;
 import com.rdc.mymap.adapter.MyViewPagerAdapter;
 import com.rdc.mymap.utils.BusLineSearchUtil;
 import com.rdc.mymap.utils.PoiSearchUtil;
+import com.rdc.mymap.utils.SuggestionSearchUtil;
+import com.rdc.mymap.view.UnderlineEditText;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.rdc.mymap.config.WayConfig.TRANSIT;
 
 public class RouteActivity extends Activity implements View.OnClickListener{
 
@@ -51,6 +63,9 @@ public class RouteActivity extends Activity implements View.OnClickListener{
     private ImageView mSearchImageView;
     private ImageView mPlusImageView;
     private LinearLayout mPassLinearLayout;
+    private UnderlineEditText mStartNodeEditText;
+    private TextView mEndEditText;
+    private LinearLayout mNearbyBusLinearLayout;
 
     private ListView mSearchHistoryListView;
     private MySearchHistoryAdapter mMySearchHistoryAdapter;
@@ -72,11 +87,28 @@ public class RouteActivity extends Activity implements View.OnClickListener{
         init();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPoiSearchUtil.destroy();
+        mBusLineSearchUtil.destroy();
+    }
+
     private void init() {
         initTextView();
         initViewPager();
         initImageView();
+        initEditText();
+        mNearbyBusLinearLayout = (LinearLayout) mBusView.findViewById(R.id.ll_nearby_bus);
+        mNearbyBusLinearLayout.setOnClickListener(this);
         searchBusLineIdList();
+     }
+
+    private void initEditText() {
+        mStartNodeEditText = (UnderlineEditText) findViewById(R.id.udt_start);
+        mEndEditText = (TextView) findViewById(R.id.et_end);
+        mStartNodeEditText.setOnClickListener(this);
+        mEndEditText.setOnClickListener(this);
     }
 
     private void searchBusLineIdList() {
@@ -191,11 +223,50 @@ public class RouteActivity extends Activity implements View.OnClickListener{
                 plus();
                 break;
             case R.id.iv_search :
-
+                startRoutePlanActivity();
+                break;
+            case R.id.udt_start :
+                Intent startIntent = new Intent(RouteActivity.this, SearchLocationActivity.class);
+                startActivityForResult(startIntent, 0);
+                break;
+            case R.id.et_end :
+                Intent endIntent = new Intent(RouteActivity.this, SearchLocationActivity.class);
+                startActivityForResult(endIntent, 2);
+                break;
+            case R.id.ll_nearby_bus :
+                // TODO: 2017/4/19  
                 break;
             default:
                 break;
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case 0 :
+                if(data != null && data.getStringExtra("Location") != null) {
+                    mStartNodeEditText.setText(data.getStringExtra("Location"));
+                }
+                break;
+            case 2 :
+                if(data != null && data.getStringExtra("Location") != null) {
+                    mEndEditText.setText(data.getStringExtra("Location"));
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void startRoutePlanActivity() {
+        Intent routePlanIntent = new Intent(RouteActivity.this, RoutePlanActivity.class);
+        routePlanIntent.putExtra("start_city", "广州");
+        routePlanIntent.putExtra("end_city", "广州");
+        routePlanIntent.putExtra("start_place", mStartNodeEditText.getText().toString());
+        routePlanIntent.putExtra("end_place", mEndEditText.getText().toString());
+        routePlanIntent.putExtra("way", TRANSIT);
+        startActivity(routePlanIntent);
     }
 
     private void plus() {
@@ -214,7 +285,6 @@ public class RouteActivity extends Activity implements View.OnClickListener{
         }
         isExpand = !isExpand;
     }
-
 
     private class MyOnClickListener implements View.OnClickListener {
 
@@ -289,4 +359,5 @@ public class RouteActivity extends Activity implements View.OnClickListener{
             mPreIndex = mCurIndex;
         }
     }
+
 }

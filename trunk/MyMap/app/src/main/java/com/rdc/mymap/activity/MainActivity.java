@@ -4,43 +4,46 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Point;
 import android.os.Bundle;
 
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ZoomButton;
-import android.widget.ZoomButtonsController;
-import android.widget.ZoomControls;
 
+import com.baidu.lbsapi.model.BaiduPanoData;
+import com.baidu.lbsapi.panoramaview.PanoramaRequest;
+import com.baidu.lbsapi.tools.Point;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.SDKInitializer;
-import com.baidu.mapapi.bikenavi.model.BikeRoutePlanError;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.InfoWindow;
+import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
-import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
-import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.search.poi.PoiDetailResult;
-import com.baidu.mapapi.search.poi.PoiSearch;
+import com.baidu.mapapi.search.core.PoiInfo;
 import com.baidu.mapapi.utils.CoordinateConverter;
 import com.baidu.platform.comapi.map.K;
+import com.bumptech.glide.Glide;
 import com.rdc.mymap.R;
+import com.rdc.mymap.utils.PoiSearchUtil;
 import com.rdc.mymap.view.SatMenu;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends Activity implements SatMenu.OnSatMenuClickListener, View.OnClickListener{
 
@@ -50,8 +53,14 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
     private ImageView mTrafficModeImageView;
     private ImageView mOverviewModeImageView;
     private ImageView mSettingModeImageView;
+    private View mPanoramaView;
+    private ImageView mPanoramaImageView;
 
     private Boolean isTrafficMode = false;
+    private int mX;
+    private int mY;
+    private LatLng mPanoramaLatLng;
+    private final String mBaseUrl = "http://pcsv1.map.bdimg.com/scape/?qt=pdata&pos=0_0&z=0&sid=";
 
     private MapView mMapView;
     private BaiduMap mBaiduMap;
@@ -61,6 +70,9 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
     private LocationClient mLocationClient;
     private LocationClientOption mLocationClientOption;
     private BDLocationListener mBDLocationListener = new MyLocationListener();
+    private PoiSearchUtil mPoiSearchUtil;
+    private List<PoiInfo> mPoiInfoList = new ArrayList<PoiInfo>();
+
 
     private Handler mHandler = new Handler() {
         @Override
@@ -70,6 +82,7 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
                     startRouteActivity();
                     break;
                 case 1 :
+                    showInfoWindow(msg);
                     break;
                 case 2 :
                     break;
@@ -80,6 +93,13 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
             }
         }
     };
+
+    private void showInfoWindow(Message msg) {
+        String url = (String) msg.obj;
+        Glide.with(MainActivity.this).load(url).into(mPanoramaImageView);
+        InfoWindow infoWindow = new InfoWindow(mPanoramaView, mPanoramaLatLng, -57);
+        mBaiduMap.showInfoWindow(infoWindow);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +125,14 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
         mOverviewModeImageView.setOnClickListener(this);
         mSettingModeImageView = (ImageView) findViewById(R.id.iv_setting_mode);
         mSettingModeImageView.setOnClickListener(this);
+        mPanoramaView = LayoutInflater.from(this).inflate(R.layout.layout_panorama_overlay, null);
+        mPanoramaView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startPanoramaActivity();
+            }
+        });
+        mPanoramaImageView = (ImageView) mPanoramaView.findViewById(R.id.iv_panorama);
 
         mMapView = (MapView) findViewById(R.id.mv);
         int count = mMapView.getChildCount();
@@ -118,6 +146,9 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
 
         mBaiduMap = mMapView.getMap();
         mBaiduMap.setMyLocationEnabled(true);
+        mBaiduMap.setOnMapStatusChangeListener(new MyMapStatusChangeListener());
+
+        mPoiSearchUtil = new PoiSearchUtil();
 
         mLocationClient = new LocationClient(getApplicationContext());
         mLocationClient.registerLocationListener(mBDLocationListener);
@@ -166,6 +197,9 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if(mPoiSearchUtil != null) {
+            mPoiSearchUtil.destroy();
+        }
         mMapView.onDestroy();
     }
 
@@ -206,14 +240,57 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
                 mBaiduMap.setTrafficEnabled(isTrafficMode);
                 break;
             case R.id.iv_overview_mode :
-                Intent panoramaIntent = new Intent(MainActivity.this, PanoramaActivity.class);
-                startActivity(panoramaIntent);
+                searchStreetPanorama();
                 break;
             case R.id.iv_setting_mode :
                 break;
             default:
                 break;
         }
+    }
+
+    private void searchStreetPanorama() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mPoiSearchUtil.searchNearby("小区", mCurLatLng, 500);
+                while(true) {
+                    if((mPoiInfoList = mPoiSearchUtil.getPoiInfoList()).size() > 0) {
+                        Log.e("error", "size:" + mPoiSearchUtil.getPoiInfoList().size());
+                        break;
+                    }
+                }
+                for(PoiInfo poiInfo : mPoiInfoList) {
+                    LatLng latLng = poiInfo.location;
+                    PanoramaRequest panoramaRequest = PanoramaRequest.getInstance(MainActivity.this);
+                    BaiduPanoData baiduPanoData = panoramaRequest.getPanoramaInfoByLatLon(latLng.longitude, latLng.latitude);
+                    if(baiduPanoData.hasStreetPano()) {
+                        String url = mBaseUrl + baiduPanoData.getPid();
+                        mX = baiduPanoData.getX();
+                        mY = baiduPanoData.getY();
+                        //Point point = com.baidu.lbsapi.tools.CoordinateConverter.MCConverter2LL(mX, mY);
+                        //mPanoramaLatLng = new LatLng(point.x, point.y);
+                        mPanoramaLatLng = new LatLng(poiInfo.location.latitude, poiInfo.location.longitude);
+                        Message message = new Message();
+                        message.what = 1;
+                        message.obj = url;
+                        mHandler.sendMessage(message);
+                        Log.e("error", baiduPanoData.getName());
+                        break;
+                    } else {
+                        Log.e("error", "No street");
+                    }
+                }
+            }
+        }).start();
+    }
+
+    private void startPanoramaActivity() {
+        Intent panoramaIntent = new Intent(MainActivity.this, PanoramaActivity.class);
+        panoramaIntent.putExtra("x", mX);
+        panoramaIntent.putExtra("y", mY);
+        startActivity(panoramaIntent);
+        Log.e("error", mX + "   " +  mY);
     }
 
     private class MyLocationListener implements BDLocationListener {
@@ -256,6 +333,24 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
 
         @Override
         public void onConnectHotSpotMessage(String s, int i) {
+
+        }
+    }
+
+    private class MyMapStatusChangeListener implements BaiduMap.OnMapStatusChangeListener {
+
+        @Override
+        public void onMapStatusChangeStart(MapStatus mapStatus) {
+
+        }
+
+        @Override
+        public void onMapStatusChange(MapStatus mapStatus) {
+
+        }
+
+        @Override
+        public void onMapStatusChangeFinish(MapStatus mapStatus) {
 
         }
     }

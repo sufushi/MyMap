@@ -10,6 +10,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -37,6 +38,7 @@ public class NearbyInfoActivity extends Activity implements View.OnClickListener
     private PoiSearchUtil mPoiSearchUtil;
     private List<PoiInfo> mPoiInfoList = new ArrayList<PoiInfo>();
     private List<PoiDetailResult> mPoiDetailResultList = new ArrayList<PoiDetailResult>();
+    private List<String> mDetailUrlList = new ArrayList<String>();
 
     private Handler mHandler = new Handler() {
         @Override
@@ -60,12 +62,29 @@ public class NearbyInfoActivity extends Activity implements View.OnClickListener
         init();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mPoiSearchUtil != null) {
+            mPoiSearchUtil.destroy();
+        }
+    }
+
     private void init() {
         mTitleTextView = (TextView) findViewById(R.id.tv_title);
         mBackImageView = (ImageView) findViewById(R.id.iv_back);
         mBackImageView.setOnClickListener(this);
 
         mNearbyInfoListView = (ListView) findViewById(R.id.lv_nearby_info);
+        mNearbyInfoListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent webViewIntent = new Intent(NearbyInfoActivity.this, WebViewActivity.class);
+                webViewIntent.putExtra("detailUrl", mDetailUrlList.get(position));
+                webViewIntent.putExtra("title", mTitleTextView.getText());
+                startActivity(webViewIntent);
+            }
+        });
         SharedPreferences posSharedPreferences = getSharedPreferences("position", Context.MODE_PRIVATE);
         LatLng latlng = new LatLng((double) posSharedPreferences.getFloat("latitude", 0),
                 (double) posSharedPreferences.getFloat("longitude", 0));
@@ -148,8 +167,9 @@ public class NearbyInfoActivity extends Activity implements View.OnClickListener
         for(int i = 0; i < mPoiDetailResultList.size(); i ++) {
             PoiDetailResult poiDetailResult = mPoiDetailResultList.get(i);
             Log.e("error", "detailUrl:" + poiDetailResult.detailUrl);
-            NearbyInfo foodInfo = new NearbyInfo(poiDetailResult.getName(), null, poiDetailResult.getType(), (int) poiDetailResult.getFacilityRating(), poiDetailResult.getPrice(), poiDetailResult.getTelephone());
-            mNearbyInfoList.add(foodInfo);
+            mDetailUrlList.add(poiDetailResult.detailUrl);
+            NearbyInfo nearbyInfo = new NearbyInfo(poiDetailResult.getName(), null, poiDetailResult.getType(), (int) poiDetailResult.getFacilityRating(), poiDetailResult.getPrice(), poiDetailResult.getTelephone());
+            mNearbyInfoList.add(nearbyInfo);
         }
         mHandler.sendEmptyMessage(0);
     }

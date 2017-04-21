@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:background="#ffffffff"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/rl_panorama"
+        android:layout_width="80dp"
+        android:layout_height="75dp"
+        android:layout_gravity="center"
+        android:background="@drawable/pano_image_background">
+
+        <ImageView
+            android:id="@+id/iv_panorama"
+            android:layout_width="match_parent"
+            android:layout_height="57dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="3dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/pikaqiu"/>
+        
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_panorama"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="1dp"
+            android:layout_marginTop="2dp">
+
+            <TextView
+                android:id="@+id/tv_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="查看全景"
+                android:textSize="9sp"
+                android:textColor="#ffffffff"
+                android:layout_centerVertical="true"/>
+
+            <ImageView
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_toRightOf="@+id/tv_check"
+                android:layout_centerVertical="true"
+                android:src="@drawable/go"
+                android:layout_marginLeft="4dp"/>
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>

@@ -15,10 +15,10 @@ import android.view.animation.TranslateAnimation;
 
 import com.rdc.mymap.R;
 
-import static com.rdc.mymap.config.PostionConfig.POS_LEFT_BOTTOM;
-import static com.rdc.mymap.config.PostionConfig.POS_LEFT_TOP;
-import static com.rdc.mymap.config.PostionConfig.POS_RIGHT_BOTTOM;
-import static com.rdc.mymap.config.PostionConfig.POS_RIGHT_TOP;
+import static com.rdc.mymap.config.PositionConfig.POS_LEFT_BOTTOM;
+import static com.rdc.mymap.config.PositionConfig.POS_LEFT_TOP;
+import static com.rdc.mymap.config.PositionConfig.POS_RIGHT_BOTTOM;
+import static com.rdc.mymap.config.PositionConfig.POS_RIGHT_TOP;
 
 public class SatMenu extends ViewGroup implements View.OnClickListener {
 
