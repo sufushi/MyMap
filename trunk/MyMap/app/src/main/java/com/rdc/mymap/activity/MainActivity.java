@@ -161,7 +161,7 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
         mLocationClientOption = new LocationClientOption();
         mLocationClientOption.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
         mLocationClientOption.setCoorType("gcj02");
-        mLocationClientOption.setScanSpan(10000);
+        //mLocationClientOption.setScanSpan(10000);
         mLocationClientOption.setIsNeedAddress(true);
         mLocationClientOption.setOpenGps(true);
         mLocationClientOption.setLocationNotify(true);

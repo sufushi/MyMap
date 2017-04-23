@@ -72,6 +72,7 @@ public class SearchLocationActivity extends Activity implements View.OnClickList
         mLocationEditText = (EditText) findViewById(R.id.et_location);
         mLocationListView = (ListView) findViewById(R.id.lv_location);
         mBackImageView.setOnClickListener(this);
+        mDeleteImageView.setOnClickListener(this);
         mLocationEditText.addTextChangedListener(new MyTextChangedListener());
         mLocationListView.setAdapter(mMyaSearchSuggestionAdapter);
         mLocationListView.setOnItemClickListener(new MyOnItemClickListener());

@@ -5,9 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.Window;
-import android.widget.EditText;
 import android.widget.ListView;
 
 import com.baidu.mapapi.search.route.PlanNode;
@@ -16,14 +14,13 @@ import com.rdc.mymap.adapter.MyBusLineListAdapter;
 import com.rdc.mymap.model.BusLineInfo;
 import com.rdc.mymap.model.Node;
 import com.rdc.mymap.utils.RoutePlanSearchUtil;
-import com.rdc.mymap.view.UnderlineEditText;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.rdc.mymap.config.WayConfig.TRANSIT;
 
-public class RoutePlanActivity extends Activity {
+public class BusRoutePlanActivity extends Activity {
 
     private PlanNode mStartNode;
     private PlanNode mEndNode;
@@ -43,7 +40,7 @@ public class RoutePlanActivity extends Activity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 0 :
-                    mMyBusLineListAdapter = new MyBusLineListAdapter(mBusLineInfoList, RoutePlanActivity.this);
+                    mMyBusLineListAdapter = new MyBusLineListAdapter(mBusLineInfoList, BusRoutePlanActivity.this);
                     mBusLineListView.setAdapter(mMyBusLineListAdapter);
                     break;
                 default:
@@ -56,7 +53,7 @@ public class RoutePlanActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_route_plan);
+        setContentView(R.layout.activity_bus_route_plan);
         init();
     }
 
