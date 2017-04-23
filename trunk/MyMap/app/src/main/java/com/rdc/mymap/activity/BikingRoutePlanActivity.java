@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.baidu.mapapi.map.BaiduMap;
@@ -23,20 +22,20 @@ import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapView;
-import com.baidu.mapapi.search.route.DrivingRouteLine;
+import com.baidu.mapapi.search.route.BikingRouteLine;
 import com.rdc.mymap.R;
 import com.rdc.mymap.adapter.MyStepListAdapter;
 import com.rdc.mymap.model.Node;
 import com.rdc.mymap.utils.RoutePlanSearchUtil;
-import com.rdc.mymap.utils.overlayutils.DrivingRouteOverlay;
+import com.rdc.mymap.utils.overlayutils.BikingRouteOverlay;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.rdc.mymap.config.WayConfig.DRIVING;
+import static com.rdc.mymap.config.WayConfig.BIKING;
 
-public class DrivingRoutePlanActivity extends Activity implements View.OnClickListener {
+public class BikingRoutePlanActivity extends Activity implements View.OnClickListener{
 
     private MapView mMapView;
     private BaiduMap mBaiduMap;
@@ -46,33 +45,27 @@ public class DrivingRoutePlanActivity extends Activity implements View.OnClickLi
     private TextView mRouteTextView;
     private TextView mDistanceTextView;
     private TextView mDurationTextView;
-    private TextView mTrafficNumTextView;
-    private TextView mWayTextView;
-    private LinearLayout mChangeLinearLayout;
-    private RelativeLayout mDrivingNavigateRelativeLayout;
+    private LinearLayout mNavigateLinearLayout;
 
+    private String mDistance;
+    private String mDuration;
     private String mStartCity;
     private String mEndCity;
     private String mStartPlace;
     private String mEndPlace;
-    private int mCurWay;
 
     private PopupWindow mPopupWindow;
     private MyStepListAdapter mMyStepListAdapter;
-    private List<DrivingRouteLine> mDrivingRouteLineList = new ArrayList<DrivingRouteLine>();
-    private List<String> mDistanceList = new ArrayList<String>();
-    private List<String> mDurationList = new ArrayList<String>();
-    private List<String> mTrafficNumList = new ArrayList<String>();
-    private List<List<String>> mDrivingStepsList = new ArrayList<List<String>>();
+    private List<BikingRouteLine> mBikingRouteLineList = new ArrayList<BikingRouteLine>();
+    private List<String> mBikingStepList = new ArrayList<String>();
 
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 0 :
-                    mDistanceTextView.setText(mDistanceList.get(mCurWay));
-                    mDurationTextView.setText(mDurationList.get(mCurWay));
-                    mTrafficNumTextView.setText(mTrafficNumList.get(mCurWay));
+                    mDistanceTextView.setText(mDistance);
+                    mDurationTextView.setText(mDuration);
                     break;
                 default:
                     break;
@@ -84,7 +77,7 @@ public class DrivingRoutePlanActivity extends Activity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_driving_route_plan);
+        setContentView(R.layout.activity_biking_route_plan);
         init();
     }
 
@@ -100,57 +93,45 @@ public class DrivingRoutePlanActivity extends Activity implements View.OnClickLi
         mBaiduMap.setOnMapStatusChangeListener(new MyMapStatusChangeListener());
         mBackImageView = (ImageView) findViewById(R.id.iv_back);
         mBackImageView.setOnClickListener(this);
-        mRouteTextView = (TextView) findViewById(R.id.tv_driving_route);
+        mRouteTextView = (TextView) findViewById(R.id.tv_biking_route);
         mRouteTextView.setOnClickListener(this);
         mDistanceTextView = (TextView) findViewById(R.id.tv_distance);
         mDurationTextView = (TextView) findViewById(R.id.tv_duration);
-        mTrafficNumTextView = (TextView) findViewById(R.id.tv_traffic_num);
-        mWayTextView = (TextView) findViewById(R.id.tv_way);
-        mChangeLinearLayout = (LinearLayout) findViewById(R.id.ll_change);
-        mChangeLinearLayout.setOnClickListener(this);
-        mDrivingNavigateRelativeLayout = (RelativeLayout) findViewById(R.id.rl_navigate);
-        mDrivingNavigateRelativeLayout.setOnClickListener(this);
+        mNavigateLinearLayout = (LinearLayout) findViewById(R.id.ll_navigate);
         mRoutePlanSearchUtil = new RoutePlanSearchUtil();
         Intent intent = getIntent();
         mStartPlace = intent.getStringExtra("start_place");
         mEndPlace = intent.getStringExtra("end_place");
-        mRoutePlanSearchUtil.search(new Node("广州", mStartPlace), new Node("广州", mEndPlace), DRIVING);
+        mRoutePlanSearchUtil.search(new Node("广州", mStartPlace), new Node("广州", mEndPlace), BIKING);
         new Thread() {
             @Override
             public void run() {
-                while(true) {
-                    if((mDrivingRouteLineList = mRoutePlanSearchUtil.getDrivingRouteLineList()).size() > 0) {
+                while (true) {
+                    if((mBikingRouteLineList = mRoutePlanSearchUtil.getBikingRouteLineList()).size() > 0) {
                         break;
                     }
                 }
-                onGetDrivingRouteLineList();
+                onGetBikingRouteLineList();
             }
         }.start();
     }
 
-    private void onGetDrivingRouteLineList() {
-        mBaiduMap.clear();
-        mCurWay = 0;
-        DrivingRouteOverlay drivingRouteOverlay = new MyDrivingRouteOverlay(mBaiduMap);
-        mBaiduMap.setOnMarkerClickListener(drivingRouteOverlay);
-        drivingRouteOverlay.setData(mDrivingRouteLineList.get(mCurWay));
-        drivingRouteOverlay.addToMap();
-        drivingRouteOverlay.zoomToSpan();
-        for(DrivingRouteLine drivingRouteLine : mDrivingRouteLineList) {
-            float distance = Math.round(drivingRouteLine.getDistance() / 10f) / 100f;
+    private void onGetBikingRouteLineList() {
+        BikingRouteOverlay bikingRouteOverlay = new MyBikingRouteOverlay(mBaiduMap);
+        mBaiduMap.setOnMarkerClickListener(bikingRouteOverlay);
+        bikingRouteOverlay.setData(mBikingRouteLineList.get(0));
+        bikingRouteOverlay.addToMap();
+        bikingRouteOverlay.zoomToSpan();
+        for(BikingRouteLine bikingRouteLine : mBikingRouteLineList) {
+            float distance = Math.round(bikingRouteLine.getDistance() / 10f) / 100f;
             DecimalFormat decimalFormat = new DecimalFormat("0.00");
-            String distanceStr = decimalFormat.format(distance) + "公里";
-            mDistanceList.add(distanceStr);
-            int hour = drivingRouteLine.getDuration() / 3600;
-            int minute = drivingRouteLine.getDuration() / 60 % 60;
-            String duration = (hour == 0 ? "" : hour + "小时") + (minute == 0 ? "" : minute + "分");
-            mDurationList.add(duration);
-            mTrafficNumList.add("红绿灯" + drivingRouteLine.getLightNum() + "个");
-            List<String> drivingSteps = new ArrayList<String>();
-            for(DrivingRouteLine.DrivingStep drivingStep : drivingRouteLine.getAllStep()) {
-                drivingSteps.add(drivingStep.getInstructions());
+            mDistance = decimalFormat.format(distance) + "公里";
+            int hour = bikingRouteLine.getDuration() / 3600;
+            int minute = bikingRouteLine.getDuration() / 60 % 60;
+            mDuration = (hour == 0 ? "" : hour + "小时") + (minute == 0 ? "" : minute + "分");
+            for(BikingRouteLine.BikingStep bikingStep : bikingRouteLine.getAllStep()) {
+                mBikingStepList.add(bikingStep.getInstructions());
             }
-            mDrivingStepsList.add(drivingSteps);
         }
         mHandler.sendEmptyMessage(0);
     }
@@ -161,34 +142,18 @@ public class DrivingRoutePlanActivity extends Activity implements View.OnClickLi
             case R.id.iv_back :
                 finish();
                 break;
-            case R.id.tv_driving_route :
+            case R.id.tv_biking_route :
                 showPopupWindow();
                 break;
-            case R.id.ll_change :
-                change();
-                break;
-            case R.id.rl_navigate :
+            case R.id.ll_navigate :
                 break;
             case R.id.iv_close :
                 mPopupWindow.dismiss();
                 break;
             default:
                 break;
-        }
-    }
 
-    private void change() {
-        mCurWay = (++ mCurWay) % mDistanceList.size();
-        mWayTextView.setText("方案 " + (mCurWay + 1));
-        mDistanceTextView.setText(mDistanceList.get(mCurWay));
-        mDurationTextView.setText(mDurationList.get(mCurWay));
-        mTrafficNumTextView.setText(mTrafficNumList.get(mCurWay));
-        mBaiduMap.clear();
-        DrivingRouteOverlay drivingRouteOverlay = new MyDrivingRouteOverlay(mBaiduMap);
-        mBaiduMap.setOnMarkerClickListener(drivingRouteOverlay);
-        drivingRouteOverlay.setData(mDrivingRouteLineList.get(mCurWay));
-        drivingRouteOverlay.addToMap();
-        drivingRouteOverlay.zoomToSpan();
+        }
     }
 
     private void showPopupWindow() {
@@ -198,9 +163,9 @@ public class DrivingRoutePlanActivity extends Activity implements View.OnClickLi
         ImageView imageView = (ImageView) contentView.findViewById(R.id.iv_close);
         imageView.setOnClickListener(this);
         ListView listView = (ListView) contentView.findViewById(R.id.lv_plan_route);
-        mMyStepListAdapter = new MyStepListAdapter(mDrivingStepsList.get(mCurWay), this);
+        mMyStepListAdapter = new MyStepListAdapter(mBikingStepList, this);
         listView.setAdapter(mMyStepListAdapter);
-        View rootView = LayoutInflater.from(this).inflate(R.layout.activity_walking_route_plan, null);
+        View rootView = LayoutInflater.from(this).inflate(R.layout.activity_biking_route_plan, null);
         mPopupWindow.showAtLocation(rootView, Gravity.BOTTOM, 0, 0);
     }
 
@@ -222,15 +187,15 @@ public class DrivingRoutePlanActivity extends Activity implements View.OnClickLi
         }
     }
 
-    private class MyDrivingRouteOverlay extends DrivingRouteOverlay {
+    private class MyBikingRouteOverlay extends BikingRouteOverlay {
 
-        public MyDrivingRouteOverlay(BaiduMap baiduMap) {
+        public MyBikingRouteOverlay(BaiduMap baiduMap) {
             super(baiduMap);
         }
 
         @Override
         public int getLineColor() {
-            return Color.RED;
+            return Color.YELLOW;
         }
 
         @Override
@@ -241,6 +206,8 @@ public class DrivingRoutePlanActivity extends Activity implements View.OnClickLi
         @Override
         public BitmapDescriptor getTerminalMarker() {
             return BitmapDescriptorFactory.fromResource(R.drawable.end_point);
+
         }
     }
+
 }

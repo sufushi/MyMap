@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.rdc.mymap.config.WayConfig.BIKING;
 import static com.rdc.mymap.config.WayConfig.DRIVING;
 import static com.rdc.mymap.config.WayConfig.TRANSIT;
 import static com.rdc.mymap.config.WayConfig.WALKING;
@@ -276,6 +277,13 @@ public class RouteActivity extends Activity implements View.OnClickListener{
                 startActivity(driveRoutePlanIntent);
                 break;
             case 2 :
+                Intent bikingRoutePlanIntent = new Intent(RouteActivity.this, BikingRoutePlanActivity.class);
+                bikingRoutePlanIntent.putExtra("start_city", "广州");
+                bikingRoutePlanIntent.putExtra("end_city", "广州");
+                bikingRoutePlanIntent.putExtra("start_place", mStartNodeEditText.getText().toString());
+                bikingRoutePlanIntent.putExtra("end_place", mEndEditText.getText().toString());
+                bikingRoutePlanIntent.putExtra("way", BIKING);
+                startActivity(bikingRoutePlanIntent);
                 break;
             case 3 :
                 Intent walkRoutePlanIntent = new Intent(RouteActivity.this, WalkRoutePlanActivity.class);

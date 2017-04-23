@@ -198,7 +198,7 @@ public class WalkRoutePlanActivity extends Activity implements View.OnClickListe
         mPopupWindow.setContentView(contentView);
         ImageView imageView = (ImageView) contentView.findViewById(R.id.iv_close);
         imageView.setOnClickListener(this);
-        ListView listView = (ListView) contentView.findViewById(R.id.lv_walking_route);
+        ListView listView = (ListView) contentView.findViewById(R.id.lv_plan_route);
         listView.setAdapter(mMyStepListAdapter);
         View rootView = LayoutInflater.from(this).inflate(R.layout.activity_walking_route_plan, null);
         mPopupWindow.showAtLocation(rootView, Gravity.BOTTOM, 0, 0);
