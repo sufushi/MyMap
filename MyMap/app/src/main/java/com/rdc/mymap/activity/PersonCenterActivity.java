@@ -97,6 +97,7 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
                 }
                 break;
             case R.id.ll_message:
+                startChatActivity();
                 break;
             case R.id.ll_wallet:
                 if(mPreferences.getBoolean(SharePreferencesConfig.ISLOGIN_BOOLEAN,false)){
@@ -117,6 +118,10 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
     }
     private void startDetailsActivity(){
         Intent intent = new Intent(PersonCenterActivity.this,DetailsActivity.class);
+        startActivity(intent);
+    }
+    private void startChatActivity(){
+        Intent intent = new Intent(PersonCenterActivity.this,ChatActivity.class);
         startActivity(intent);
     }
     private void startWalletActivity(){

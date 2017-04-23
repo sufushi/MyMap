@@ -84,7 +84,7 @@ public class WalletActivity extends Activity implements View.OnClickListener {
         mOoutTextView.setOnClickListener(this);
         mMoneyTextView = (TextView) findViewById(R.id.tv_money);
         refresh();
-        mMoneyTextView.setText(mPreferences.getInt(SharePreferencesConfig.MONEY_INT, -1) + "");
+        mMoneyTextView.setText(mPreferences.getInt(SharePreferencesConfig.MONEY_INT, -1)*0.01 + "");
     }
 
     private void refresh() {
@@ -139,15 +139,22 @@ public class WalletActivity extends Activity implements View.OnClickListener {
                 finish();
                 break;
             case R.id.iv_plus:
+                Toast.makeText(this,"暂不能绑定",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.tv_in:
-                startPayActivity();
+                startCountActivity();
                 break;
             case R.id.tv_out:
+                Toast.makeText(this,"暂不能转出",Toast.LENGTH_SHORT).show();
                 break;
             default:
                 break;
         }
+    }
+    private void startCountActivity(){
+        Intent intent = new Intent(WalletActivity.this,CountActivity.class);
+        intent.putExtra("name","转入");
+        startActivity(intent);
     }
     private void startPayActivity(){
         Intent intent = new Intent(WalletActivity.this,PayActivity.class);

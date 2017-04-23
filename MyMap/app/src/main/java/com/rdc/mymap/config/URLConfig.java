@@ -11,4 +11,5 @@ public class URLConfig {
     public final static String ACTION_REGISTER = "register/";
     public final static String ACTION_CHANGE = "changeMessage/";
     public final static String ACTION_UPLOAD = "upload/";
+    public final static String ACTION_CHARGE = "charge/";
 }

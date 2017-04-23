@@ -4,4 +4,7 @@
         <item>男</item>
         <item>女</item>
     </string-array>
+    <string-array name="pay_way">
+        <item>皮皮虾银行    ****1234</item>
+    </string-array>
 </resources>

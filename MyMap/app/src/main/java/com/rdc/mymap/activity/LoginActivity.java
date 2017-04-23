@@ -127,7 +127,6 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
                 if (check()) {
                     login();
                 } else {
-                    Toast.makeText(this, "用户名格式错误！", Toast.LENGTH_SHORT).show();
                     mUserNameEditText.setEnabled(true);
                     mPasswordEditText.setEnabled(true);
                     mEnterProgressButton.animError();
@@ -142,7 +141,6 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
                 if (check()) {
                     register();
                 } else {
-                    Toast.makeText(this, "用户名格式错误！", Toast.LENGTH_SHORT).show();
                     mUserNameEditText.setEnabled(true);
                     mPasswordEditText.setEnabled(true);
                     mRegisterProgressButton.animError();
@@ -247,6 +245,14 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         }).start();
     }
     private boolean check() {
+        if(mUserNameEditText.getText().equals("")) {
+            Toast.makeText(this, "用户名不能为空", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(mPasswordEditText.getText().toString().length() <6 || mPasswordEditText.getText().toString().length() > 20) {
+            Toast.makeText(this, "密码长度需在6~20", Toast.LENGTH_SHORT).show();
+            return false;
+        }
         return true;
     }
 
@@ -271,7 +277,6 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
             if (check()) {
                 login();
             } else {
-                Toast.makeText(this, "用户名格式错误！", Toast.LENGTH_SHORT).show();
                 mUserNameEditText.setEnabled(true);
                 mPasswordEditText.setEnabled(true);
                 mEnterProgressButton.animError();
