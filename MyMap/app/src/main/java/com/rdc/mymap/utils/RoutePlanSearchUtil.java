@@ -5,6 +5,7 @@ import android.util.Log;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.RouteStep;
 import com.baidu.mapapi.search.core.SearchResult;
+import com.baidu.mapapi.search.route.BikingRouteLine;
 import com.baidu.mapapi.search.route.BikingRoutePlanOption;
 import com.baidu.mapapi.search.route.BikingRouteResult;
 import com.baidu.mapapi.search.route.DrivingRouteLine;
@@ -41,6 +42,7 @@ public class RoutePlanSearchUtil {
     private List<BusLineInfo> mBusLineInfoList = new ArrayList<BusLineInfo>();
     private List<WalkingRouteLine> mWalkingRouteLineList = new ArrayList<WalkingRouteLine>();
     private List<DrivingRouteLine> mDrivingRouteLineList = new ArrayList<DrivingRouteLine>();
+    private List<BikingRouteLine> mBikingRouteLineList = new ArrayList<BikingRouteLine>();
 
     public RoutePlanSearchUtil() {
         mRoutePlanSearch = RoutePlanSearch.newInstance();
@@ -78,6 +80,14 @@ public class RoutePlanSearchUtil {
 
     public void setDrivingRouteLineList(List<DrivingRouteLine> drivingRouteLineList) {
         this.mDrivingRouteLineList = drivingRouteLineList;
+    }
+
+    public List<BikingRouteLine> getBikingRouteLineList() {
+        return mBikingRouteLineList;
+    }
+
+    public void setBikingRouteLineList(List<BikingRouteLine> bikingRouteLineList) {
+        this.mBikingRouteLineList = bikingRouteLineList;
     }
 
     public void search(Node startNode, Node endNode, int way) {
@@ -207,6 +217,13 @@ public class RoutePlanSearchUtil {
         public void onGetBikingRouteResult(BikingRouteResult bikingRouteResult) {
             if(bikingRouteResult.error != SearchResult.ERRORNO.NO_ERROR) {
                 return;
+            }
+            mBikingRouteLineList = bikingRouteResult.getRouteLines();
+            for(BikingRouteLine bikingRouteLine : mBikingRouteLineList) {
+                Log.e("error", "distance=" + bikingRouteLine.getDistance() + "duration=" + bikingRouteLine.getDuration());
+                for(BikingRouteLine.BikingStep bikingStep : bikingRouteLine.getAllStep()) {
+                    Log.e("error", "Instructions=" + bikingStep.getInstructions() + "direction=" + bikingStep.getDirection());
+                }
             }
         }
     }
