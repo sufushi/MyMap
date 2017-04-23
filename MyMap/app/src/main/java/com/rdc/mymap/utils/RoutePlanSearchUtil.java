@@ -2,9 +2,12 @@ package com.rdc.mymap.utils;
 
 import android.util.Log;
 
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.core.RouteStep;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.route.BikingRoutePlanOption;
 import com.baidu.mapapi.search.route.BikingRouteResult;
+import com.baidu.mapapi.search.route.DrivingRouteLine;
 import com.baidu.mapapi.search.route.DrivingRoutePlanOption;
 import com.baidu.mapapi.search.route.DrivingRouteResult;
 import com.baidu.mapapi.search.route.IndoorRouteResult;
@@ -15,6 +18,7 @@ import com.baidu.mapapi.search.route.OnGetRoutePlanResultListener;
 import com.baidu.mapapi.search.route.PlanNode;
 import com.baidu.mapapi.search.route.RoutePlanSearch;
 import com.baidu.mapapi.search.route.TransitRouteResult;
+import com.baidu.mapapi.search.route.WalkingRouteLine;
 import com.baidu.mapapi.search.route.WalkingRoutePlanOption;
 import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.rdc.mymap.model.BusLineInfo;
@@ -35,6 +39,8 @@ public class RoutePlanSearchUtil {
     private List<MassTransitRouteLine> mMassTransitRouteLineList = new ArrayList<MassTransitRouteLine>();
     private List<List<MassTransitRouteLine.TransitStep>> mTransitStepsList = new ArrayList<List<MassTransitRouteLine.TransitStep>>();
     private List<BusLineInfo> mBusLineInfoList = new ArrayList<BusLineInfo>();
+    private List<WalkingRouteLine> mWalkingRouteLineList = new ArrayList<WalkingRouteLine>();
+    private List<DrivingRouteLine> mDrivingRouteLineList = new ArrayList<DrivingRouteLine>();
 
     public RoutePlanSearchUtil() {
         mRoutePlanSearch = RoutePlanSearch.newInstance();
@@ -56,6 +62,22 @@ public class RoutePlanSearchUtil {
 
     public void setBusLineInfoList(List<BusLineInfo> busLineInfoList) {
         this.mBusLineInfoList = busLineInfoList;
+    }
+
+    public List<WalkingRouteLine> getWalkingRouteLineList() {
+        return mWalkingRouteLineList;
+    }
+
+    public void setWalkingRouteLineList(List<WalkingRouteLine> walkingRouteLineList) {
+        this.mWalkingRouteLineList = walkingRouteLineList;
+    }
+
+    public List<DrivingRouteLine> getDrivingRouteLineList() {
+        return mDrivingRouteLineList;
+    }
+
+    public void setDrivingRouteLineList(List<DrivingRouteLine> drivingRouteLineList) {
+        this.mDrivingRouteLineList = drivingRouteLineList;
     }
 
     public void search(Node startNode, Node endNode, int way) {
@@ -90,6 +112,20 @@ public class RoutePlanSearchUtil {
             if(walkingRouteResult.error != SearchResult.ERRORNO.NO_ERROR) {
                 return;
             }
+            mWalkingRouteLineList = walkingRouteResult.getRouteLines();
+//            for(WalkingRouteLine walkingRouteLine : mWalkingRouteLineList) {
+//                Log.e("error", "duration=" + walkingRouteLine.getDuration() + "distance=" + walkingRouteLine.getDistance());
+//                Log.e("error", "start=" + walkingRouteLine.getStarting().getTitle() + "end=" + walkingRouteLine.getTerminal().getTitle());
+//                for(WalkingRouteLine.WalkingStep walkingStep : walkingRouteLine.getAllStep()) {
+//                    Log.e("error", walkingStep.getInstructions());
+//                }
+//                for(RouteStep routeStep : walkingRouteLine.getAllStep()) {
+//                    for(LatLng latLng : routeStep.getWayPoints()) {
+//                        Log.e("error", latLng.toString());
+//                    }
+//                }
+//            }
+
         }
 
         @Override
@@ -149,6 +185,14 @@ public class RoutePlanSearchUtil {
         public void onGetDrivingRouteResult(DrivingRouteResult drivingRouteResult) {
             if(drivingRouteResult.error != SearchResult.ERRORNO.NO_ERROR) {
                 return;
+            }
+            mDrivingRouteLineList = drivingRouteResult.getRouteLines();
+            for(DrivingRouteLine drivingRouteLine : mDrivingRouteLineList) {
+                Log.e("error", "lightNum=" + drivingRouteLine.getLightNum());
+                Log.e("error", "distance=" + drivingRouteLine.getDistance() + "duration=" + drivingRouteLine.getDuration());
+                for(DrivingRouteLine.DrivingStep drivingStep: drivingRouteLine.getAllStep()) {
+                    Log.e("error", "Instructions=" + drivingStep.getInstructions() + "EntranceInstructions=" + drivingStep.getEntranceInstructions());
+                }
             }
         }
 

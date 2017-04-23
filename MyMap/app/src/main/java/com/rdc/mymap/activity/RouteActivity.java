@@ -6,21 +6,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -28,20 +21,20 @@ import android.widget.TextView;
 
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.busline.BusLineResult;
-import com.baidu.mapapi.search.sug.SuggestionResult;
 import com.rdc.mymap.R;
 import com.rdc.mymap.adapter.MySearchHistoryAdapter;
 import com.rdc.mymap.adapter.MyViewPagerAdapter;
 import com.rdc.mymap.utils.BusLineSearchUtil;
 import com.rdc.mymap.utils.PoiSearchUtil;
-import com.rdc.mymap.utils.SuggestionSearchUtil;
 import com.rdc.mymap.view.UnderlineEditText;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.rdc.mymap.config.WayConfig.DRIVING;
 import static com.rdc.mymap.config.WayConfig.TRANSIT;
+import static com.rdc.mymap.config.WayConfig.WALKING;
 
 public class RouteActivity extends Activity implements View.OnClickListener{
 
@@ -67,7 +60,8 @@ public class RouteActivity extends Activity implements View.OnClickListener{
     private TextView mEndEditText;
     private LinearLayout mNearbyBusLinearLayout;
 
-    private ListView mSearchHistoryListView;
+    private ListView mBusSearchHistoryListView;
+    private ListView mWalkSearchHistoryListView;
     private MySearchHistoryAdapter mMySearchHistoryAdapter;
     private List<String> mSearchHistoryList;
     private String[] mSearchHistory = {"大夫山森林公园", "广州大学城", "GoGo新天地", "珠江新城", "广州博物馆", "广州塔", "天河客运站", "白云山", "番禺广场", "万胜围"};
@@ -191,11 +185,13 @@ public class RouteActivity extends Activity implements View.OnClickListener{
         mViewPager.setCurrentItem(0);
         mViewPager.setOnPageChangeListener(new MyOnPageChangeListener());
 
-        mSearchHistoryListView = (ListView) mBusView.findViewById(R.id.lv_search_history);
+        mBusSearchHistoryListView = (ListView) mBusView.findViewById(R.id.lv_search_history);
+        mWalkSearchHistoryListView = (ListView) mWalkView.findViewById(R.id.lv_search_history);
         mSearchHistoryList = new ArrayList<String>();
         mSearchHistoryList = Arrays.asList(mSearchHistory);
         mMySearchHistoryAdapter = new MySearchHistoryAdapter(mSearchHistoryList, this);
-        mSearchHistoryListView.setAdapter(mMySearchHistoryAdapter);
+        mBusSearchHistoryListView.setAdapter(mMySearchHistoryAdapter);
+        mWalkSearchHistoryListView.setAdapter(mMySearchHistoryAdapter);
 
     }
 
@@ -260,13 +256,42 @@ public class RouteActivity extends Activity implements View.OnClickListener{
     }
 
     private void startRoutePlanActivity() {
-        Intent routePlanIntent = new Intent(RouteActivity.this, RoutePlanActivity.class);
-        routePlanIntent.putExtra("start_city", "广州");
-        routePlanIntent.putExtra("end_city", "广州");
-        routePlanIntent.putExtra("start_place", mStartNodeEditText.getText().toString());
-        routePlanIntent.putExtra("end_place", mEndEditText.getText().toString());
-        routePlanIntent.putExtra("way", TRANSIT);
-        startActivity(routePlanIntent);
+        switch (mCurIndex) {
+            case 0 :
+                Intent busRoutePlanIntent = new Intent(RouteActivity.this, BusRoutePlanActivity.class);
+                busRoutePlanIntent.putExtra("start_city", "广州");
+                busRoutePlanIntent.putExtra("end_city", "广州");
+                busRoutePlanIntent.putExtra("start_place", mStartNodeEditText.getText().toString());
+                busRoutePlanIntent.putExtra("end_place", mEndEditText.getText().toString());
+                busRoutePlanIntent.putExtra("way", TRANSIT);
+                startActivity(busRoutePlanIntent);
+                break;
+            case 1 :
+                Intent driveRoutePlanIntent = new Intent(RouteActivity.this, DrivingRoutePlanActivity.class);
+                driveRoutePlanIntent.putExtra("start_city", "广州");
+                driveRoutePlanIntent.putExtra("end_city", "广州");
+                driveRoutePlanIntent.putExtra("start_place", mStartNodeEditText.getText().toString());
+                driveRoutePlanIntent.putExtra("end_place", mEndEditText.getText().toString());
+                driveRoutePlanIntent.putExtra("way", DRIVING);
+                startActivity(driveRoutePlanIntent);
+                break;
+            case 2 :
+                break;
+            case 3 :
+                Intent walkRoutePlanIntent = new Intent(RouteActivity.this, WalkRoutePlanActivity.class);
+                walkRoutePlanIntent.putExtra("start_city", "广州");
+                walkRoutePlanIntent.putExtra("end_city", "广州");
+                walkRoutePlanIntent.putExtra("start_place", mStartNodeEditText.getText().toString());
+                walkRoutePlanIntent.putExtra("end_place", mEndEditText.getText().toString());
+                walkRoutePlanIntent.putExtra("way", WALKING);
+                startActivity(walkRoutePlanIntent);
+                break;
+            case 4 :
+                break;
+            default:
+                break;
+        }
+
     }
 
     private void plus() {

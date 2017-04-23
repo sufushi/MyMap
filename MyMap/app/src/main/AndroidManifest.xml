@@ -19,17 +19,15 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.BAIDU_LOCATION_SERVICE"/>
+    <uses-permission android:name="android.permission.BAIDU_LOCATION_SERVICE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCES_MOCK_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_GPS" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
-
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
     <uses-permission android:name="android.permission.CAMERA" />
 
     <supports-screens
@@ -69,31 +67,31 @@
         <activity
             android:name=".activity.PhotoDialogActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/DialogStyleBottom" >
-        </activity>
+            android:theme="@style/DialogStyleBottom" />
         <activity
             android:name=".activity.PayActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/DialogStyleBottom" >
-        </activity>
-        <activity android:name=".activity.RouteActivity"/>
-        <activity android:name=".activity.WalletActivity"/>
+            android:theme="@style/DialogStyleBottom" />
+        <activity android:name=".activity.RouteActivity" />
+        <activity android:name=".activity.WalletActivity" />
         <activity android:name=".activity.PersonCenterActivity" />
         <activity android:name=".activity.NearbyActivity" />
         <activity android:name=".activity.NearbyInfoActivity" />
-        <activity android:name=".activity.DetailsActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            />
-        <activity android:name=".activity.LoginActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            />
+        <activity
+            android:name=".activity.DetailsActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".activity.LoginActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".activity.PanoramaActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="sensor" />
-        <activity android:name=".activity.RoutePlanActivity" />
+        <activity android:name=".activity.BusRoutePlanActivity" />
         <activity android:name=".activity.WebViewActivity" />
-        <activity android:name=".activity.SearchLocationActivity"></activity>
+        <activity android:name=".activity.SearchLocationActivity" />
+        <activity android:name=".activity.WalkRoutePlanActivity" />
+        <activity android:name=".activity.DrivingRoutePlanActivity"></activity>
     </application>
 
 </manifest>
