@@ -1,6 +1,7 @@
 package com.rdc.mymap.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
@@ -8,13 +9,19 @@ import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.rdc.mymap.R;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import cn.xm.weidongjian.progressbuttonlib.ProgressButton;
 
@@ -22,7 +29,7 @@ import cn.xm.weidongjian.progressbuttonlib.ProgressButton;
  * Created by wsoyz on 2017/4/22.
  */
 
-public class CountActivity extends Activity implements TextWatcher, View.OnClickListener {
+public class CountActivity extends Activity implements TextWatcher, View.OnClickListener, TextView.OnEditorActionListener {
     private final static String TAG = "CountActivity";
     private TextView mTitleTextView;
     private EditText mMoneyEditText;
@@ -37,8 +44,11 @@ public class CountActivity extends Activity implements TextWatcher, View.OnClick
     }
     private void init(){
         mTitleTextView = (TextView) findViewById(R.id.tv_title);
+        Intent intent = getIntent();
+        mTitleTextView.setText(intent.getStringExtra("name"));
         mMoneyEditText = (EditText) findViewById(R.id.et_money);
         mMoneyEditText.addTextChangedListener(this);
+        mMoneyEditText.setOnEditorActionListener(this);
         mBackImageView = (ImageView) findViewById(R.id.iv_back);
         mBackImageView.setOnClickListener(this);
         mEnterProgressButton = (ProgressButton) findViewById(R.id.pb_enter);
@@ -92,5 +102,13 @@ public class CountActivity extends Activity implements TextWatcher, View.OnClick
         intent.putExtra("money",(int)(Double.parseDouble(mMoneyEditText.getText().toString())*100));
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (actionId == KeyEvent.ACTION_DOWN || actionId == EditorInfo.IME_ACTION_DONE){
+            startPayActivity();
+        }
+        return false;
     }
 }

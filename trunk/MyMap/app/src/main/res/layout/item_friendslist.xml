@@ -1,7 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
+    android:background="#f0f0f0"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
+        <TextView
+            android:background="#d0d0d0"
+            android:id="@+id/tv_character"
+            android:paddingLeft="20dp"
+            android:textSize="20sp"
+            android:textColor="#000000"
+            android:gravity="center|left"
+            android:text="A"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="30dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="60dp"
+            android:layout_height="60dp">
+            <ImageView
+                android:id="@+id/iv_icon"
+                android:src="@drawable/pikaqiu"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginLeft="20dp"
+            android:gravity="center|left"
+            android:layout_width="match_parent"
+            android:layout_height="60dp">
+            <TextView
+                android:id="@+id/tv_name"
+                android:text="name"
+                android:textColor="#000000"
+                android:textSize="22sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

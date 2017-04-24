@@ -13,6 +13,8 @@ import com.rdc.mymap.model.UserObject;
 import com.rdc.mymap.utils.HttpUtil;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by wsoyz on 2017/4/11.
@@ -22,7 +24,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "DataBaseHelper";
     private static final int VERSION = 1;
-    private static final String BOOK1 = "create table Friends(" +
+    private static final String BOOK1 = "create table Message(" +
+            "time long primary key," +
+            "userid integer," +
+            "context String," +
+            "ishost interger)";
+    private static final String BOOK2 = "create table Friends(" +
             "userid integer primary key," +
             "username String," +
             "gender integer," +
@@ -47,9 +54,30 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(BOOK1);
+        db.execSQL(BOOK2);
         Log.d(TAG, "create datebase OK!");
     }
-
+    public List<UserObject> getFriendsList(){
+        List<UserObject> list = new ArrayList<UserObject>();
+        sqLiteDatabase = getWritableDatabase();
+        Cursor cursor = sqLiteDatabase.query("Friends", null, null, null, null, null, "username ASC");
+        if(cursor.moveToFirst()){
+            do{
+                UserObject userObject = new UserObject(
+                        cursor.getInt(cursor.getColumnIndex("userid")),
+                        cursor.getString(cursor.getColumnIndex("username")),
+                        cursor.getInt(cursor.getColumnIndex("gender")),
+                        cursor.getString(cursor.getColumnIndex("address")),
+                        cursor.getString(cursor.getColumnIndex("phonenumber")),
+                        cursor.getString(cursor.getColumnIndex("signature"))
+                );
+                list.add(userObject);
+            }while (cursor.moveToNext());
+            return list;
+        }else{
+            return null;
+        }
+    }
     public boolean saveUser(UserObject userObject) {
         sqLiteDatabase = getWritableDatabase();
         if (userObject.isEmpty()) return false;
