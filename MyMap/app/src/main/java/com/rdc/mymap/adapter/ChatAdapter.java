@@ -88,7 +88,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.BaseAdapter> {
         void setData(Object object) {
             super.setData(object);
             ChatModel model = (ChatModel) object;
-            Picasso.with(itemView.getContext()).load(model.getIcon()).placeholder(R.mipmap.ic_launcher).into(ic_user);
+            ic_user.setImageResource(R.drawable.pikaqiu);
+//            Picasso.with(itemView.getContext()).load(model.getIcon()).placeholder(R.mipmap.ic_launcher).into(ic_user);
             tv.setText(model.getContent());
         }
     }
@@ -108,7 +109,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.BaseAdapter> {
         void setData(Object object) {
             super.setData(object);
             ChatModel model = (ChatModel) object;
-            Picasso.with(itemView.getContext()).load(model.getIcon()).placeholder(R.mipmap.ic_launcher).into(ic_user);
+            ic_user.setImageResource(R.drawable.logo);
+//            Picasso.with(itemView.getContext()).load(model.getIcon()).placeholder(R.mipmap.ic_launcher).into(ic_user);
             tv.setText(model.getContent());
         }
     }

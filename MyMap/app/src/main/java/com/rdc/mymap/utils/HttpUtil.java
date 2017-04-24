@@ -118,13 +118,6 @@ public class HttpUtil {
             if (res == 200) {
                 Log.e(TAG, "request success");
                 InputStream input = conn.getInputStream();
-//                    StringBuffer sb1 = new StringBuffer();
-//                    int ss;
-//                    while ((ss = input.read()) != -1) {
-//                        sb1.append((char) ss);
-//                    }
-//                    result = sb1.toString();
-//                    Log.e(TAG, "result : " + result);
                 return dealResponseResult(input);
             } else {
                 Log.e(TAG, "request error");
@@ -154,6 +147,26 @@ public class HttpUtil {
             httpURLConnection.setRequestProperty("Content-Length", String.valueOf(data.length));        //设置请求体的长度
             OutputStream outputStream = httpURLConnection.getOutputStream();                            //获得输出流，向服务器写入数据
             outputStream.write(data);
+            int response = httpURLConnection.getResponseCode();                                         //获得服务器的响应码
+            if (response == HttpURLConnection.HTTP_OK) {
+                InputStream inptStream = httpURLConnection.getInputStream();
+                return dealResponseResult(inptStream);                                                  //处理服务器的响应结果
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+        return "";
+    }
+    public static String submitGetDataWithCookie( String cookie, String Action) {
+        Log.d(TAG, "sending cookie:" + cookie);
+        try {
+            URL url = new URL(URLConfig.PIURL + Action);
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setConnectTimeout(3000);                                                  //设置连接超时时间
+            httpURLConnection.setRequestMethod("GET");                                                 //设置以GET方式提交数据
+            httpURLConnection.setRequestProperty("Cookie", cookie);
+            httpURLConnection.connect();// 建立连接
             int response = httpURLConnection.getResponseCode();                                         //获得服务器的响应码
             if (response == HttpURLConnection.HTTP_OK) {
                 InputStream inptStream = httpURLConnection.getInputStream();
@@ -197,6 +210,7 @@ public class HttpUtil {
     }
 
     public static StringBuffer getRequestData(Map<String, String> params, String encode) {
+        if (params == null) return new StringBuffer("");
         StringBuffer stringBuffer = new StringBuffer();        //存储封装好的请求体信息
         try {
             for (Map.Entry<String, String> entry : params.entrySet()) {
@@ -229,6 +243,5 @@ public class HttpUtil {
         Log.d(TAG, " OK!  --  " + resultData);
         return resultData;
     }
-
 
 }

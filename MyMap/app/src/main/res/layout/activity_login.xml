@@ -31,14 +31,33 @@
             android:textSize="18sp" />
         />
     </RelativeLayout>
-
     <LinearLayout
+        android:layout_marginTop="20dp"
         android:layout_below="@id/rl_title"
+        android:id="@+id/ll_logo"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:src="@drawable/logo"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+        <TextView
+            android:layout_marginTop="8dp"
+            android:text="皮皮虾出行"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_below="@id/ll_logo"
         android:id="@+id/ll_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingTop="40dp"
+        android:paddingTop="20dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true">
 
@@ -49,7 +68,7 @@
             android:orientation="horizontal"
             android:paddingBottom="20dp"
             android:paddingLeft="30dp"
-            android:paddingRight="60dp">
+            android:paddingRight="30dp">
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/til_username"
@@ -77,68 +96,61 @@
             android:orientation="horizontal"
             android:paddingBottom="20dp"
             android:paddingLeft="30dp"
-            android:paddingRight="60dp">
+            android:paddingRight="30dp">
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/til_password"
-                app:hintTextAppearance="@style/TextInputLayoutStyle"
-                android:textColorHint="@android:color/black"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:textColorHint="@android:color/black"
+                app:hintTextAppearance="@style/TextInputLayoutStyle">
+
                 <EditText
-                    android:theme="@style/EditTextStyle"
-                    android:maxLength="16"
+                    android:id="@+id/et_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="密码"
                     android:imeOptions="actionDone"
                     android:inputType="textPassword"
-                    android:id="@+id/et_password"
-                    android:hint="密码"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:maxLength="16"
+                    android:theme="@style/EditTextStyle" />
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
+
         <LinearLayout
-            android:gravity="center"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:weightSum="100"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingBottom="20dp"
-            android:paddingLeft="30dp"
-            android:paddingRight="60dp">
+            android:paddingBottom="20dp">
             <cn.xm.weidongjian.progressbuttonlib.ProgressButton
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="15dp"
+                android:layout_weight="50"
+                android:paddingLeft="10dp"
                 android:text="登录"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp"
-                android:paddingLeft="60dp"
-                android:paddingRight="60dp"
+                android:layout_gravity="center"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"
                 android:id="@+id/pb_enter"
+                android:background="@drawable/bg_progressbutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <cn.xm.weidongjian.progressbuttonlib.ProgressButton
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="15dp"
+                android:layout_weight="50"
+                android:text="注册"
+                android:gravity="center"
+                android:paddingLeft="20dp"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:background="@drawable/bg_progressbutton"
+                android:id="@+id/pb_register"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
-        <LinearLayout
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="20dp"
-        android:paddingLeft="30dp"
-        android:paddingRight="60dp">
-        <cn.xm.weidongjian.progressbuttonlib.ProgressButton
-            android:text="注册"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"
-            android:paddingLeft="60dp"
-            android:paddingRight="60dp"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/pb_register"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

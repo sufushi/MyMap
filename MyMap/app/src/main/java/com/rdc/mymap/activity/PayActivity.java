@@ -30,6 +30,8 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by wsoyz on 2017/4/20.
@@ -104,8 +106,6 @@ public class PayActivity extends Activity implements View.OnClickListener, TextW
         mPasswordLinerLayout.setOnClickListener(this);
         mPasswordEditText = (EditText) findViewById(R.id.et_password);
         mPasswordEditText.addTextChangedListener(this);
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(mPasswordEditText, InputMethodManager.SHOW_FORCED);
     }
     private void check(){
         if(mPasswordEditText.getText().toString().equals("666666")) {

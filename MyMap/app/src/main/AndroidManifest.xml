@@ -74,11 +74,14 @@
             android:name=".activity.PayActivity"
             android:screenOrientation="portrait"
             android:theme="@style/DialogStyleBottom"
+            android:windowSoftInputMode="stateVisible"
             >
         </activity>
         <activity android:name=".activity.RouteActivity" />
+        <activity android:name=".activity.FriendsListActivity" />
         <activity android:name=".activity.ChatActivity" />
         <activity android:name=".activity.CountActivity"
+            android:windowSoftInputMode="stateVisible"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             />
         <activity android:name=".activity.WalletActivity"/>

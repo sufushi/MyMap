@@ -1,62 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".activity.FriendsListActivity">
+
     <RelativeLayout
         android:id="@+id/rl_title"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/colorActionbar">
+
         <ImageView
             android:id="@+id/iv_back"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:src="@drawable/back"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"/>
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/back" />
+
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="个人中心"
-            android:textSize="18sp"
+            android:layout_centerInParent="true"
+            android:text="通讯录"
             android:textColor="#ffffff"
-            android:layout_centerInParent="true" />
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_add"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="添加好友"
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
     </RelativeLayout>
+
     <LinearLayout
-        android:weightSum="100"
-        android:layout_below="@id/rl_title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_below="@id/rl_title"
+        android:background="#ffffff"
+        android:orientation="horizontal"
+        android:weightSum="100">
+
         <FrameLayout
-            android:layout_weight="100"
-            android:layout_below="@id/rl_title"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_below="@id/rl_title"
+            android:layout_weight="100">
+
             <ListView
                 android:id="@+id/lv_main"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </ListView>
+                android:layout_height="match_parent"></ListView>
+
             <TextView
-                android:gravity="center"
-                android:layout_gravity="center"
                 android:id="@+id/tv_tips"
-                android:textSize="22dp"
-                android:textColor="@android:color/black"
-                android:background="@color/colorActionbarLight"
-                android:text="A"
                 android:layout_width="40dp"
-                android:layout_height="38dp" />
+                android:layout_height="38dp"
+                android:layout_gravity="center"
+                android:background="@color/colorActionbarLight"
+                android:gravity="center"
+                android:text="A"
+                android:textColor="@android:color/black"
+                android:textSize="22dp"
+                android:visibility="invisible" />
+
+            <com.rdc.mymap.view.SideBar
+                android:id="@+id/sb_main"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="right" />
         </FrameLayout>
-        <com.rdc.mymap.view.SideBar
-            android:id="@+id/sb_main"
-            android:layout_width="40dp"
-            android:layout_height="match_parent"
-            />
     </LinearLayout>
 </RelativeLayout>

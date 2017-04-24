@@ -29,6 +29,7 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
     private LinearLayout mMessageLinearlayout;
     private LinearLayout mWalletLinearlayout;
     private LinearLayout mTicketLinearlayout;
+    private LinearLayout mFriendsLinearlayout;
 
     private DataBaseHelper mDataBaseHelper;
     private SharedPreferences mPreferences;
@@ -51,6 +52,9 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
     }
 
     private void init() {
+        mFriendsLinearlayout = (LinearLayout) findViewById(R.id.ll_friends);
+        mFriendsLinearlayout.setOnClickListener(this);
+
         mMessageLinearlayout = (LinearLayout) findViewById(R.id.ll_message);
         mMessageLinearlayout.setOnClickListener(this);
 
@@ -108,6 +112,9 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
                 break;
             case R.id.ll_ticket:
                 break;
+            case R.id.ll_friends:
+                startFriendsListActivity();
+                break;
             default:
                 break;
         }
@@ -128,12 +135,16 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
         Intent intent = new Intent(PersonCenterActivity.this,WalletActivity.class);
         startActivity(intent);
     }
+    private void startFriendsListActivity(){
+        Intent intent = new Intent(PersonCenterActivity.this,FriendsListActivity.class);
+        startActivity(intent);
+    }
     private void isLogin(){
         mPreferences = getSharedPreferences("main",MODE_PRIVATE);
         mEditor = mPreferences.edit();
         if(mPreferences.getBoolean(SharePreferencesConfig.ISLOGIN_BOOLEAN,false)){
             Log.d(TAG,"Logined!");
-            mLoginTextView.setText("登出");
+            mLoginTextView.setText("立即登出");
             Bitmap bm = mDataBaseHelper.getPhotoToBitmap(mPreferences.getInt(SharePreferencesConfig.ID_INT,-1));
             mUsernameTextView.setText(mPreferences.getString(SharePreferencesConfig.USERNAME_STRING,""));
             if (bm != null)mPhotoCircleImageView.setImageBitmap(bm);

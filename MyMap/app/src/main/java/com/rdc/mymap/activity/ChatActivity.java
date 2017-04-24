@@ -49,6 +49,7 @@ public class ChatActivity extends Activity implements View.OnClickListener {
     }
     private void init(){
         mTitleTextView = (TextView) findViewById(R.id.tv_title);
+        mTitleTextView.setText("dalao");
         mBackImageView = (ImageView) findViewById(R.id.iv_back);
         mBackImageView.setOnClickListener(this);
         mMessageEditText = (EditText) findViewById(R.id.et_message);
@@ -58,6 +59,30 @@ public class ChatActivity extends Activity implements View.OnClickListener {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setAdapter(adapter = new ChatAdapter());
+        {
+            ArrayList<ItemModel> models = new ArrayList<>();
+            ChatModel model = new ChatModel();
+            model.setContent("我们为什么叫皮皮虾出行呀？");
+            model.setIcon("http://img.my.csdn.net/uploads/201508/05/1438760758_3497.jpg");
+            models.add(new ItemModel(ItemModel.CHAT_A, model));
+            ChatModel model2 = new ChatModel();
+            model2.setContent("皮皮虾下一句是什么？");
+            model2.setIcon("http://img.my.csdn.net/uploads/201508/05/1438760758_6667.jpg");
+            models.add(new ItemModel(ItemModel.CHAT_B, model2));
+            ChatModel model3 = new ChatModel();
+            model3.setContent("我们走！");
+            model3.setIcon("http://img.my.csdn.net/uploads/201508/05/1438760758_3497.jpg");
+            models.add(new ItemModel(ItemModel.CHAT_A, model3));
+            ChatModel model4 = new ChatModel();
+            model4.setContent("对，我们皮皮虾出行就是让你多走走！");
+            model4.setIcon("http://img.my.csdn.net/uploads/201508/05/1438760758_6667.jpg");
+            models.add(new ItemModel(ItemModel.CHAT_B, model4));
+            ChatModel model5 = new ChatModel();
+            model5.setContent("哦~~~");
+            model5.setIcon("http://img.my.csdn.net/uploads/201508/05/1438760758_3497.jpg");
+            models.add(new ItemModel(ItemModel.CHAT_A, model5));
+            adapter.replaceAll(models);
+        }
         initData();
     }
     private void initData() {
