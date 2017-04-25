@@ -31,14 +31,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Created by wsoyz on 2017/4/23.
@@ -66,6 +62,7 @@ public class FriendsListActivity extends Activity implements View.OnClickListene
             switch (msg.getData().getInt("case")) {
                 case OK: {
                     mDataBaseHelper = new DataBaseHelper(FriendsListActivity.this, "Data.db", 1);
+                    UserObjectlist = mDataBaseHelper.getFriendsList();
                     list = new ArrayList<FriendsListItem>();
                     for (UserObject a : UserObjectlist) {
                         list.add(new FriendsListItem(a));
@@ -121,6 +118,7 @@ public class FriendsListActivity extends Activity implements View.OnClickListene
 
     @Override
     protected void onResume() {
+        refreshFriend();
         super.onResume();
     }
 
@@ -130,7 +128,7 @@ public class FriendsListActivity extends Activity implements View.OnClickListene
             public void run() {
                 mDataBaseHelper = new DataBaseHelper(FriendsListActivity.this, "Data.db", 1);
                 sharedPreferences = getSharedPreferences("main", MODE_PRIVATE);
-                String result = HttpUtil.submitGetDataWithCookie(sharedPreferences.getString(SharePreferencesConfig.COOKIE_STRING, ""), URLConfig.ACTION_GETFRIENDS);
+                String result = HttpUtil.submitGetDataWithCookie(sharedPreferences.getString(SharePreferencesConfig.COOKIE_STRING, ""), URLConfig.ACTION_GET_FRIENDS);
                 Log.d(TAG, " result:" + result);
                 if (result == "") {
                     Bundle bundle = new Bundle();
@@ -180,7 +178,7 @@ public class FriendsListActivity extends Activity implements View.OnClickListene
                 finish();
                 break;
             case R.id.tv_add:
-
+                startAddFriendsActivity();
                 break;
         }
     }
@@ -189,11 +187,13 @@ public class FriendsListActivity extends Activity implements View.OnClickListene
         startActivity(intent);
     }
     private void startAddFriendsActivity(){
-
+        Intent intent = new Intent(this, AddFriendsActivity.class);
+        startActivity(intent);
     }
     @Override
     public void onTouchingLetterChanged(String s) {
-        listView.smoothScrollToPosition(adapter.getSelectPosition(s));
+        int i = adapter.getSelectPosition(s);
+        if(i != -1) listView.smoothScrollToPosition(i);
 //        listView.setSelection(adapter.getSelectPosition(s));
     }
 

@@ -92,7 +92,6 @@
                     android:numeric="integer"
                     android:paddingBottom="20dp"
                     android:singleLine="true"
-                    android:textColor="@android:color/black"
                     android:theme="@style/EditTextStyle" />
             </android.support.design.widget.TextInputLayout>
 
@@ -104,7 +103,7 @@
                 android:gravity="center">
 
                 <com.rdc.mymap.view.CircleImageView
-                    android:id="@id/civ_photo"
+                    android:id="@+id/civ_photo"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:src="@drawable/pikaqiu" />
@@ -161,10 +160,10 @@
 
                 <EditText
                     android:id="@+id/et_sign"
+                    android:inputType="textMultiLine"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="个性签名"
-                    android:inputType="text"
                     android:maxLength="255"
                     android:paddingBottom="20dp"
                     android:theme="@style/EditTextStyle" />

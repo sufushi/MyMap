@@ -85,6 +85,10 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             />
         <activity android:name=".activity.WalletActivity"/>
+        <activity android:name=".activity.AddFriendsActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="stateVisible"
+            />
         <activity android:name=".activity.PersonCenterActivity" />
         <activity android:name=".activity.NearbyActivity" />
         <activity android:name=".activity.NearbyInfoActivity" />

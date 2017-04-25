@@ -249,8 +249,12 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
             Toast.makeText(this, "用户名不能为空", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if(mPasswordEditText.getText().toString().length() <6 || mPasswordEditText.getText().toString().length() > 20) {
-            Toast.makeText(this, "密码长度需在6~20", Toast.LENGTH_SHORT).show();
+        if(mUserNameEditText.getText().toString().length()>20) {
+            Toast.makeText(this, "用户名长度不能超过20", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(mPasswordEditText.getText().toString().length() <6 || mPasswordEditText.getText().toString().length() > 16) {
+            Toast.makeText(this, "密码长度需在6~16", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
