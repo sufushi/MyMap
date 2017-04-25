@@ -8,13 +8,13 @@
             android:background="#d0d0d0"
             android:id="@+id/tv_character"
             android:paddingLeft="20dp"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:textColor="#000000"
             android:gravity="center|left"
             android:text="A"
             android:visibility="gone"
             android:layout_width="match_parent"
-            android:layout_height="30dp" />
+            android:layout_height="20dp" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp">

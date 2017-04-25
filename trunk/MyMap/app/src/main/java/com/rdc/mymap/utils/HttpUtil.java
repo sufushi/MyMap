@@ -178,7 +178,25 @@ public class HttpUtil {
         }
         return "";
     }
-
+    public static String submitGetData( String Action) {
+        Log.d(TAG, "getting from url:" + Action);
+        try {
+            URL url = new URL(URLConfig.PIURL + Action);
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setConnectTimeout(3000);                                                  //设置连接超时时间
+            httpURLConnection.setRequestMethod("GET");                                                 //设置以GET方式提交数据
+            httpURLConnection.connect();// 建立连接
+            int response = httpURLConnection.getResponseCode();                                         //获得服务器的响应码
+            if (response == HttpURLConnection.HTTP_OK) {
+                InputStream inptStream = httpURLConnection.getInputStream();
+                return dealResponseResult(inptStream);                                                  //处理服务器的响应结果
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+        return "";
+    }
     public static String submitPostData(Map<String, String> params, String encode, String Action) {
         if (null == encode) encode = "utf-8";
         byte[] data = getRequestData(params, "utf-8").toString().getBytes();                             //获得请求体

@@ -84,7 +84,9 @@ public class DetailsActivity extends Activity implements View.OnClickListener, A
 
     @Override
     protected void onResume() {
-        init();
+        Bitmap bm = mDataBaseHelper.getPhotoToBitmap(mPreferences.getInt(SharePreferencesConfig.ID_INT, 0));
+        if (bm != null) mPhotoCircleImageView.setImageBitmap(bm);
+        else mPhotoCircleImageView.setImageResource(R.drawable.pikaqiu);
         super.onResume();
     }
 

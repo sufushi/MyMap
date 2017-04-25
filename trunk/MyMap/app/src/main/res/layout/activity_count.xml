@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:background="#cacaca"
+    android:background="#ffffff"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.CountActivity">
@@ -81,6 +81,7 @@
         android:layout_height="wrap_content">
 
         <cn.xm.weidongjian.progressbuttonlib.ProgressButton
+            android:background="@drawable/bg_progressbutton"
             android:id="@+id/pb_enter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
