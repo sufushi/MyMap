@@ -231,7 +231,8 @@ public class RouteActivity extends Activity implements View.OnClickListener{
                 startActivityForResult(endIntent, 2);
                 break;
             case R.id.ll_nearby_bus :
-                // TODO: 2017/4/19  
+                Intent nearbyStationIntent = new Intent(RouteActivity.this, NearbyStationActivity.class);
+                startActivity(nearbyStationIntent);
                 break;
             default:
                 break;
@@ -353,38 +354,38 @@ public class RouteActivity extends Activity implements View.OnClickListener{
             }
             switch (mCurIndex) {
                 case 0 :
-                    mBusTextView.setBackgroundColor(Color.parseColor("#556eea"));
+                    mBusTextView.setBackgroundColor(Color.parseColor("#d4f575"));
                     break;
                 case 1 :
-                    mCarTextView.setBackgroundColor(Color.parseColor("#556eea"));
+                    mCarTextView.setBackgroundColor(Color.parseColor("#d4f575"));
                     break;
                 case 2 :
-                    mBicycleTextView.setBackgroundColor(Color.parseColor("#556eea"));
+                    mBicycleTextView.setBackgroundColor(Color.parseColor("#d4f575"));
                     break;
                 case 3 :
-                    mWalkTextView.setBackgroundColor(Color.parseColor("#556eea"));
+                    mWalkTextView.setBackgroundColor(Color.parseColor("#d4f575"));
                     break;
                 case 4 :
-                    mTaxiTextView.setBackgroundColor(Color.parseColor("#556eea"));
+                    mTaxiTextView.setBackgroundColor(Color.parseColor("#d4f575"));
                     break;
                 default:
                     break;
             }
             switch (mPreIndex) {
                 case 0 :
-                    mBusTextView.setBackgroundColor(Color.parseColor("#2d4ce6"));
+                    mBusTextView.setBackgroundColor(Color.parseColor("#9ed209"));
                     break;
                 case 1 :
-                    mCarTextView.setBackgroundColor(Color.parseColor("#2d4ce6"));
+                    mCarTextView.setBackgroundColor(Color.parseColor("#9ed209"));
                     break;
                 case 2 :
-                    mBicycleTextView.setBackgroundColor(Color.parseColor("#2d4ce6"));
+                    mBicycleTextView.setBackgroundColor(Color.parseColor("#9ed209"));
                     break;
                 case 3 :
-                    mWalkTextView.setBackgroundColor(Color.parseColor("#2d4ce6"));
+                    mWalkTextView.setBackgroundColor(Color.parseColor("#9ed209"));
                     break;
                 case 4 :
-                    mTaxiTextView.setBackgroundColor(Color.parseColor("#2d4ce6"));
+                    mTaxiTextView.setBackgroundColor(Color.parseColor("#9ed209"));
                     break;
                 default:
                     break;

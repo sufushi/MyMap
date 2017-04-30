@@ -192,7 +192,7 @@ public class DrivingRoutePlanActivity extends Activity implements View.OnClickLi
     }
 
     private void showPopupWindow() {
-        View contentView = LayoutInflater.from(this).inflate(R.layout.layout_popwindow, null);
+        View contentView = LayoutInflater.from(this).inflate(R.layout.layout_popwindow_route, null);
         mPopupWindow = new PopupWindow(contentView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT, true);
         mPopupWindow.setContentView(contentView);
         ImageView imageView = (ImageView) contentView.findViewById(R.id.iv_close);

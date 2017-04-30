@@ -4,20 +4,26 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 
 import com.baidu.lbsapi.model.BaiduPanoData;
 import com.baidu.lbsapi.panoramaview.PanoramaRequest;
-import com.baidu.lbsapi.tools.Point;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -27,6 +33,7 @@ import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.InfoWindow;
+import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
@@ -53,10 +60,12 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
     private ImageView mTrafficModeImageView;
     private ImageView mOverviewModeImageView;
     private ImageView mSettingModeImageView;
+    private ImageView mLocateImageView;
     private View mPanoramaView;
     private ImageView mPanoramaImageView;
 
     private Boolean isTrafficMode = false;
+    private Boolean isSettingMode = false;
     private int mX;
     private int mY;
     private LatLng mPanoramaLatLng;
@@ -72,7 +81,9 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
     private BDLocationListener mBDLocationListener = new MyLocationListener();
     private PoiSearchUtil mPoiSearchUtil;
     private List<PoiInfo> mPoiInfoList = new ArrayList<PoiInfo>();
-
+    private PopupWindow mPopupWindow;
+    private MyOrientationListener mMyOrientationListener;
+    private float mCurrentX;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -125,6 +136,8 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
         mOverviewModeImageView.setOnClickListener(this);
         mSettingModeImageView = (ImageView) findViewById(R.id.iv_setting_mode);
         mSettingModeImageView.setOnClickListener(this);
+        mLocateImageView = (ImageView) findViewById(R.id.iv_current_location);
+        mLocateImageView.setOnClickListener(this);
         mPanoramaView = LayoutInflater.from(this).inflate(R.layout.layout_panorama_overlay, null);
         mPanoramaView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,11 +155,13 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
                 child.setVisibility(View.INVISIBLE);
             }
         }
-        //mMapView.getChildAt(2).setVisibility(View.GONE);
+        mMapView.showScaleControl(false);
+        mMapView.getChildAt(2).setVisibility(View.GONE);
 
         mBaiduMap = mMapView.getMap();
         mBaiduMap.setMyLocationEnabled(true);
         mBaiduMap.setOnMapStatusChangeListener(new MyMapStatusChangeListener());
+        mBaiduMap.setOnMapClickListener(new MyOnMapClickListener());
 
         mPoiSearchUtil = new PoiSearchUtil();
 
@@ -155,6 +170,13 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
         initLocationClientOption();
         mLocationClient.start();
 
+        mMyOrientationListener = new MyOrientationListener(this);
+        mMyOrientationListener.setOnOrientationListener(new MyOrientationListener.OnOrientationListener() {
+            @Override
+            public void OnOrientationChanged(float x) {
+                mCurrentX = x;
+            }
+        });
     }
 
     private void initLocationClientOption() {
@@ -175,11 +197,13 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
     @Override
     protected void onStart() {
         super.onStart();
+        mMyOrientationListener.start();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        mMyOrientationListener.stop();
     }
 
     @Override
@@ -209,7 +233,7 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
             case R.id.sm_route :
                 mHandler.sendEmptyMessageDelayed(0, 200);
                 break;
-            case R.id.sm_scan :
+            case R.id.sm_foot:
                 break;
             case R.id.sm_bicycle :
                 break;
@@ -227,6 +251,9 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
 
     @Override
     public void onClick(View v) {
+        if(mSatMenu.isExpend()) {
+            mSatMenu.change();
+        }
         switch (v.getId()) {
             case R.id.iv_user :
                 Intent personCenterIntent = new Intent(MainActivity.this, PersonCenterActivity.class);
@@ -243,10 +270,63 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
                 searchStreetPanorama();
                 break;
             case R.id.iv_setting_mode :
+                showSettingWindow();
+                break;
+            case R.id.iv_current_location :
+                locate();
+                break;
+            case R.id.iv_normal_map :
+                if(isSettingMode) {
+                    mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
+                    mPopupWindow.dismiss();
+                }
+                break;
+            case R.id.iv_compass_map :
+                if(isSettingMode) {
+                    mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NONE);
+                    mPopupWindow.dismiss();
+                }
+                break;
+            case R.id.iv_satellite_map :
+                if(isSettingMode) {
+                    mBaiduMap.setMapType(BaiduMap.MAP_TYPE_SATELLITE);
+                    mPopupWindow.dismiss();
+                }
+                break;
+            case R.id.v_close :
+                if(isSettingMode) {
+                    mPopupWindow.dismiss();
+                }
                 break;
             default:
                 break;
         }
+    }
+
+    private void showSettingWindow() {
+        View contentView = LayoutInflater.from(this).inflate(R.layout.layout_popwindow_setting, null);
+        mPopupWindow = new PopupWindow(contentView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT, true);
+        mPopupWindow.setContentView(contentView);
+        ImageView normalMap = (ImageView) contentView.findViewById(R.id.iv_normal_map);
+        normalMap.setOnClickListener(this);
+        ImageView compassMap = (ImageView) contentView.findViewById(R.id.iv_compass_map);
+        compassMap.setOnClickListener(this);
+        ImageView satelliteMap = (ImageView) contentView.findViewById(R.id.iv_satellite_map);
+        satelliteMap.setOnClickListener(this);
+        View closeView = (View) contentView.findViewById(R.id.v_close);
+        closeView.setOnClickListener(this);
+        View rootView = LayoutInflater.from(this).inflate(R.layout.activity_walking_route_plan, null);
+        mPopupWindow.showAtLocation(rootView, Gravity.BOTTOM, 0, 0);
+        isSettingMode = true;
+    }
+
+    private void locate() {
+        CoordinateConverter coordinateConverter = new CoordinateConverter();
+        coordinateConverter.coord(mCurLatLng);
+        coordinateConverter.from(CoordinateConverter.CoordType.COMMON);
+        LatLng latLng = coordinateConverter.convert();
+        mMapStatusUpdate = MapStatusUpdateFactory.newLatLngZoom(latLng, 18.0f);
+        mBaiduMap.animateMapStatus(mMapStatusUpdate);
     }
 
     private void searchStreetPanorama() {
@@ -319,11 +399,12 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
             mBaiduMap.addOverlay(overlayOptions);*/
             MyLocationData myLocationData = new MyLocationData.Builder()//
                     .accuracy(bdLocation.getRadius())//
-                    .direction(bdLocation.getDirection())//
+                    .direction(mCurrentX)//
+                    //.direction(bdLocation.getDirection())//
                     .latitude(latLng.latitude)
                     .longitude(latLng.longitude).build();
             mBaiduMap.setMyLocationData(myLocationData);
-            mCurMarker = BitmapDescriptorFactory.fromResource(R.drawable.location);
+            mCurMarker = BitmapDescriptorFactory.fromResource(R.drawable.locate);
             MyLocationConfiguration myLocationConfiguration = new MyLocationConfiguration(MyLocationConfiguration.LocationMode.FOLLOWING, true, mCurMarker);
             mBaiduMap.setMyLocationConfigeration(myLocationConfiguration);
 
@@ -354,4 +435,70 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
 
         }
     }
-}
+
+    private class MyOnMapClickListener implements BaiduMap.OnMapClickListener {
+
+        @Override
+        public void onMapClick(LatLng latLng) {
+            if(mSatMenu.isExpend()) {
+                mSatMenu.change();
+            }
+        }
+
+        @Override
+        public boolean onMapPoiClick(MapPoi mapPoi) {
+            return false;
+        }
+    }
+
+    public static class MyOrientationListener implements SensorEventListener {
+
+        private SensorManager mSensorManager;
+        private Sensor mSensor;
+        private Context mContext;
+        private float mLastX;
+        private OnOrientationListener mOnOrientationListener;
+
+        public MyOrientationListener(Context context) {
+            this.mContext = context;
+        }
+
+        public void setOnOrientationListener(OnOrientationListener onOrientationListener) {
+            this.mOnOrientationListener = onOrientationListener;
+        }
+
+        public void start() {
+            mSensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
+            if(mSensorManager != null) {
+                mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+            }
+            if(mSensor != null) {
+                mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_UI);
+            }
+        }
+
+        public void stop() {
+            mSensorManager.unregisterListener(this);
+        }
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            if(event.sensor.getType() == Sensor.TYPE_ORIENTATION) {
+                float x = event.values[SensorManager.DATA_X];
+                if(Math.abs(x - mLastX) > 1.0) {
+                    mOnOrientationListener.OnOrientationChanged(x);
+                }
+                mLastX = x;
+            }
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+        }
+
+        public interface OnOrientationListener {
+            void OnOrientationChanged(float x);
+        }
+    }
+ }

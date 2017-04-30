@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.baidu.lbsapi.BMapManager;
 import com.baidu.lbsapi.MKGeneralListener;
+import com.baidu.mapapi.SDKInitializer;
 
 public class PanoramaDemoApplication extends Application {
 
@@ -19,6 +20,7 @@ public class PanoramaDemoApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        SDKInitializer.initialize(getApplicationContext());
         mInstance = this;
         initEngineManger(this);
     }

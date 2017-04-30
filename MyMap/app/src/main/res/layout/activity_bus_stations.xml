@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    tools:context="com.rdc.mymap.activity.BusStationsActivity">
+
+    <RelativeLayout
+        android:id="@+id/rl_title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorActionbar">
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/back"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"/>
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="310路"
+            android:textSize="18sp"
+            android:textColor="#ffffff"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_directions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_title"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/ll_direction1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tv_direction1"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:text="番禺汽车客运站方向"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:gravity="center"/>
+            <TextView
+                android:id="@+id/tv_time1"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:text="6:30 - 22:00"
+                android:gravity="center"/>
+            <View
+                android:id="@+id/v_direction1"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/colorActionbar"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_direction2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tv_direction2"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:text="大学城(广工)方向"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:gravity="center"/>
+            <TextView
+                android:id="@+id/tv_time2"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:text="6:30 - 22:00"
+                android:gravity="center"/>
+            <View
+                android:id="@+id/v_direction2"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="#949292"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/lv_bus_stations"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_directions"
+        android:layout_marginBottom="50dp"
+        android:divider="@null">
+
+    </ListView>
+
+    <TextView
+        android:id="@+id/tv_buy_ticket"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:text="购买车票（￥4.0）"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#ffffff"
+        android:gravity="center"
+        android:background="@drawable/bg_btn"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="5dp"/>
+
+</RelativeLayout>

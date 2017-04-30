@@ -4,7 +4,8 @@ import android.graphics.Bitmap;
 
 public class NearbyInfo {
 
-    private String mRestaurant;
+    private String mName;
+    private String mAddress;
     private Bitmap mPicture;
     private String mKind;
     private int mRank;
@@ -12,22 +13,31 @@ public class NearbyInfo {
     private String mTelephone;
     //private double mDistance;
 
-    public NearbyInfo(String mRestaurant, Bitmap mPicture, String mKind, int mRank, double mCost, String telephone) {
-        this.mRestaurant = mRestaurant;
+    public NearbyInfo(String mName, Bitmap mPicture, String mKind, int mRank, double mCost, String telephone, String address) {
+        this.mName = mName;
+        this.mAddress = address;
         this.mPicture = mPicture;
         this.mKind = mKind;
         this.mRank = mRank;
         this.mCost = mCost;
         this.mTelephone = telephone;
-        //this.mDistance = mDouble;
+        //this.mDistance = distance;
     }
 
-    public String getRestaurant() {
-        return mRestaurant;
+    public String getName() {
+        return mName;
     }
 
-    public void setRestaurant(String mRestaurant) {
-        this.mRestaurant = mRestaurant;
+    public void setmName(String name) {
+        this.mName = name;
+    }
+
+    public String getAddress() {
+        return mAddress;
+    }
+
+    public void setAddress(String address) {
+        this.mAddress = address;
     }
 
     public Bitmap getPicture() {
@@ -70,11 +80,11 @@ public class NearbyInfo {
         this.mTelephone = telephone;
     }
 
-    /*public double getDistance() {
-        return mDistance;
-    }
-
-    public void setDistance(double ditance) {
-        this.mDistance = ditance;
-    }*/
+//    public double getDistance() {
+//        return mDistance;
+//    }
+//
+//    public void setDistance(double ditance) {
+//        this.mDistance = ditance;
+//    }
 }

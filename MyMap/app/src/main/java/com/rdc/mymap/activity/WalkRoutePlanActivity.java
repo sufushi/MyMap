@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -27,19 +28,30 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.RouteStep;
 import com.baidu.mapapi.search.route.WalkingRouteLine;
+import com.baidu.navisdk.adapter.BNOuterTTSPlayerCallback;
+import com.baidu.navisdk.adapter.BNRoutePlanNode;
+import com.baidu.navisdk.adapter.BNaviSettingManager;
+import com.baidu.navisdk.adapter.BaiduNaviManager;
 import com.rdc.mymap.R;
 import com.rdc.mymap.adapter.MyStepListAdapter;
 import com.rdc.mymap.model.Node;
+import com.rdc.mymap.utils.GeoCoderUtil;
 import com.rdc.mymap.utils.RoutePlanSearchUtil;
 import com.rdc.mymap.utils.overlayutils.WalkingRouteOverlay;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static com.rdc.mymap.config.WayConfig.WALKING;
 
 public class WalkRoutePlanActivity extends Activity implements View.OnClickListener{
+
+    public static List<Activity> activityList = new LinkedList<Activity>();
+
+    private static final String APP_FOLDER_NAME = "BNSDK";
 
     private ImageView mBackImageView;
     private TextView mRouteTextView;
@@ -56,12 +68,27 @@ public class WalkRoutePlanActivity extends Activity implements View.OnClickListe
     private String mEndCity;
     private String mStartPlace;
     private String mEndPlace;
+    private String mSDCardPath;
 
     private PopupWindow mPopupWindow;
     private MyStepListAdapter mMyStepListAdapter;
     private List<WalkingRouteLine> mWalkingRouteLineList = new ArrayList<WalkingRouteLine>();
     private List<String> mWalkSteps = new ArrayList<String>();
     private List<LatLng> mWalkPoints = new ArrayList<LatLng>();
+
+    private BNRoutePlanNode mStartBNRoutePlanNode;
+    private BNRoutePlanNode mEndBNRoutePlanNode;
+    private BaiduNaviManager.TTSPlayStateListener mTTSPlayStateListener = new BaiduNaviManager.TTSPlayStateListener() {
+        @Override
+        public void playStart() {
+            Log.e("error", "TTS start");
+        }
+
+        @Override
+        public void playEnd() {
+            Log.e("error", "TTS end");
+        }
+    };
 
     private Handler mHandler = new Handler() {
         @Override
@@ -71,6 +98,10 @@ public class WalkRoutePlanActivity extends Activity implements View.OnClickListe
                     mDistanceTextView.setText(mDistance);
                     mDurationTextView.setText(mDuration);
                     mMyStepListAdapter = new MyStepListAdapter(mWalkSteps, WalkRoutePlanActivity.this);
+                    break;
+                case BaiduNaviManager.TTSPlayMsgType.PLAY_START_MSG :
+                    break;
+                case BaiduNaviManager.TTSPlayMsgType.PLAY_END_MSG :
                     break;
                 default:
                     break;
@@ -82,9 +113,45 @@ public class WalkRoutePlanActivity extends Activity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SDKInitializer.initialize(getApplicationContext());
+        activityList.add(this);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_walking_route_plan);
         init();
+        if (initDirs()) {
+            initNavigate();
+        }
+    }
+
+    private void initNavigate() {
+        BNOuterTTSPlayerCallback bnOuterTTSPlayerCallback;
+        BaiduNaviManager.getInstance().init(this, mSDCardPath, APP_FOLDER_NAME, new MyNaviInitListener(),
+                null, mHandler, mTTSPlayStateListener);
+    }
+
+    private boolean initDirs() {
+        mSDCardPath = getSDCardDir();
+        if(mSDCardPath == null) {
+            return false;
+        }
+        File file = new File(mSDCardPath, APP_FOLDER_NAME);
+        if(!file.exists()) {
+            file.mkdir();
+        }
+        return true;
+    }
+
+    private String getSDCardDir() {
+        if(Environment.getExternalStorageState().equalsIgnoreCase(Environment.MEDIA_MOUNTED)) {
+            return Environment.getExternalStorageDirectory().toString();
+        }
+        return null;
+    }
+
+    private void initSetting() {
+        BNaviSettingManager.setDayNightMode(BNaviSettingManager.DayNightMode.DAY_NIGHT_MODE_AUTO);
+        BNaviSettingManager.setShowTotalRoadConditionBar(BNaviSettingManager.PreViewRoadCondition.ROAD_CONDITION_BAR_SHOW_ON);
+        BNaviSettingManager.setVoiceMode(BNaviSettingManager.VoiceMode.Veteran);
+        BNaviSettingManager.setRealRoadCondition(BNaviSettingManager.RealRoadCondition.NAVI_ITS_ON);
     }
 
     @Override
@@ -187,13 +254,53 @@ public class WalkRoutePlanActivity extends Activity implements View.OnClickListe
             case R.id.iv_close :
                 mPopupWindow.dismiss();
                 break;
+            case R.id.ll_navigate :
+                prepareNavigate();
+                Log.e("error", "click ll_navigate");
+                break;
             default:
                 break;
         }
     }
 
+    private void prepareNavigate() {
+        final GeoCoderUtil startGeoCoder = new GeoCoderUtil();
+        final GeoCoderUtil endGeoCoder = new GeoCoderUtil();
+        startGeoCoder.setAddress(mStartPlace);
+        startGeoCoder.geoCode();
+        endGeoCoder.setAddress(mEndPlace);
+        endGeoCoder.geoCode();
+        new Thread() {
+            @Override
+            public void run() {
+                while(true) {
+                    if(startGeoCoder.getLatLng() != null && endGeoCoder.getLatLng() != null) {
+                        break;
+                    }
+                }
+                routePlanToNavigate(startGeoCoder.getLatLng(), endGeoCoder.getLatLng());
+            }
+        }.start();
+    }
+
+    private void routePlanToNavigate(LatLng start, LatLng end) {
+        double startLatitude = start.latitude;
+        double startLongitude = start.longitude;
+        double endLatitude = end.latitude;
+        double endLongitude = end.longitude;
+        Log.e("error", "geoCode:" + startLatitude + " " + startLongitude + " " + endLatitude + " " + endLongitude);
+        mStartBNRoutePlanNode = new BNRoutePlanNode(startLongitude, startLatitude, mStartPlace, null);
+        mEndBNRoutePlanNode = new BNRoutePlanNode(endLongitude, endLatitude, mEndPlace, null);
+        if(mStartBNRoutePlanNode != null && mEndBNRoutePlanNode != null) {
+            List<BNRoutePlanNode> bnRoutePlanNodeList = new ArrayList<BNRoutePlanNode>();
+            bnRoutePlanNodeList.add(mStartBNRoutePlanNode);
+            bnRoutePlanNodeList.add(mEndBNRoutePlanNode);
+            BaiduNaviManager.getInstance().launchNavigator(this, bnRoutePlanNodeList, 1, true, new MyRoutePlanListener(mStartBNRoutePlanNode));
+        }
+    }
+
     private void showPopupWindow() {
-        View contentView = LayoutInflater.from(this).inflate(R.layout.layout_popwindow, null);
+        View contentView = LayoutInflater.from(this).inflate(R.layout.layout_popwindow_route, null);
         mPopupWindow = new PopupWindow(contentView, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT, true);
         mPopupWindow.setContentView(contentView);
         ImageView imageView = (ImageView) contentView.findViewById(R.id.iv_close);
@@ -244,4 +351,59 @@ public class WalkRoutePlanActivity extends Activity implements View.OnClickListe
         }
     }
 
+    private class MyRoutePlanListener implements BaiduNaviManager.RoutePlanListener {
+
+        private BNRoutePlanNode mBNRoutePlanNode;
+
+        public MyRoutePlanListener(BNRoutePlanNode bnRoutePlanNode) {
+            this.mBNRoutePlanNode = bnRoutePlanNode;
+        }
+
+        @Override
+        public void onJumpToNavigator() {
+            for(Activity activity : activityList) {
+                if(activity.getClass().getName().endsWith("GuideActivity")) {
+                    return;
+                }
+            }
+            Intent intent = new Intent(WalkRoutePlanActivity.this, GuideActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("route_plan_node", mBNRoutePlanNode);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
+
+        @Override
+        public void onRoutePlanFailed() {
+            Log.e("error", "routePlanFailed");
+        }
+    }
+
+    private class MyNaviInitListener implements BaiduNaviManager.NaviInitListener {
+
+        @Override
+        public void onAuthResult(int i, String s) {
+            if(i == 0) {
+                Log.e("error", "key init success");
+            } else {
+                Log.e("error", "key init fail" + s);
+            }
+        }
+
+        @Override
+        public void initStart() {
+            Log.e("error", "init start");
+        }
+
+        @Override
+        public void initSuccess() {
+            initSetting();
+            Log.e("error", "init success");
+        }
+
+        @Override
+        public void initFailed() {
+            Log.e("error", "init failed");
+        }
+    }
 }

@@ -116,6 +116,18 @@ public class NearbyInfoActivity extends Activity implements View.OnClickListener
             case "station" :
                 searchNearby(latlng, "公交站");
                 break;
+            case "gas" :
+                searchNearby(latlng, "加油站");
+                break;
+            case "pass" :
+                searchNearby(latlng, "停车场");
+                break;
+            case "bank" :
+                searchNearby(latlng, "银行");
+                break;
+            case "repair" :
+                searchNearby(latlng, "维修");
+                break;
             default:
                 break;
         }
@@ -168,7 +180,7 @@ public class NearbyInfoActivity extends Activity implements View.OnClickListener
             PoiDetailResult poiDetailResult = mPoiDetailResultList.get(i);
             Log.e("error", "detailUrl:" + poiDetailResult.detailUrl);
             mDetailUrlList.add(poiDetailResult.detailUrl);
-            NearbyInfo nearbyInfo = new NearbyInfo(poiDetailResult.getName(), null, poiDetailResult.getType(), (int) poiDetailResult.getFacilityRating(), poiDetailResult.getPrice(), poiDetailResult.getTelephone());
+            NearbyInfo nearbyInfo = new NearbyInfo(poiDetailResult.getName(), null, poiDetailResult.getType(), (int) poiDetailResult.getFacilityRating(), poiDetailResult.getPrice(), poiDetailResult.getTelephone(), poiDetailResult.getAddress());
             mNearbyInfoList.add(nearbyInfo);
         }
         mHandler.sendEmptyMessage(0);
