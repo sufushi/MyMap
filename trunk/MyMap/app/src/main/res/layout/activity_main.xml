@@ -27,37 +27,48 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="3dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="4dp"
                 android:background="@drawable/bg_title"
                 android:showDividers="middle">
 
                 <ImageView
                     android:id="@+id/iv_user"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:padding="13dp"
                     android:layout_gravity="center"
                     android:src="@drawable/user" />
+
+                <View
+                    android:layout_width="0.0001dp"
+                    android:layout_height="match_parent"
+                    android:background="#868383"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="6dp"/>
 
                 <EditText
                     android:id="@+id/et_search"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:layout_marginRight="10dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
                     android:layout_marginLeft="5dp"
                     android:layout_gravity="center_vertical"
                     android:layout_toRightOf="@+id/iv_user"
                     android:background="@drawable/bg_edittext_normal"
-                    android:hint="  搜索路线"
+                    android:hint="   去哪儿？"
                     android:editable="false"/>
+
+                <ImageView
+                    android:id="@+id/iv_scan"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:padding="8dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/scan" />
 
             </LinearLayout>
             <LinearLayout
@@ -70,27 +81,27 @@
                 android:layout_below="@+id/ll_topBar">
                 <ImageView
                     android:id="@+id/iv_traffic_mode"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:padding="6dp"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:padding="2dp"
                     android:layout_gravity="center"
                     android:src="@drawable/traffic"
                     android:layout_marginBottom="15dp"
                     android:background="@drawable/bg_button"/>
                 <ImageView
                     android:id="@+id/iv_overview_mode"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:padding="4dp"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:padding="2dp"
                     android:layout_gravity="center"
                     android:src="@drawable/overview"
                     android:layout_marginBottom="15dp"
                     android:background="@drawable/bg_button"/>
                 <ImageView
                     android:id="@+id/iv_setting_mode"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:padding="6dp"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:padding="2dp"
                     android:layout_gravity="center"
                     android:src="@drawable/setting"
                     android:layout_marginBottom="15dp"
@@ -104,10 +115,11 @@
                 android:layout_alignParentBottom="true"
                 android:orientation="horizontal">
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:padding="10dp"
                     android:src="@drawable/location"
-                    android:layout_margin="10dp"
+                    android:layout_margin="8dp"
                     android:layout_gravity="center" />
                 <TextView
                     android:layout_width="0dp"
@@ -115,7 +127,7 @@
                     android:layout_weight="1"
                     android:text="附近发现...."
                     android:textSize="15sp"
-                    android:layout_margin="10dp"
+                    android:layout_marginRight="10dp"
                     android:layout_gravity="center"/>
                 <ImageView
                     android:layout_width="22dp"
@@ -124,7 +136,16 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="10dp"/>
             </LinearLayout>
-
+            <ImageView
+                android:id="@+id/iv_current_location"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:padding="8dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/bg_button"
+                android:src="@drawable/current_location"
+                android:layout_above="@+id/ll_bottomBar"/>
         </RelativeLayout>
         <include layout="@layout/layout_satmenu"/>
     </FrameLayout>

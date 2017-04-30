@@ -46,6 +46,10 @@ public class NearbyActivity extends Activity implements View.OnClickListener{
         mList.add(new MyGridViewItem(R.drawable.market, "超市"));
         mList.add(new MyGridViewItem(R.drawable.wc, "厕所"));
         mList.add(new MyGridViewItem(R.drawable.bus_station, "公交站"));
+        mList.add(new MyGridViewItem(R.drawable.gas_station, "加油站"));
+        mList.add(new MyGridViewItem(R.drawable.pass_stop, "停车场"));
+        mList.add(new MyGridViewItem(R.drawable.bank, "银行"));
+        mList.add(new MyGridViewItem(R.drawable.repair, "维修"));
 
         mBackImageView = (ImageView) findViewById(R.id.iv_back);
         mBackImageView.setOnClickListener(this);
@@ -82,6 +86,18 @@ public class NearbyActivity extends Activity implements View.OnClickListener{
                         break;
                     case 7 :
                         intent.putExtra("category", "station");
+                        break;
+                    case 8 :
+                        intent.putExtra("category", "gas");
+                        break;
+                    case 9 :
+                        intent.putExtra("category", "pass");
+                        break;
+                    case 10 :
+                        intent.putExtra("category", "bank");
+                        break;
+                    case 11 :
+                        intent.putExtra("category", "repair");
                         break;
                     default:
                         break;

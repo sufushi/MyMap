@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minHeight="60dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="40dp"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="384路"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="12dp"/>
+        <TextView
+            android:id="@+id/tv_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="票价：1.0元"
+            android:textSize="14sp"
+            android:textColor="#ef3535"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="12dp"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_direction1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="岭南印象园总站方向"
+        android:textSize="13sp"
+        android:textColor="#8b8989"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="12dp"
+        android:layout_marginBottom="5dp"/>
+
+    <TextView
+        android:id="@+id/tv_direction2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="大学城南亭村总站方向"
+        android:textSize="13sp"
+        android:textColor="#8b8989"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="12dp"
+        android:layout_marginBottom="5dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.00001dp"
+        android:background="#bab7b7"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"/>
+
+</LinearLayout>

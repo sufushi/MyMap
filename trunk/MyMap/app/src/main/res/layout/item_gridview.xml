@@ -9,7 +9,8 @@
         android:id="@+id/item_iv"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@drawable/user"/>
+        android:layout_margin="5dp"
+        android:src="@drawable/food"/>
 
     <TextView
         android:id="@+id/item_tv"

@@ -251,6 +251,14 @@ public class SatMenu extends ViewGroup implements View.OnClickListener {
         }
     }
 
+    public Boolean isExpend() {
+        return mStatus == Status.OPEN;
+    }
+
+    public void change() {
+        dealChildMenu(150);
+    }
+
     public void setOnSatMenuClickListener(OnSatMenuClickListener onSatMenuClickListener) {
         mOnSatMenuClickListener = onSatMenuClickListener;
     }

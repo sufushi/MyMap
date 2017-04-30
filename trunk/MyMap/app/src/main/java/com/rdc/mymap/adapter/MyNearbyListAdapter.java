@@ -55,7 +55,7 @@ public class MyNearbyListAdapter extends BaseAdapter {
         }
         //viewHolder.pictureImageView.setImageBitmap(mFoodInfoList.get(position).getPicture());
         viewHolder.pictureImageView.setImageResource(R.drawable.pikaqiu);
-        viewHolder.restaurantTextView.setText(mFoodInfoList.get(position).getRestaurant());
+        viewHolder.restaurantTextView.setText(mFoodInfoList.get(position).getName());
         viewHolder.costTextView.setText(mFoodInfoList.get(position).getCost() + "");
         viewHolder.kindTextView.setText(mFoodInfoList.get(position).getKind());
         viewHolder.telephoneTextView.setText(mFoodInfoList.get(position).getTelephone());

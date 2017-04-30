@@ -1,5 +1,7 @@
 package com.rdc.mymap.utils;
 
+import android.util.Log;
+
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.geocode.GeoCodeOption;
@@ -43,7 +45,7 @@ public class GeoCoderUtil {
     }
 
     public void geoCode() {
-        mGeoCoder.geocode(new GeoCodeOption().address(mAddress));
+        mGeoCoder.geocode(new GeoCodeOption().city("广州").address(mAddress));
     }
 
     public void destroy() {
@@ -58,6 +60,7 @@ public class GeoCoderUtil {
                 return;
             }
             mLatLng = geoCodeResult.getLocation();
+            Log.e("error", "success get location" + mLatLng);
         }
 
         @Override

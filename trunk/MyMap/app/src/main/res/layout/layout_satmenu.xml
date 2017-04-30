@@ -12,8 +12,8 @@
         app:position="right_bottom"
         app:radius="150dp">
         <RelativeLayout
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:background="@drawable/round">
             <ImageView
                 android:layout_width="wrap_content"
@@ -28,11 +28,11 @@
             android:src="@drawable/route"
             android:tag="route"/>
         <ImageView
-            android:id="@+id/sm_scan"
+            android:id="@+id/sm_foot"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/scan"
-            android:tag="scan"/>
+            android:src="@drawable/foot"
+            android:tag="foot"/>
         <ImageView
             android:id="@+id/sm_bicycle"
             android:layout_width="wrap_content"
