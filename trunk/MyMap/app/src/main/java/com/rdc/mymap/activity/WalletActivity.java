@@ -84,7 +84,7 @@ public class WalletActivity extends Activity implements View.OnClickListener {
         mOoutTextView.setOnClickListener(this);
         mMoneyTextView = (TextView) findViewById(R.id.tv_money);
         refresh();
-        mMoneyTextView.setText(mPreferences.getInt(SharePreferencesConfig.MONEY_INT, -1)*0.01 + "");
+        mMoneyTextView.setText(String.format("%.2f", mPreferences.getInt(SharePreferencesConfig.MONEY_INT, -1)*0.01));
     }
 
     private void refresh() {

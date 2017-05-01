@@ -24,10 +24,13 @@
     <uses-permission android:name="android.permission.ACCES_MOCK_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_GPS" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.CAMERA" />
 
     <supports-screens
@@ -72,19 +75,21 @@
             android:name=".activity.PayActivity"
             android:screenOrientation="portrait"
             android:theme="@style/DialogStyleBottom"
-            android:windowSoftInputMode="stateVisible" />
+            android:windowSoftInputMode="stateVisible"
+            >
+        </activity>
         <activity android:name=".activity.RouteActivity" />
         <activity android:name=".activity.FriendsListActivity" />
         <activity android:name=".activity.ChatActivity" />
-        <activity
-            android:name=".activity.CountActivity"
+        <activity android:name=".activity.CountActivity"
+            android:windowSoftInputMode="stateVisible"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="stateVisible" />
-        <activity android:name=".activity.WalletActivity" />
-        <activity
-            android:name=".activity.AddFriendsActivity"
+            />
+        <activity android:name=".activity.WalletActivity"/>
+        <activity android:name=".activity.AddFriendsActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="stateVisible" />
+            android:windowSoftInputMode="stateVisible"
+            />
         <activity android:name=".activity.PersonCenterActivity" />
         <activity android:name=".activity.NearbyActivity" />
         <activity android:name=".activity.NearbyInfoActivity" />
@@ -103,7 +108,10 @@
         <activity android:name=".activity.SearchLocationActivity" />
         <activity android:name=".activity.WalkRoutePlanActivity" />
         <activity android:name=".activity.DrivingRoutePlanActivity" />
-        <activity android:name=".activity.BikingRoutePlanActivity" />
+        <activity android:name=".activity.MessageListActivity" />
+        <activity android:name=".activity.FriendsDetailsActivity" />
+        <activity android:name=".activity.TicketListActivity" />
+        <activity android:name=".activity.BikingRoutePlanActivity"/>
         <activity android:name=".activity.GuideActivity" />
         <activity android:name=".activity.NearbyStationActivity" />
         <activity android:name=".activity.BusLineListActivity" />

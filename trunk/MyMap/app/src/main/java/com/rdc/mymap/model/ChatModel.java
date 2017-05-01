@@ -6,17 +6,9 @@ import java.io.Serializable;
  * Created by WangChang on 2016/4/28.
  */
 public class ChatModel implements Serializable{
-    private String icon="";
+    private int  id= -1;
     private String content="";
     private String type="";
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
 
     public String getContent() {
         return content;
@@ -32,5 +24,13 @@ public class ChatModel implements Serializable{
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

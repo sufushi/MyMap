@@ -1,5 +1,7 @@
 package com.rdc.mymap.adapter;
 
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,8 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.rdc.mymap.R;
+import com.rdc.mymap.database.DataBaseHelper;
 import com.rdc.mymap.model.ChatModel;
 import com.rdc.mymap.model.ItemModel;
+import com.rdc.mymap.view.CircleImageView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -20,7 +24,10 @@ import java.util.ArrayList;
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.BaseAdapter> {
 
     private ArrayList<ItemModel> dataList = new ArrayList<>();
-
+    private DataBaseHelper dataBaseHelper;
+    public ChatAdapter(Context context){
+        dataBaseHelper = new DataBaseHelper(context,"Data.db",1);
+    }
     public void replaceAll(ArrayList<ItemModel> list) {
         dataList.clear();
         if (list != null && list.size() > 0) {
@@ -32,11 +39,11 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.BaseAdapter> {
     public void addAll(ArrayList<ItemModel> list) {
         if (dataList != null && list != null) {
             dataList.addAll(list);
-            notifyItemRangeChanged(dataList.size(),list.size());
+            notifyItemRangeInserted(dataList.size(),list.size());
+//            notifyItemRangeChanged(dataList.size(),list.size());
         }
 
     }
-
     @Override
     public ChatAdapter.BaseAdapter onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
@@ -75,12 +82,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.BaseAdapter> {
     }
 
     private class ChatAViewHolder extends BaseAdapter {
-        private ImageView ic_user;
+        private CircleImageView ic_user;
         private TextView tv;
 
         public ChatAViewHolder(View view) {
             super(view);
-            ic_user = (ImageView) itemView.findViewById(R.id.ic_user);
+            ic_user = (CircleImageView) itemView.findViewById(R.id.ic_user);
             tv = (TextView) itemView.findViewById(R.id.tv);
         }
 
@@ -88,29 +95,30 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.BaseAdapter> {
         void setData(Object object) {
             super.setData(object);
             ChatModel model = (ChatModel) object;
-            ic_user.setImageResource(R.drawable.pikaqiu);
-//            Picasso.with(itemView.getContext()).load(model.getIcon()).placeholder(R.mipmap.ic_launcher).into(ic_user);
+            Bitmap bitmap = dataBaseHelper.getPhotoToBitmap(model.getId());
+            if(bitmap != null) ic_user.setImageBitmap(bitmap);
+            else ic_user.setImageResource(R.drawable.pikaqiu);
             tv.setText(model.getContent());
         }
     }
 
     private class ChatBViewHolder extends BaseAdapter {
-        private ImageView ic_user;
+        private CircleImageView ic_user;
         private TextView tv;
 
         public ChatBViewHolder(View view) {
             super(view);
-            ic_user = (ImageView) itemView.findViewById(R.id.ic_user);
+            ic_user = (CircleImageView) itemView.findViewById(R.id.ic_user);
             tv = (TextView) itemView.findViewById(R.id.tv);
-
         }
 
         @Override
         void setData(Object object) {
             super.setData(object);
             ChatModel model = (ChatModel) object;
-            ic_user.setImageResource(R.drawable.logo);
-//            Picasso.with(itemView.getContext()).load(model.getIcon()).placeholder(R.mipmap.ic_launcher).into(ic_user);
+            Bitmap bitmap = dataBaseHelper.getPhotoToBitmap(model.getId());
+            if(bitmap != null) ic_user.setImageBitmap(bitmap);
+            else ic_user.setImageResource(R.drawable.pikaqiu);
             tv.setText(model.getContent());
         }
     }
