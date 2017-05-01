@@ -63,6 +63,7 @@ public class FriendsListAdapter extends BaseAdapter {
         dataBaseHelper = new DataBaseHelper(context,"Data.db",1);
         Bitmap bitmap = dataBaseHelper.getPhotoToBitmap(userObject.getUserId());
         if(bitmap != null)image.setImageBitmap(bitmap);
+        else image.setImageResource(R.drawable.pikaqiu);
         if (position == 0) {
             //第一个数据要显示字母和姓名
             character.setVisibility(View.VISIBLE);

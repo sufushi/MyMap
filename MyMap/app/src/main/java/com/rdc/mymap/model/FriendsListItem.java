@@ -22,12 +22,12 @@ public class FriendsListItem {
 
     private UserObject userObject;
     private String Fc;
+    private int number = 0;
     public FriendsListItem(UserObject userObject){
         if(userObject.isEmpty()) return ;
         this.userObject = userObject;
         this.Fc = getSpells(userObject.getUsername());
     }
-
     public static String getSpells(String characters) {
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < characters.length(); i++) {

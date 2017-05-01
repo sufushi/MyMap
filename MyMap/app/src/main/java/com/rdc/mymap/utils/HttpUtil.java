@@ -8,6 +8,7 @@ import android.util.Log;
 import com.baidu.mapapi.http.HttpClient;
 import com.rdc.mymap.config.SharePreferencesConfig;
 import com.rdc.mymap.config.URLConfig;
+import com.rdc.mymap.model.MessageObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -22,6 +23,8 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -38,7 +41,36 @@ public class HttpUtil {
     public HttpUtil() {
 
     }
-
+    public static String buyTicket(String busName,int fare,String cookie){
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("busName",busName);
+        params.put("fare",fare+"");
+        Log.d(TAG, "buying ticket with cookie:" + cookie);
+        byte[] data = getRequestData(params, "utf-8").toString().getBytes();                             //获得请求体
+        try {
+            URL url = new URL(URLConfig.PIURL + URLConfig.ACTION_BUY_TICKET);
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setConnectTimeout(3000);                                                  //设置连接超时时间
+            httpURLConnection.setDoInput(true);                                                         //打开输入流，以便从服务器获取数据
+            httpURLConnection.setDoOutput(true);                                                        //打开输出流，以便向服务器提交数据
+            httpURLConnection.setRequestMethod("POST");                                                 //设置以Post方式提交数据
+            httpURLConnection.setUseCaches(false);                                                      //使用Post方式不能使用缓存
+            httpURLConnection.setRequestProperty("Cookie", cookie);
+            httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");  //设置请求体的类型是文本类型
+            httpURLConnection.setRequestProperty("Content-Length", String.valueOf(data.length));        //设置请求体的长度
+            OutputStream outputStream = httpURLConnection.getOutputStream();                            //获得输出流，向服务器写入数据
+            outputStream.write(data);
+            int response = httpURLConnection.getResponseCode();                                         //获得服务器的响应码
+            if (response == HttpURLConnection.HTTP_OK) {
+                InputStream inptStream = httpURLConnection.getInputStream();
+                return dealResponseResult(inptStream);                                                  //处理服务器的响应结果
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+        return "";
+    }
     public static Bitmap getPhpop(int i) {
         Bitmap bm = null;
         try {
@@ -148,6 +180,7 @@ public class HttpUtil {
             OutputStream outputStream = httpURLConnection.getOutputStream();                            //获得输出流，向服务器写入数据
             outputStream.write(data);
             int response = httpURLConnection.getResponseCode();                                         //获得服务器的响应码
+            Log.d(TAG," response code = "+response);
             if (response == HttpURLConnection.HTTP_OK) {
                 InputStream inptStream = httpURLConnection.getInputStream();
                 return dealResponseResult(inptStream);                                                  //处理服务器的响应结果
@@ -160,10 +193,12 @@ public class HttpUtil {
     }
     public static String submitGetDataWithCookie( String cookie, String Action) {
         Log.d(TAG, "sending cookie:" + cookie);
+        Log.d(TAG, "submitGetDataWithCookie from url:" + URLConfig.PIURL +Action);
         try {
             URL url = new URL(URLConfig.PIURL + Action);
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.setConnectTimeout(3000);                                                  //设置连接超时时间
+            httpURLConnection.setReadTimeout(3000);
+            httpURLConnection.setConnectTimeout(3000);
             httpURLConnection.setRequestMethod("GET");                                                 //设置以GET方式提交数据
             httpURLConnection.setRequestProperty("Cookie", cookie);
             httpURLConnection.connect();// 建立连接

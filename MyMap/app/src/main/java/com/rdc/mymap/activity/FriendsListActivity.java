@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -40,7 +41,7 @@ import java.util.List;
  * Created by wsoyz on 2017/4/23.
  */
 
-public class FriendsListActivity extends Activity implements View.OnClickListener, SideBar.OnTouchingLetterChangedListener, SideBar.OnTouchUpListener {
+public class FriendsListActivity extends Activity implements View.OnClickListener, SideBar.OnTouchingLetterChangedListener, SideBar.OnTouchUpListener, AdapterView.OnItemClickListener {
     private final static String TAG = "FriendsListActivity";
     private final static int OK = 1;
     private final static int NOTOK = 2;
@@ -110,6 +111,7 @@ public class FriendsListActivity extends Activity implements View.OnClickListene
         Collections.sort(list, comp);
         adapter = new FriendsListAdapter(FriendsListActivity.this, list);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(this);
 
         sb.setOnTouchingLetterChangedListener(this);
         sb.setOnTouchUpListener(this);
@@ -183,8 +185,6 @@ public class FriendsListActivity extends Activity implements View.OnClickListene
         }
     }
     private void startChatActivity(){
-        Intent intent = new Intent(this, ChatAdapter.class);
-        startActivity(intent);
     }
     private void startAddFriendsActivity(){
         Intent intent = new Intent(this, AddFriendsActivity.class);
@@ -203,4 +203,10 @@ public class FriendsListActivity extends Activity implements View.OnClickListene
     }
 
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent(this, FriendsDetailsActivity.class);
+        intent.putExtra("id",list.get(position).getUserObject().getUserId());
+        startActivity(intent);
+    }
 }

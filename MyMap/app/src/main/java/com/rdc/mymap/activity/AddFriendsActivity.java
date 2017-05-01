@@ -218,6 +218,7 @@ public class AddFriendsActivity extends Activity implements View.OnClickListener
             @Override
             public void run() {
                 Bitmap bitmap = HttpUtil.getPhpop(id);
+                if (bitmap == null) return;
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 baos = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);

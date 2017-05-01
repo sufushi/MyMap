@@ -27,10 +27,6 @@ public class UserObject {
         isEmpty = empty;
     }
 
-    public UserObject(int id) {
-
-    }
-
     public  UserObject(JSONObject jsonObject) {
         try {
             this.userId = jsonObject.getInt("userId");
