@@ -68,7 +68,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.PhotoDialogActivity"
+            android:name=".activity.DetailsPhotoActivity"
             android:screenOrientation="portrait"
             android:theme="@style/DialogStyleBottom" />
         <activity
@@ -109,13 +109,16 @@
         <activity android:name=".activity.WalkRoutePlanActivity" />
         <activity android:name=".activity.DrivingRoutePlanActivity" />
         <activity android:name=".activity.MessageListActivity" />
-        <activity android:name=".activity.FriendsDetailsActivity" />
+        <activity android:name=".activity.FriendsDetailsActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity android:name=".activity.TicketListActivity" />
         <activity android:name=".activity.BikingRoutePlanActivity"/>
         <activity android:name=".activity.GuideActivity" />
         <activity android:name=".activity.NearbyStationActivity" />
         <activity android:name=".activity.BusLineListActivity" />
-        <activity android:name=".activity.BusStationsActivity"></activity>
+        <activity android:name=".activity.BusStationsActivity"/>
+        <activity android:name=".activity.FootprintActivity"/>
+        <activity android:name=".activity.QCCodeActivity"> </activity>
     </application>
 
 </manifest>

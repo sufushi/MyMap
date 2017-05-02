@@ -4,8 +4,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#e0e0e0"
-    tools:context=".activity.TicketListActivity">
+    android:background="#ffffff"
+    tools:context=".activity.FootprintActivity">
     <RelativeLayout
         android:id="@+id/rl_title"
         android:layout_width="match_parent"
@@ -24,12 +24,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="车票"
+            android:text="足迹"
             android:textColor="#ffffff"
             android:textSize="18sp" />
     </RelativeLayout>
     <ListView
-        android:background="#e0e0e0"
+        android:background="#ffffff"
         android:id="@+id/lv_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
