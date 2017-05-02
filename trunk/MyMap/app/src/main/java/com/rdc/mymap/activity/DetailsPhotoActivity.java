@@ -1,13 +1,9 @@
 package com.rdc.mymap.activity;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -15,11 +11,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.rdc.mymap.R;
@@ -36,8 +30,8 @@ import java.io.File;
  * Created by wsoyz on 2017/4/18.
  */
 
-public class PhotoDialogActivity extends Activity implements View.OnClickListener {
-    private static final String TAG = "PhotoDialogActivity";
+public class DetailsPhotoActivity extends Activity implements View.OnClickListener {
+    private static final String TAG = "DetailsPhotoActivity";
     private static final String SUCCESS = "成功修改图片!";
     private Button mTakeButton;
     private Button mPickButton;
@@ -56,7 +50,7 @@ public class PhotoDialogActivity extends Activity implements View.OnClickListene
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 default:
-                    Toast.makeText(PhotoDialogActivity.this, msg.getData().getString("message"), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DetailsPhotoActivity.this, msg.getData().getString("message"), Toast.LENGTH_SHORT).show();
                     break;
             }
         }
@@ -181,7 +175,7 @@ public class PhotoDialogActivity extends Activity implements View.OnClickListene
             public void run() {
                 if (extras != null) {
                     Bitmap photo = extras.getParcelable("data");
-                    mDataBaseHelper = new DataBaseHelper(PhotoDialogActivity.this,"Data.db",null,1);
+                    mDataBaseHelper = new DataBaseHelper(DetailsPhotoActivity.this,"Data.db",null,1);
                     mSharedPreferences = getSharedPreferences("main", MODE_PRIVATE);
                     mDataBaseHelper.savePhoto(mSharedPreferences.getInt(SharePreferencesConfig.ID_INT,-1),photo);
                     String jsonString = HttpUtil.submitPostPhoto(mDataBaseHelper.getPhotoToByte(mSharedPreferences.getInt(SharePreferencesConfig.ID_INT,-1)),mSharedPreferences.getString(SharePreferencesConfig.COOKIE_STRING,""));

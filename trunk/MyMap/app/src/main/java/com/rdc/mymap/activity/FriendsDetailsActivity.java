@@ -19,6 +19,7 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -83,7 +84,7 @@ public class FriendsDetailsActivity extends Activity implements View.OnClickList
 
     @Override
     protected void onResume() {
-        Bitmap bm = mDataBaseHelper.getPhotoToBitmap(mPreferences.getInt(SharePreferencesConfig.ID_INT, 0));
+        Bitmap bm = mDataBaseHelper.getPhotoToBitmap(userObject.getUserId());
         if (bm != null) mPhotoCircleImageView.setImageBitmap(bm);
         else mPhotoCircleImageView.setImageResource(R.drawable.pikaqiu);
         super.onResume();

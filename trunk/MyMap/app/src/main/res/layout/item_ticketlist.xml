@@ -1,63 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_marginTop="8dp"
-    android:layout_marginLeft="20dp"
-    android:layout_marginRight="20dp"
     android:background="#f0f0f0"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
+    android:descendantFocusability="blocksDescendants"
     android:layout_height="wrap_content">
-    <TextView
-        android:id="@+id/tv_context"
-        android:text="A to B"
-        android:textColor="@android:color/black"
-        android:layout_marginTop="10dp"
-        android:textSize="16sp"
-        android:layout_marginLeft="40dp"
+    <LinearLayout
+        android:focusable="false"
+        android:orientation="vertical"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:focusable="false"
+            android:id="@+id/tv_context"
+            android:text="A to B"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="10dp"
+            android:textSize="16sp"
+            android:layout_marginLeft="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:focusable="false"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/tv_money"
+            android:layout_marginLeft="30dp"
+            android:text="10"
+            android:textColor="@android:color/black"
+            android:textSize="56sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
     <TextView
-        android:id="@+id/tv_money"
-        android:layout_below="@id/tv_context"
-        android:layout_marginLeft="40dp"
-        android:text="10"
-        android:textColor="@android:color/black"
-        android:numeric="integer"
-        android:textSize="56sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <TextView
+        android:focusable="false"
         android:layout_toRightOf="@id/tv_money"
         android:layout_alignBottom="@id/tv_money"
+        android:gravity="bottom"
         android:text="￥"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="20dp"
         android:textSize="16sp"
         android:textColor="#202020"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:id="@+id/tv_time"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:text="20:20"
-        android:textSize="20sp"
-        android:textColor="#404040"
-        android:layout_marginRight="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:id="@+id/tv_number"
-        android:text="X34290001"
-        android:paddingTop="60dp"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="20dp"
-        android:layout_alignParentRight="true"
-        android:layout_width="wrap_content"
-        android:textColor="#202020"
-        android:layout_height="wrap_content" />
-    <ImageView
-        android:id="@+id/iv_used"
-        android:src="@drawable/used"
-        android:layout_alignParentRight="true"
-        android:layout_width="40dp"
-        android:layout_height="40dp" />
-</RelativeLayout>
+        android:layout_height="match_parent" />
+    <LinearLayout
+        android:focusable="false"
+        android:gravity="right"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:focusable="false"
+            android:id="@+id/iv_used"
+            android:src="@drawable/used"
+            android:layout_alignParentRight="true"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+        <TextView
+            android:focusable="false"
+            android:id="@+id/tv_time"
+            android:text="20:20"
+            android:textSize="20sp"
+            android:textColor="#404040"
+            android:layout_marginRight="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:focusable="false"
+            android:id="@+id/tv_number"
+            android:text="X34290001"
+            android:layout_marginTop="10dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:textColor="#202020"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</LinearLayout>

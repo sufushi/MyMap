@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.rdc.mymap.model.MessageObject;
+import com.rdc.mymap.model.Ticket;
 import com.rdc.mymap.model.UserObject;
 import com.rdc.mymap.utils.HttpUtil;
 
@@ -49,6 +50,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             "useDate integer," +
             "busName String," +
             "fare interger)";
+    private static final String BOOK4 = "create table Ticket(" +
+            "_id integer primary key," +
+            "name String)";
     private SQLiteDatabase sqLiteDatabase;
     private ContentValues values = new ContentValues();
 
@@ -69,25 +73,65 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL(BOOK3);
         Log.d(TAG, "create datebase OK!");
     }
-    public boolean saveTicket(JSONObject jsonObject){
+
+    public List<Ticket> getTicket() {
+        List<Ticket> list = new ArrayList<Ticket>();
+        sqLiteDatabase = getWritableDatabase();
+        Cursor cursor = sqLiteDatabase.query("Ticket", null, null, null, null, null, "busTicketId desc");
+        if (cursor.moveToFirst()) {
+            list = new ArrayList<Ticket>();
+            do {
+                list.add(new Ticket(cursor.getInt(cursor.getColumnIndex("busTicketId")),
+                        cursor.getLong(cursor.getColumnIndex("purchaseDate")),
+                        cursor.getLong(cursor.getColumnIndex("useDate")),
+                        cursor.getInt(cursor.getColumnIndex("fare")),
+                        cursor.getString(cursor.getColumnIndex("busName"))));
+            } while (cursor.moveToNext());
+            return list;
+        }
+        return null;
+    }
+
+    public boolean saveFootprint(String name) {
+        if(name == null || name == "") return false;
+        sqLiteDatabase = getWritableDatabase();
+        values.clear();
+        values.put("name",name);
+        sqLiteDatabase.replace("Footprint", null, values);
+        return true;
+    }
+    public List<String> getFootprint(){
+        sqLiteDatabase = getWritableDatabase();
+        Cursor cursor = sqLiteDatabase.query("Footprint", null, null, null, null, null, null);
+        if(cursor.moveToFirst()){
+            List<String> list = new ArrayList<String>();
+            do {
+                list.add(cursor.getString(cursor.getColumnIndex("name")));
+            }while(cursor.moveToNext());
+            return list;
+        }else return null;
+    }
+
+    public boolean saveTicket(JSONObject jsonObject) {
         sqLiteDatabase = getWritableDatabase();
         if (jsonObject == null) return false;
         values.clear();
         try {
             values.put("busTicketId", jsonObject.getInt("busTicketId"));
             values.put("purchaseDate", jsonObject.getLong("purchaseDate"));
-            if(jsonObject.isNull("useDate"))values.put("useDate",0);
+            if (jsonObject.isNull("useDate")) values.put("useDate", 0);
             else values.put("useDate", jsonObject.getLong("useDate"));
             values.put("busName", jsonObject.getString("busName"));
             values.put("fare", jsonObject.getInt("fare"));
             sqLiteDatabase.replace("Ticket", null, values);
-            Log.d(TAG,"saving ticket context;"+jsonObject.getString("busName"));
+            Log.d(TAG, "saving ticket context;" + jsonObject.getString("busName"));
             return true;
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return false;
     }
+
     public boolean saveMessage(MessageObject messageObject) {
         Log.d(TAG, " saving message" + messageObject.getContext());
         if (messageObject.isnull()) return false;
@@ -180,7 +224,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public List<Integer> getMessageId() {
         List<Integer> list = new ArrayList<Integer>();
         sqLiteDatabase = getWritableDatabase();
-        Cursor cursor = sqLiteDatabase.query("Message", null, null, null, null, null,"date desc");
+        Cursor cursor = sqLiteDatabase.query("Message", null, null, null, null, null, "date desc");
         if (cursor.moveToFirst()) {
             do {
                 if (list.contains(cursor.getInt(cursor.getColumnIndex("userid")))) continue;
@@ -348,6 +392,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public boolean clear() {
         sqLiteDatabase = getWritableDatabase();
         sqLiteDatabase.execSQL("DELETE FROM Friends");
+        sqLiteDatabase.execSQL("DELETE FROM Message");
+        sqLiteDatabase.execSQL("DELETE FROM Ticket");
         return true;
     }
 

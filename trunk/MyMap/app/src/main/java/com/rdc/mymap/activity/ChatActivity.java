@@ -219,6 +219,7 @@ public class ChatActivity extends Activity implements View.OnClickListener {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("context", content);
                 params.put("accepterId", userObject.getUserId() + "");
+
                 HttpUtil.submitPostDataWithCookie(params, sharedPreferences.getString(SharePreferencesConfig.COOKIE_STRING, ""), URLConfig.ACTION_SEND_MESSAGE);
             }
         }).start();

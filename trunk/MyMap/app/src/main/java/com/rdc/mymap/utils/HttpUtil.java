@@ -39,7 +39,6 @@ public class HttpUtil {
     SharedPreferences.Editor mEditor;
 
     public HttpUtil() {
-
     }
     public static String buyTicket(String busName,int fare,String cookie){
         Map<String, String> params = new HashMap<String, String>();

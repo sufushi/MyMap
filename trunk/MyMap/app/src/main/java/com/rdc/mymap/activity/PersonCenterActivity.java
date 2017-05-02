@@ -32,6 +32,10 @@ import org.json.JSONObject;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.Result;
+
+
 public class PersonCenterActivity extends Activity implements View.OnClickListener {
 
     private static final String TAG = "PersonCenterActivity";
@@ -204,6 +208,7 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
             timer = new Timer();
             timer.schedule(new PersonCenterActivity.RefreshMessageTimerTask(), 0, 10000);
         } else {
+            refreshMessage();
             Log.d(TAG, "NotLogin!");
             mPhotoCircleImageView.setImageResource(R.drawable.pikaqiu);
             mUsernameTextView.setText("登录");
@@ -258,52 +263,6 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
             }
         }
     }
-//    class RefreshFeiendsListTimerTask extends TimerTask {
-//        @Override
-//        public void run() {
-//            mDataBaseHelper = new DataBaseHelper(PersonCenterActivity.this, "Data.db", 1);
-//            mPreferences = getSharedPreferences("main", MODE_PRIVATE);
-//            String result = HttpUtil.submitGetDataWithCookie(mPreferences.getString(SharePreferencesConfig.COOKIE_STRING, ""), URLConfig.ACTION_GET_FRIENDS);
-//            Log.d(TAG, " result:" + result);
-//            if (result == "") {
-////                    Bundle bundle = new Bundle();
-////                    bundle.putInt("case", NOTOK);
-////                    bundle.putString("message", "网络错误");
-////                    Message message = new Message();
-////                    message.setData(bundle);
-////                    mHandler.sendMessage(message);
-//                return;
-//            } else {
-//                try {
-//                    JSONArray jsonArray = new JSONArray(result);
-//                    int i;
-//                    for (i = 0; i < jsonArray.length(); i++) {
-//                        JSONObject jsonObject = jsonArray.getJSONObject(i);
-//                        mDataBaseHelper.saveUser(new UserObject(jsonObject));
-//                    }
-////                        Bundle bundle = new Bundle();
-////                        bundle.putInt("case", OK);
-////                        Message message = new Message();
-////                        message.setData(bundle);
-////                        mHandler.sendMessage(message);
-//                } catch (JSONException e) {
-//                    try {
-//                        JSONObject jsonObject = new JSONObject(result);
-////                            Bundle bundle = new Bundle();
-////                            bundle.putInt("case", NOTOK);
-////                            bundle.putString("message", jsonObject.getString("message"));
-////                            Message message = new Message();
-////                            message.setData(bundle);
-////                            mHandler.sendMessage(message);
-//                        return;
-//                    } catch (JSONException e1) {
-//                        e1.printStackTrace();
-//                    }
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    }
     private void refreshMessage() {
         mDataBaseHelper = new DataBaseHelper(this, "Data.db", 1);
         int i = mDataBaseHelper.getUnReadNumber(-1);
@@ -363,4 +322,5 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
             }
         }).start();
     }
+
 }
