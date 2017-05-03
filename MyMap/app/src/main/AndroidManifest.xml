@@ -29,9 +29,10 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />        <!-- 使用照相机权限 -->
+    <uses-feature android:name="android.hardware.camera.autofocus" />   <!-- 自动聚焦权限 -->
 
     <supports-screens
         android:anyDensity="true"
@@ -123,6 +124,8 @@
             android:theme="@style/DialogStyleBottom" />
         <activity android:name=".activity.BikeGuideActivity"></activity>
         <activity android:name=".activity.FootprintActivity"/>
+        <activity android:name=".activity.CaptureActivity"/>
+        <activity android:name=".activity.CollectionActivity"/>
         <activity android:name=".activity.QCCodeActivity"> </activity>
     </application>
 

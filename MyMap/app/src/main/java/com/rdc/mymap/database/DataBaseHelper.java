@@ -53,6 +53,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String BOOK4 = "create table Ticket(" +
             "_id integer primary key," +
             "name String)";
+    private static final String BOOK5 = "create table Photo(" +
+            "_id integer primary key," +
+            "photo BLOB)";
     private SQLiteDatabase sqLiteDatabase;
     private ContentValues values = new ContentValues();
 
@@ -71,6 +74,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL(BOOK1);
         db.execSQL(BOOK2);
         db.execSQL(BOOK3);
+        db.execSQL(BOOK4);
+        db.execSQL(BOOK5);
         Log.d(TAG, "create datebase OK!");
     }
 
@@ -93,23 +98,24 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean saveFootprint(String name) {
-        if(name == null || name == "") return false;
+        if (name == null || name == "") return false;
         sqLiteDatabase = getWritableDatabase();
         values.clear();
-        values.put("name",name);
+        values.put("name", name);
         sqLiteDatabase.replace("Footprint", null, values);
         return true;
     }
-    public List<String> getFootprint(){
+
+    public List<String> getFootprint() {
         sqLiteDatabase = getWritableDatabase();
         Cursor cursor = sqLiteDatabase.query("Footprint", null, null, null, null, null, null);
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             List<String> list = new ArrayList<String>();
             do {
                 list.add(cursor.getString(cursor.getColumnIndex("name")));
-            }while(cursor.moveToNext());
+            } while (cursor.moveToNext());
             return list;
-        }else return null;
+        } else return null;
     }
 
     public boolean saveTicket(JSONObject jsonObject) {
@@ -310,7 +316,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         System.out.println("updataBase");
     }
 
-    public boolean savePhoto(int id, Bitmap bitmap) {
+    public boolean saveUserPhoto(int id, Bitmap bitmap) {
         if (bitmap == null || id < 0) return false;
         Log.d(TAG, "saving Photo id = " + id);
         sqLiteDatabase = getWritableDatabase();
@@ -336,7 +342,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return false;
     }
 
-    public Bitmap getPhotoToBitmap(int id) {
+    public Bitmap getUserPhotoToBitmap(int id) {
         Log.d(TAG, "gettingPhoto id = " + id);
         sqLiteDatabase = getWritableDatabase();
         Cursor cursor = sqLiteDatabase.query("Friends", null, "userid = ?", new String[]{id + ""}, null, null, null);
@@ -352,7 +358,35 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return null;
     }
 
-    public byte[] getPhotoToByte(int id) {
+    public boolean saveCollectionPhoto(Bitmap bitmap) {
+        if (bitmap == null) return false;
+        Log.d(TAG, "saving Collection Photo");
+        sqLiteDatabase = getWritableDatabase();
+        Log.d(TAG, "cursor not empty");
+        values.clear();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        values.put("photo", baos.toByteArray());
+        sqLiteDatabase.replace("Photo", null, values);
+        return false;
+    }
+
+    public Bitmap getCollectionPhotoToBitmap(int id) {
+        Log.d(TAG, "gettingPhoto id = " + id);
+        sqLiteDatabase = getWritableDatabase();
+        Cursor cursor = sqLiteDatabase.query("Photo", null, "_id = ?", new String[]{id + ""}, null, null, null);
+        if (cursor.moveToFirst()) {
+            Log.d(TAG, "cursor not empty");
+            byte[] pic = cursor.getBlob(cursor.getColumnIndex("photo"));
+            return BitmapFactory.decodeByteArray(pic, 0, pic.length);
+        } else {
+            Log.d(TAG, "cursor is empty");
+        }
+        return null;
+    }
+
+    public byte[] getUserPhotoToByte(int id) {
         Log.d(TAG, "gettingPhoto id = " + id);
         sqLiteDatabase = getWritableDatabase();
         Cursor cursor = sqLiteDatabase.query("Friends", null, "userid = ?", new String[]{id + ""}, null, null, null);

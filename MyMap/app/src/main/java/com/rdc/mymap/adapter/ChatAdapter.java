@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.rdc.mymap.R;
@@ -14,7 +13,6 @@ import com.rdc.mymap.database.DataBaseHelper;
 import com.rdc.mymap.model.ChatModel;
 import com.rdc.mymap.model.ItemModel;
 import com.rdc.mymap.view.CircleImageView;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -95,7 +93,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.BaseAdapter> {
         void setData(Object object) {
             super.setData(object);
             ChatModel model = (ChatModel) object;
-            Bitmap bitmap = dataBaseHelper.getPhotoToBitmap(model.getId());
+            Bitmap bitmap = dataBaseHelper.getUserPhotoToBitmap(model.getId());
             if(bitmap != null) ic_user.setImageBitmap(bitmap);
             else ic_user.setImageResource(R.drawable.pikaqiu);
             tv.setText(model.getContent());
@@ -116,7 +114,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.BaseAdapter> {
         void setData(Object object) {
             super.setData(object);
             ChatModel model = (ChatModel) object;
-            Bitmap bitmap = dataBaseHelper.getPhotoToBitmap(model.getId());
+            Bitmap bitmap = dataBaseHelper.getUserPhotoToBitmap(model.getId());
             if(bitmap != null) ic_user.setImageBitmap(bitmap);
             else ic_user.setImageResource(R.drawable.pikaqiu);
             tv.setText(model.getContent());

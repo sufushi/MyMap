@@ -58,7 +58,7 @@ public class MessageListAdapter extends BaseAdapter {
 
         dataBaseHelper = new DataBaseHelper(context, "Data.db", 1);
         UserObject userObject = list.get(position);
-        Bitmap bitmap = dataBaseHelper.getPhotoToBitmap(userObject.getUserId());
+        Bitmap bitmap = dataBaseHelper.getUserPhotoToBitmap(userObject.getUserId());
         if (bitmap != null) image.setImageBitmap(bitmap);
         name.setText(userObject.getUsername());
         int i = dataBaseHelper.getUnReadNumber(userObject.getUserId());

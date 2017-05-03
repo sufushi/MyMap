@@ -177,8 +177,8 @@ public class DetailsPhotoActivity extends Activity implements View.OnClickListen
                     Bitmap photo = extras.getParcelable("data");
                     mDataBaseHelper = new DataBaseHelper(DetailsPhotoActivity.this,"Data.db",null,1);
                     mSharedPreferences = getSharedPreferences("main", MODE_PRIVATE);
-                    mDataBaseHelper.savePhoto(mSharedPreferences.getInt(SharePreferencesConfig.ID_INT,-1),photo);
-                    String jsonString = HttpUtil.submitPostPhoto(mDataBaseHelper.getPhotoToByte(mSharedPreferences.getInt(SharePreferencesConfig.ID_INT,-1)),mSharedPreferences.getString(SharePreferencesConfig.COOKIE_STRING,""));
+                    mDataBaseHelper.saveUserPhoto(mSharedPreferences.getInt(SharePreferencesConfig.ID_INT,-1),photo);
+                    String jsonString = HttpUtil.submitPostPhoto(mDataBaseHelper.getUserPhotoToByte(mSharedPreferences.getInt(SharePreferencesConfig.ID_INT,-1)),mSharedPreferences.getString(SharePreferencesConfig.COOKIE_STRING,""));
                     if (jsonString.equals("")) {
                         Bundle bundle = new Bundle();
                         bundle.putString("message","网络错误");
