@@ -12,4 +12,14 @@
         <attr name="position"/>
         <attr name="radius"/>
     </declare-styleable>
+
+    <declare-styleable name="MyMenu">
+        <attr name="pos">
+            <enum name="left_top" value="0"/>
+            <enum name="right_top" value="1"/>
+            <enum name="left_bottom" value="2"/>
+            <enum name="right_bottom" value="3"/>
+        </attr>
+        <attr name="interval" format="dimension"/>
+    </declare-styleable>
 </resources>

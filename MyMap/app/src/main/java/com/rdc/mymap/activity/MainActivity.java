@@ -63,6 +63,7 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
     private ImageView mLocateImageView;
     private View mPanoramaView;
     private ImageView mPanoramaImageView;
+    private ImageView mScanImageView;
 
     private Boolean isTrafficMode = false;
     private Boolean isSettingMode = false;
@@ -146,6 +147,8 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
             }
         });
         mPanoramaImageView = (ImageView) mPanoramaView.findViewById(R.id.iv_panorama);
+        mScanImageView =(ImageView) findViewById(R.id.iv_scan);
+        mScanImageView.setOnClickListener(this);
 
         mMapView = (MapView) findViewById(R.id.mv);
         int count = mMapView.getChildCount();
@@ -236,6 +239,8 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
             case R.id.sm_foot:
                 break;
             case R.id.sm_bicycle :
+                Intent bicycleIntent = new Intent(this, BicycleActivity.class);
+                startActivity(bicycleIntent);
                 break;
             case R.id.sm_weather :
                 break;
@@ -298,6 +303,7 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
                     mPopupWindow.dismiss();
                 }
                 break;
+            case R.id.iv_scan :
             default:
                 break;
         }
