@@ -89,6 +89,8 @@ public class BusStationsActivity extends Activity implements View.OnClickListene
                 finish();
                 break;
             case R.id.tv_buy_ticket :
+                Intent payIntent = new Intent(this, PayTicketActivity.class);
+                startActivity(payIntent);
                 break;
             case R.id.ll_direction1 :
                 if(mCurIndex != 0) {

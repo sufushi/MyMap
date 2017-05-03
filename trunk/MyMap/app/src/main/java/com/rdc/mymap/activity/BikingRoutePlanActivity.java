@@ -1,11 +1,15 @@
 package com.rdc.mymap.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,15 +21,22 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.baidu.mapapi.bikenavi.BikeNavigateHelper;
+import com.baidu.mapapi.bikenavi.adapter.IBEngineInitListener;
+import com.baidu.mapapi.bikenavi.adapter.IBRoutePlanListener;
+import com.baidu.mapapi.bikenavi.model.BikeRoutePlanError;
+import com.baidu.mapapi.bikenavi.params.BikeNaviLauchParam;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.route.BikingRouteLine;
 import com.rdc.mymap.R;
 import com.rdc.mymap.adapter.MyStepListAdapter;
 import com.rdc.mymap.model.Node;
+import com.rdc.mymap.utils.GeoCoderUtil;
 import com.rdc.mymap.utils.RoutePlanSearchUtil;
 import com.rdc.mymap.utils.overlayutils.BikingRouteOverlay;
 
@@ -40,6 +51,8 @@ public class BikingRoutePlanActivity extends Activity implements View.OnClickLis
     private MapView mMapView;
     private BaiduMap mBaiduMap;
     private RoutePlanSearchUtil mRoutePlanSearchUtil;
+    private BikeNavigateHelper mBikeNavigateHelper;
+    private BikeNaviLauchParam mBikeNaviLauchParam;
 
     private ImageView mBackImageView;
     private TextView mRouteTextView;
@@ -53,11 +66,15 @@ public class BikingRoutePlanActivity extends Activity implements View.OnClickLis
     private String mEndCity;
     private String mStartPlace;
     private String mEndPlace;
+    private LatLng mStartLatlng;
+    private LatLng mEndLatlng;
 
     private PopupWindow mPopupWindow;
     private MyStepListAdapter mMyStepListAdapter;
     private List<BikingRouteLine> mBikingRouteLineList = new ArrayList<BikingRouteLine>();
     private List<String> mBikingStepList = new ArrayList<String>();
+
+    private static boolean isPermissionRequested = false;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -66,6 +83,9 @@ public class BikingRoutePlanActivity extends Activity implements View.OnClickLis
                 case 0 :
                     mDistanceTextView.setText(mDistance);
                     mDurationTextView.setText(mDuration);
+                    break;
+                case 1 :
+                    routePlanWithParam(mStartLatlng, mEndLatlng);
                     break;
                 default:
                     break;
@@ -78,7 +98,23 @@ public class BikingRoutePlanActivity extends Activity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_biking_route_plan);
+        requestPermission();
         init();
+    }
+
+    private void requestPermission() {
+        if(Build.VERSION.SDK_INT >= 23 && !isPermissionRequested) {
+            isPermissionRequested = true;
+            ArrayList<String> permissions = new ArrayList<String>();
+            if(checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+            }
+            if(permissions.size() == 0) {
+                return;
+            } else {
+                requestPermissions(permissions.toArray(new String[permissions.size()]), 0);
+            }
+        }
     }
 
     private void init() {
@@ -98,6 +134,7 @@ public class BikingRoutePlanActivity extends Activity implements View.OnClickLis
         mDistanceTextView = (TextView) findViewById(R.id.tv_distance);
         mDurationTextView = (TextView) findViewById(R.id.tv_duration);
         mNavigateLinearLayout = (LinearLayout) findViewById(R.id.ll_navigate);
+        mNavigateLinearLayout.setOnClickListener(this);
         mRoutePlanSearchUtil = new RoutePlanSearchUtil();
         Intent intent = getIntent();
         mStartPlace = intent.getStringExtra("start_place");
@@ -146,6 +183,19 @@ public class BikingRoutePlanActivity extends Activity implements View.OnClickLis
                 showPopupWindow();
                 break;
             case R.id.ll_navigate :
+                mBikeNavigateHelper = BikeNavigateHelper.getInstance();
+                mBikeNavigateHelper.initNaviEngine(this, new IBEngineInitListener() {
+                    @Override
+                    public void engineInitSuccess() {
+                        Log.e("error", "engineInitSuccess");
+                        prepareNavigate();
+                    }
+
+                    @Override
+                    public void engineInitFail() {
+                        Log.e("error", "engineInitFail");
+                    }
+                });
                 break;
             case R.id.iv_close :
                 mPopupWindow.dismiss();
@@ -154,6 +204,50 @@ public class BikingRoutePlanActivity extends Activity implements View.OnClickLis
                 break;
 
         }
+    }
+
+    private void prepareNavigate() {
+        final GeoCoderUtil startGeoCoder = new GeoCoderUtil();
+        final GeoCoderUtil endGeoCoder = new GeoCoderUtil();
+        startGeoCoder.setAddress(mStartPlace);
+        startGeoCoder.geoCode();
+        endGeoCoder.setAddress(mEndPlace);
+        endGeoCoder.geoCode();
+        new Thread() {
+            @Override
+            public void run() {
+                while(true) {
+                    if(startGeoCoder.getLatLng() != null && endGeoCoder.getLatLng() != null) {
+                        break;
+                    }
+                }
+                mStartLatlng = startGeoCoder.getLatLng();
+                mEndLatlng = endGeoCoder.getLatLng();
+                mHandler.sendEmptyMessage(1);
+            }
+        }.start();
+    }
+
+    private void routePlanWithParam(LatLng start, LatLng end) {
+        mBikeNaviLauchParam = new BikeNaviLauchParam().stPt(start).endPt(end);
+        mBikeNavigateHelper.routePlanWithParams(mBikeNaviLauchParam, new IBRoutePlanListener() {
+            @Override
+            public void onRoutePlanStart() {
+                Log.e("error", "onRoutePlanStart");
+            }
+
+            @Override
+            public void onRoutePlanSuccess() {
+                Log.e("error", "onRoutePlanSuccess");
+                Intent intent = new Intent(BikingRoutePlanActivity.this, BikeGuideActivity.class);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onRoutePlanFail(BikeRoutePlanError bikeRoutePlanError) {
+                Log.e("error", "onRoutePlanFail");
+            }
+        });
     }
 
     private void showPopupWindow() {

@@ -10,7 +10,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.rdc.mymap.R;
-import com.rdc.mymap.adapter.MyGridViewAdapter;
+import com.rdc.mymap.adapter.MyCategoryGridViewAdapter;
 import com.rdc.mymap.model.MyGridViewItem;
 
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class NearbyActivity extends Activity implements View.OnClickListener{
 
     private void initView() {
         mGridView = (GridView) findViewById(R.id.gv);
-        mGridView.setAdapter(new MyGridViewAdapter(this, mList, R.layout.item_gridview));
+        mGridView.setAdapter(new MyCategoryGridViewAdapter(this, mList, R.layout.item_category_gridview));
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

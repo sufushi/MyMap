@@ -116,7 +116,12 @@
         <activity android:name=".activity.GuideActivity" />
         <activity android:name=".activity.NearbyStationActivity" />
         <activity android:name=".activity.BusLineListActivity" />
-        <activity android:name=".activity.BusStationsActivity"/>
+        <activity android:name=".activity.BusStationsActivity" />
+        <activity android:name=".activity.BicycleActivity" />
+        <activity
+            android:name=".activity.PayTicketActivity"
+            android:theme="@style/DialogStyleBottom" />
+        <activity android:name=".activity.BikeGuideActivity"></activity>
         <activity android:name=".activity.FootprintActivity"/>
         <activity android:name=".activity.QCCodeActivity"> </activity>
     </application>

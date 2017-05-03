@@ -16,13 +16,13 @@ import com.rdc.mymap.model.MyGridViewItem;
 import java.util.List;
 
 
-public class MyGridViewAdapter extends ArrayAdapter<MyGridViewItem> {
+public class MyCategoryGridViewAdapter extends ArrayAdapter<MyGridViewItem> {
 
     private List<MyGridViewItem> mList;
     private int mId;
     private Context mContext;
 
-    public MyGridViewAdapter(@NonNull Context context, List<MyGridViewItem> list, int id) {
+    public MyCategoryGridViewAdapter(@NonNull Context context, List<MyGridViewItem> list, int id) {
         super(context, id, list);
         this.mContext = context;
         this.mList = list;
@@ -56,7 +56,7 @@ public class MyGridViewAdapter extends ArrayAdapter<MyGridViewItem> {
         MyGridViewItem myGridViewItem = getItem(position);
         ViewHolder viewHolder = null;
         if(convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_gridview, null);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_category_gridview, null);
             viewHolder = new ViewHolder();
             viewHolder.imageView = (ImageView) convertView.findViewById(R.id.item_iv);
             viewHolder.textView = (TextView) convertView.findViewById(R.id.item_tv);

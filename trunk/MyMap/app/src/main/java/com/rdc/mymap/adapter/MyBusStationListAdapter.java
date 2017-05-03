@@ -16,7 +16,6 @@ import java.util.List;
 
 public class MyBusStationListAdapter extends BaseAdapter {
 
-
     private List<String> mBusStationList;
     private Context mContext;
     private Boolean isFirst = true;
