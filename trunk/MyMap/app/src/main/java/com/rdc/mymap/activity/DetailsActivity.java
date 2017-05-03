@@ -92,7 +92,7 @@ public class DetailsActivity extends Activity implements View.OnClickListener {
 
     @Override
     protected void onResume() {
-        Bitmap bm = mDataBaseHelper.getPhotoToBitmap(mPreferences.getInt(SharePreferencesConfig.ID_INT, 0));
+        Bitmap bm = mDataBaseHelper.getUserPhotoToBitmap(mPreferences.getInt(SharePreferencesConfig.ID_INT, 0));
         if (bm != null) mPhotoCircleImageView.setImageBitmap(bm);
         else mPhotoCircleImageView.setImageResource(R.drawable.pikaqiu);
         super.onResume();
@@ -114,7 +114,7 @@ public class DetailsActivity extends Activity implements View.OnClickListener {
         mPhotoCircleImageView = (CircleImageView) findViewById(R.id.civ_photo);
         mPhotoCircleImageView.setOnClickListener(this);
 
-        Bitmap bm = mDataBaseHelper.getPhotoToBitmap(mPreferences.getInt(SharePreferencesConfig.ID_INT, 0));
+        Bitmap bm = mDataBaseHelper.getUserPhotoToBitmap(mPreferences.getInt(SharePreferencesConfig.ID_INT, 0));
         if (bm != null) mPhotoCircleImageView.setImageBitmap(bm);
         else mPhotoCircleImageView.setImageResource(R.drawable.pikaqiu);
 
@@ -149,7 +149,7 @@ public class DetailsActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.civ_photo:
-                startPhotoDialogActivity();
+                startDetailsPhotoActivity();
                 break;
             case R.id.iv_back:
                 finish();
@@ -244,7 +244,7 @@ public class DetailsActivity extends Activity implements View.OnClickListener {
         startActivity(intent);
     }
 
-    private void startPhotoDialogActivity() {
+    private void startDetailsPhotoActivity() {
         Intent intent = new Intent(DetailsActivity.this, DetailsPhotoActivity.class);
         startActivity(intent);
     }

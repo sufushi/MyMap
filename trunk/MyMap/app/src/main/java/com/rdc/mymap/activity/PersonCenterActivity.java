@@ -32,9 +32,6 @@ import org.json.JSONObject;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.Result;
-
 
 public class PersonCenterActivity extends Activity implements View.OnClickListener {
 
@@ -42,6 +39,7 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
     private final int OK = 1;
     private final int NONE = 2;
     private final int NOTOK = 3;
+    static final int REQUEST_QR_SCAN = 0x00001;
 
     private ImageView mBackImageView;
     private CircleImageView mPhotoCircleImageView;
@@ -50,6 +48,7 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
     private LinearLayout mWalletLinearlayout;
     private LinearLayout mTicketLinearlayout;
     private LinearLayout mFriendsLinearlayout;
+    private LinearLayout mFootprintLinearLayout;
     private TextView mUnReadTextView;
 
     private DataBaseHelper mDataBaseHelper;
@@ -113,6 +112,9 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
         mMessageRelativeLayout = (RelativeLayout) findViewById(R.id.rl_message);
         mMessageRelativeLayout.setOnClickListener(this);
 
+        mFootprintLinearLayout = (LinearLayout) findViewById(R.id.ll_footprint);
+        mFootprintLinearLayout.setOnClickListener(this);
+
         mWalletLinearlayout = (LinearLayout) findViewById(R.id.ll_wallet);
         mWalletLinearlayout.setOnClickListener(this);
 
@@ -128,7 +130,6 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
         mUsernameTextView = (TextView) findViewById(R.id.tv_username);
         mDataBaseHelper = new DataBaseHelper(this, "Data.db", 1);
     }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -144,6 +145,9 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
                 break;
             case R.id.rl_message:
                 startMessageActivity();
+                break;
+            case R.id.ll_footprint:
+                startActivityForResult(new Intent(PersonCenterActivity.this, CaptureActivity.class), REQUEST_QR_SCAN);
                 break;
             case R.id.ll_wallet:
                 if (mPreferences.getBoolean(SharePreferencesConfig.ISLOGIN_BOOLEAN, false)) {
@@ -200,7 +204,7 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
         mEditor = mPreferences.edit();
         if (mPreferences.getBoolean(SharePreferencesConfig.ISLOGIN_BOOLEAN, false)) {
             Log.d(TAG, "Logined!");
-            Bitmap bm = mDataBaseHelper.getPhotoToBitmap(mPreferences.getInt(SharePreferencesConfig.ID_INT, -1));
+            Bitmap bm = mDataBaseHelper.getUserPhotoToBitmap(mPreferences.getInt(SharePreferencesConfig.ID_INT, -1));
             mUsernameTextView.setText(mPreferences.getString(SharePreferencesConfig.USERNAME_STRING, ""));
             if (bm != null) mPhotoCircleImageView.setImageBitmap(bm);
             refreshMessage();
@@ -323,4 +327,17 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
         }).start();
     }
 
+    //二维码扫描结果回调
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_QR_SCAN) {
+            if (resultCode == Activity.RESULT_OK) {
+                Toast.makeText(this,data.getStringExtra("dataUrl"),Toast.LENGTH_LONG).show();
+            } else {
+                //扫描失败
+                Toast.makeText(PersonCenterActivity.this, "扫描失败", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 }

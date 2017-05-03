@@ -14,9 +14,7 @@ import com.rdc.mymap.database.DataBaseHelper;
 import com.rdc.mymap.model.FriendsListItem;
 import com.rdc.mymap.model.UserObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -61,7 +59,7 @@ public class FriendsListAdapter extends BaseAdapter {
         FriendsListItem friendsListItem = list.get(position);
         UserObject userObject = friendsListItem.getUserObject();
         dataBaseHelper = new DataBaseHelper(context,"Data.db",1);
-        Bitmap bitmap = dataBaseHelper.getPhotoToBitmap(userObject.getUserId());
+        Bitmap bitmap = dataBaseHelper.getUserPhotoToBitmap(userObject.getUserId());
         if(bitmap != null)image.setImageBitmap(bitmap);
         else image.setImageResource(R.drawable.pikaqiu);
         if (position == 0) {

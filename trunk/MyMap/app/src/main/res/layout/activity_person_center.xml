@@ -180,7 +180,7 @@
                     android:layout_marginRight="10dp"/>
             </LinearLayout>
             <LinearLayout
-                android:id="@+id/ll_trace"
+                android:id="@+id/ll_footprint"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_below="@+id/ll_friends"
@@ -213,7 +213,7 @@
                 android:id="@+id/ll_collection"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_below="@+id/ll_trace"
+                android:layout_below="@+id/ll_footprint"
                 android:layout_marginTop="0.5dp"
                 android:background="#ffffff"
                 android:orientation="horizontal">

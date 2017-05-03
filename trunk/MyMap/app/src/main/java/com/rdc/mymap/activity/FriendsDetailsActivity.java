@@ -1,41 +1,23 @@
 package com.rdc.mymap.activity;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AlertDialog;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.InputType;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rdc.mymap.R;
 import com.rdc.mymap.config.SharePreferencesConfig;
-import com.rdc.mymap.config.URLConfig;
 import com.rdc.mymap.database.DataBaseHelper;
 import com.rdc.mymap.model.UserObject;
-import com.rdc.mymap.utils.HttpUtil;
 import com.rdc.mymap.view.CircleImageView;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by wsoyz on 2017/4/8.
@@ -84,7 +66,7 @@ public class FriendsDetailsActivity extends Activity implements View.OnClickList
 
     @Override
     protected void onResume() {
-        Bitmap bm = mDataBaseHelper.getPhotoToBitmap(userObject.getUserId());
+        Bitmap bm = mDataBaseHelper.getUserPhotoToBitmap(userObject.getUserId());
         if (bm != null) mPhotoCircleImageView.setImageBitmap(bm);
         else mPhotoCircleImageView.setImageResource(R.drawable.pikaqiu);
         super.onResume();
@@ -106,7 +88,7 @@ public class FriendsDetailsActivity extends Activity implements View.OnClickList
         mPhotoCircleImageView = (CircleImageView) findViewById(R.id.civ_photo);
         mPhotoCircleImageView.setOnClickListener(this);
 
-        Bitmap bm = mDataBaseHelper.getPhotoToBitmap(mPreferences.getInt(SharePreferencesConfig.ID_INT, 0));
+        Bitmap bm = mDataBaseHelper.getUserPhotoToBitmap(mPreferences.getInt(SharePreferencesConfig.ID_INT, 0));
         if (bm != null) mPhotoCircleImageView.setImageBitmap(bm);
         else mPhotoCircleImageView.setImageResource(R.drawable.pikaqiu);
 
