@@ -118,6 +118,9 @@ public class FriendsDetailsActivity extends Activity implements View.OnClickList
             case R.id.iv_back:
                 finish();
                 break;
+            case R.id.civ_photo:
+                startPhotoActivity();
+                break;
             default:
                 break;
         }
@@ -125,6 +128,12 @@ public class FriendsDetailsActivity extends Activity implements View.OnClickList
 
     private void startChatActivity() {
         Intent intent = new Intent(FriendsDetailsActivity.this, ChatActivity.class);
+        intent.putExtra("id",userObject.getUserId());
+        startActivity(intent);
+    }
+    private void startPhotoActivity() {
+        Intent intent = new Intent(FriendsDetailsActivity.this, PhotoActivity.class);
+        intent.putExtra("type",PhotoActivity.TYPE_USER_PHOTO);
         intent.putExtra("id",userObject.getUserId());
         startActivity(intent);
     }
