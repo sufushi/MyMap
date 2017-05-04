@@ -126,6 +126,7 @@
         <activity android:name=".activity.FootprintActivity"/>
         <activity android:name=".activity.CaptureActivity"/>
         <activity android:name=".activity.CollectionActivity"/>
+        <activity android:name=".activity.PhotoActivity"/>
         <activity android:name=".activity.QCCodeActivity"> </activity>
     </application>
 

@@ -49,6 +49,7 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
     private LinearLayout mTicketLinearlayout;
     private LinearLayout mFriendsLinearlayout;
     private LinearLayout mFootprintLinearLayout;
+    private LinearLayout mCollectionLinearLayout;
     private TextView mUnReadTextView;
 
     private DataBaseHelper mDataBaseHelper;
@@ -115,6 +116,9 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
         mFootprintLinearLayout = (LinearLayout) findViewById(R.id.ll_footprint);
         mFootprintLinearLayout.setOnClickListener(this);
 
+        mCollectionLinearLayout = (LinearLayout) findViewById(R.id.ll_collection);
+        mCollectionLinearLayout.setOnClickListener(this);
+
         mWalletLinearlayout = (LinearLayout) findViewById(R.id.ll_wallet);
         mWalletLinearlayout.setOnClickListener(this);
 
@@ -166,6 +170,9 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
                     Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show();
                 }
                 break;
+            case R.id.ll_collection:
+                startCollectiontivity();
+                break;
             default:
                 break;
         }
@@ -198,7 +205,10 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
         Intent intent = new Intent(PersonCenterActivity.this, FriendsListActivity.class);
         startActivity(intent);
     }
-
+    private void startCollectiontivity() {
+        Intent intent = new Intent(PersonCenterActivity.this, CollectionActivity.class);
+        startActivity(intent);
+    }
     private void isLogin() {
         mPreferences = getSharedPreferences("main", MODE_PRIVATE);
         mEditor = mPreferences.edit();

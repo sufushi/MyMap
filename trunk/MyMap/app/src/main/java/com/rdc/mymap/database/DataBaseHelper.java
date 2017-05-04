@@ -18,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,12 +51,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             "useDate integer," +
             "busName String," +
             "fare interger)";
-    private static final String BOOK4 = "create table Ticket(" +
+    private static final String BOOK4 = "create table FootPrint(" +
             "_id integer primary key," +
             "name String)";
     private static final String BOOK5 = "create table Photo(" +
-            "_id integer primary key," +
-            "photo BLOB)";
+            "_id integer primary key AUTOINCREMENT," +
+            "path String)";
     private SQLiteDatabase sqLiteDatabase;
     private ContentValues values = new ContentValues();
 
@@ -358,28 +359,43 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return null;
     }
 
-    public boolean saveCollectionPhoto(Bitmap bitmap) {
-        if (bitmap == null) return false;
-        Log.d(TAG, "saving Collection Photo");
-        sqLiteDatabase = getWritableDatabase();
-        Log.d(TAG, "cursor not empty");
-        values.clear();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        values.put("photo", baos.toByteArray());
-        sqLiteDatabase.replace("Photo", null, values);
-        return false;
+    public boolean saveCollectionPhoto(File file) {
+        Log.d(TAG, "saving Collection Photo " );
+        if (file.exists()) {
+            sqLiteDatabase = getWritableDatabase();
+            values.clear();
+            values.put("path",file.getPath());
+            sqLiteDatabase.insert("Photo",null,values);
+            return true;
+        }else{
+            return false;
+        }
     }
 
-    public Bitmap getCollectionPhotoToBitmap(int id) {
-        Log.d(TAG, "gettingPhoto id = " + id);
+//    public Bitmap getCollectionPhotoToBitmap(int id) {
+//        Log.d(TAG, "gettingPhoto id = " + id);
+//        sqLiteDatabase = getWritableDatabase();
+//        Cursor cursor = sqLiteDatabase.query("Photo", null, "_id = ?", new String[]{id + ""}, null, null, null);
+//        if (cursor.moveToFirst()) {
+//            Log.d(TAG, "cursor not empty");
+//            byte[] pic = cursor.getBlob(cursor.getColumnIndex("data"));
+//            return BitmapFactory.decodeByteArray(pic, 0, pic.length);
+//        } else {
+//            Log.d(TAG, "cursor is empty");
+//        }
+//        return null;
+//    }
+    public ArrayList<String> getCollectionPathList(){
+        Log.d(TAG, "getting Collection Path List");
+        ArrayList<String> list = new ArrayList<String>();
         sqLiteDatabase = getWritableDatabase();
-        Cursor cursor = sqLiteDatabase.query("Photo", null, "_id = ?", new String[]{id + ""}, null, null, null);
+        Cursor cursor = sqLiteDatabase.query("Photo",null,null, null, null, null, "_id desc");
         if (cursor.moveToFirst()) {
+            do{
+                list.add(cursor.getString(cursor.getColumnIndex("path")));
+            }while(cursor.moveToNext());
             Log.d(TAG, "cursor not empty");
-            byte[] pic = cursor.getBlob(cursor.getColumnIndex("photo"));
-            return BitmapFactory.decodeByteArray(pic, 0, pic.length);
+            return list;
         } else {
             Log.d(TAG, "cursor is empty");
         }
