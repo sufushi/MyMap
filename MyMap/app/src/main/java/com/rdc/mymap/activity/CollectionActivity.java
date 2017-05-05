@@ -92,36 +92,23 @@ public class CollectionActivity extends Activity implements View.OnClickListener
             case R.id.iv_back:
                 finish();
                 break;
-            case R.id.tv_share: {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-
-                    // Should we show an explanation?
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
-                        // Show an expanation to the user *asynchronously* -- don't block
-                        // this thread waiting for the user's response! After the user
-                        // sees the explanation, try again to request the permission.
-
-                    } else {
-
-                        // No explanation needed, we can request the permission.
-
-                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_READ_CONTACTS);
-
-
-                    }
-                }else {
+            case R.id.tv_share:
+                if (requireCamera() && requireStore()) {
                     String state = Environment.getExternalStorageState();
                     if (state.equals(Environment.MEDIA_MOUNTED)) {
                         Intent getImageByCamera = new Intent("android.media.action.IMAGE_CAPTURE");
-                        filePath = new File(Environment.getExternalStorageDirectory(), System.currentTimeMillis() + IMAGE_FILE_NAME).getPath();
+                        File destDir = new File(Environment.getExternalStorageDirectory()+"/CollectionPhoto");
+                        if (!destDir.exists()) {
+                            destDir.mkdirs();
+                        }
+                        filePath = new File(destDir, System.currentTimeMillis() + IMAGE_FILE_NAME).getPath();
                         getImageByCamera.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(filePath)));
                         startActivityForResult(getImageByCamera, CAMERA_REQUEST_CODE);
                     } else {
                         Toast.makeText(getApplicationContext(), "请确认已经插入SD卡", Toast.LENGTH_LONG).show();
                     }
                 }
-            }
-            break;
+                break;
             default:
                 break;
         }
@@ -131,9 +118,9 @@ public class CollectionActivity extends Activity implements View.OnClickListener
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_REQUEST_CODE && requestCode != RESULT_CANCELED) {
             Log.i(TAG, "已经保存");
-            dataBaseHelper = new DataBaseHelper(this,"Data.db",1);
+            dataBaseHelper = new DataBaseHelper(this, "Data.db", 1);
             dataBaseHelper.saveCollectionPhoto(new File(filePath));
-        }else{
+        } else {
             //canceled
         }
         this.refresh();
@@ -150,13 +137,6 @@ public class CollectionActivity extends Activity implements View.OnClickListener
             case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    String state = Environment.getExternalStorageState();
-                    if (state.equals(Environment.MEDIA_MOUNTED)) {
-                        Intent getImageByCamera = new Intent("android.media.action.IMAGE_CAPTURE");
-                        startActivityForResult(getImageByCamera, CAMERA_REQUEST_CODE);
-                    } else {
-                        Toast.makeText(getApplicationContext(), "请确认已经插入SD卡", Toast.LENGTH_LONG).show();
-                    }
                 } else {
 
                     // permission denied, boo! Disable the
@@ -172,13 +152,61 @@ public class CollectionActivity extends Activity implements View.OnClickListener
 
     @Override
     public void onItemClick(View view, int position) {
-        Log.d(TAG," chlick!");
+        Log.d(TAG, " chlick!");
         startPhotoActivity(list.get(position));
     }
-    private void startPhotoActivity(String path){
-        Intent intent = new Intent(this,PhotoActivity.class);
-        intent.putExtra("type",PhotoActivity.TYPE_COLLECTION_PHOTO);
-        intent.putExtra("path",path);
+
+    private void startPhotoActivity(String path) {
+        Intent intent = new Intent(this, PhotoActivity.class);
+        intent.putExtra("type", PhotoActivity.TYPE_COLLECTION_PHOTO);
+        intent.putExtra("path", path);
         startActivity(intent);
+    }
+
+    private boolean requireCamera() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                return true;
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+
+                return false;
+
+            }
+        } else {
+            return true;
+        }
+    }
+
+    private boolean requireStore() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                return true;
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+                return false;
+
+
+            }
+        } else {
+            return true;
+        }
     }
 }

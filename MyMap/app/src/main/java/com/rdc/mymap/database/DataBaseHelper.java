@@ -444,6 +444,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DELETE FROM Friends");
         sqLiteDatabase.execSQL("DELETE FROM Message");
         sqLiteDatabase.execSQL("DELETE FROM Ticket");
+        sqLiteDatabase.execSQL("DELETE FROM Photo");
         return true;
     }
 

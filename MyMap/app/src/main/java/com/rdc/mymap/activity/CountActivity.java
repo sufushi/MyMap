@@ -17,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.rdc.mymap.R;
 
@@ -30,11 +31,15 @@ import cn.xm.weidongjian.progressbuttonlib.ProgressButton;
  */
 
 public class CountActivity extends Activity implements TextWatcher, View.OnClickListener, TextView.OnEditorActionListener {
+    public final static int IN = 1;
+    public final static int OUT = -1;
     private final static String TAG = "CountActivity";
     private TextView mTitleTextView;
+    private TextView mWayTextView;
     private EditText mMoneyEditText;
     private ImageView mBackImageView;
     private ProgressButton mEnterProgressButton;
+    private int way = 0;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,8 +49,22 @@ public class CountActivity extends Activity implements TextWatcher, View.OnClick
     }
     private void init(){
         mTitleTextView = (TextView) findViewById(R.id.tv_title);
+        mWayTextView = (TextView) findViewById(R.id.tv_way);
         Intent intent = getIntent();
         mTitleTextView.setText(intent.getStringExtra("name"));
+        switch (intent.getIntExtra("way",0)){
+            case IN:
+                mWayTextView.setText("支付方式");
+                way = IN;
+                break;
+            case OUT:
+                mWayTextView.setText("转出到");
+                way = OUT;
+                break;
+            default:
+                finish();
+                break;
+        }
         mMoneyEditText = (EditText) findViewById(R.id.et_money);
         mMoneyEditText.addTextChangedListener(this);
         mMoneyEditText.setOnEditorActionListener(this);
@@ -98,10 +117,25 @@ public class CountActivity extends Activity implements TextWatcher, View.OnClick
     }
     private void startPayActivity() {
         Intent intent = new Intent(CountActivity.this,PayActivity.class);
-        intent.putExtra("name","转入");
-        intent.putExtra("money",(int)(Double.parseDouble(mMoneyEditText.getText().toString())*100));
-        startActivity(intent);
-        finish();
+        switch (way){
+            case IN:
+                intent.putExtra("name","转入");
+                break;
+            case OUT:
+                intent.putExtra("name","转出");
+                break;
+            default:
+                finish();
+                break;
+        }
+        if(mMoneyEditText.getText().toString().length() == 0) {
+            Toast.makeText(this,"请输入金额",Toast.LENGTH_SHORT).show();
+            return ;
+        }else{
+            intent.putExtra("money",(int)(Double.parseDouble(mMoneyEditText.getText().toString())*100)*way);
+            startActivity(intent);
+            finish();
+        }
     }
 
     @Override

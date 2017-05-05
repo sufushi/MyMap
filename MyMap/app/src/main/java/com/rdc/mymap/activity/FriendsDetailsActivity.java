@@ -35,7 +35,7 @@ public class FriendsDetailsActivity extends Activity implements View.OnClickList
     private TextView mAreaTextView;
     private TextView mSignatureTextView;
     private TextView mPhoneTextView;
-    private TextView mMaleTextView;
+    private ImageView mMaleImageView;
     private CircleImageView mPhotoCircleImageView;
     private ImageView mBackImageView;
     private UserObject userObject;
@@ -104,9 +104,9 @@ public class FriendsDetailsActivity extends Activity implements View.OnClickList
         mPhoneTextView = (TextView) findViewById(R.id.tv_phonenumber);
         mPhoneTextView.setText(userObject.getPhoneNumber());
 
-        mMaleTextView = (TextView) findViewById(R.id.tv_male);
-        if(userObject.getGender() == 1)mMaleTextView.setText("男");
-        else mMaleTextView.setText("女");
+        mMaleImageView = (ImageView) findViewById(R.id.iv_male);
+        if(userObject.getGender() == 1)mMaleImageView.setImageResource(R.drawable.male);
+        else mMaleImageView.setImageResource(R.drawable.female);
     }
 
     @Override

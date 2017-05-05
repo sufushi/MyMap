@@ -33,6 +33,7 @@ import java.util.Map;
 
 public class WalletActivity extends Activity implements View.OnClickListener {
     private final static String TAG = "WalletActivity";
+    private final static int OK = 1;
     private ImageView mBackImageView;
     private ImageView mPlusBankImageView;
     private TextView mMoneyTextView;
@@ -44,10 +45,10 @@ public class WalletActivity extends Activity implements View.OnClickListener {
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what) {
-//                case STATE_NETWORK :
-//                    Toast.makeText(WalletActivity.this,"网络错误",Toast.LENGTH_SHORT).show();
-//                    break;
+            switch (msg.getData().getInt("case", 0)) {
+                case OK :
+                    mMoneyTextView.setText(String.format("%.2f", mPreferences.getInt(SharePreferencesConfig.MONEY_INT, -1)*0.01));
+                    break;
                 default:
                     Toast.makeText(WalletActivity.this, msg.getData().getString("message"), Toast.LENGTH_SHORT).show();
                     break;
@@ -98,6 +99,7 @@ public class WalletActivity extends Activity implements View.OnClickListener {
                 if (jsonString.equals("")) {
                     Bundle bundle = new Bundle();
                     bundle.putString("message", "网络错误");
+                    bundle.putInt("case", -1);
                     Message message = new Message();
                     message.setData(bundle);
                     mHandler.sendMessage(message);
@@ -116,6 +118,11 @@ public class WalletActivity extends Activity implements View.OnClickListener {
                         mEditor.putString(SharePreferencesConfig.USERNAME_STRING, userObject.getUsername());
                         mEditor.putString(SharePreferencesConfig.COOKIE_STRING, HttpUtil.submitPostData(params, SharePreferencesConfig.COOKIE_STRING, URLConfig.ACTION_LOGIN));
                         mEditor.commit();
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("case", OK);
+                        Message message = new Message();
+                        message.setData(bundle);
+                        mHandler.sendMessage(message);
                         Log.d(TAG, userObject.toString());
                     } else {
                         Log.d(TAG, "ERROR code:" + jsonObject.getInt("code") + ". message:" + jsonObject.getString("message"));
@@ -142,18 +149,24 @@ public class WalletActivity extends Activity implements View.OnClickListener {
                 Toast.makeText(this,"暂不能绑定",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.tv_in:
-                startCountActivity();
+                startCountActivity_IN();
                 break;
             case R.id.tv_out:
-                Toast.makeText(this,"暂不能转出",Toast.LENGTH_SHORT).show();
+                startCountActivity_OUT();
                 break;
             default:
                 break;
         }
     }
-    private void startCountActivity(){
+    private void startCountActivity_IN(){
         Intent intent = new Intent(WalletActivity.this,CountActivity.class);
         intent.putExtra("name","转入");
+        intent.putExtra("way",CountActivity.IN);
+        startActivity(intent);
+    }private void startCountActivity_OUT(){
+        Intent intent = new Intent(WalletActivity.this,CountActivity.class);
+        intent.putExtra("name","转出");
+        intent.putExtra("way",CountActivity.OUT);
         startActivity(intent);
     }
     private void startPayActivity(){

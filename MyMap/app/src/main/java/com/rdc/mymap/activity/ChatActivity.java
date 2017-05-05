@@ -70,6 +70,7 @@ public class ChatActivity extends Activity implements View.OnClickListener {
                     Log.d(TAG, " having new message!");
                     refreshData();
                     dataBaseHelper.readAllMessage(userObject.getUserId());
+                    mRecyclerView.smoothScrollToPosition(adapter.getItemCount());
                     break;
                 }
                 case NOTOK: {
@@ -211,7 +212,7 @@ public class ChatActivity extends Activity implements View.OnClickListener {
         data.add(new ItemModel(ItemModel.CHAT_B, model));
         adapter.addAll(data);
         mMessageEditText.setText("");
-        hideKeyBorad(mMessageEditText);
+//        hideKeyBorad(mMessageEditText);
         mRecyclerView.smoothScrollToPosition(adapter.getItemCount());
         new Thread(new Runnable() {
             @Override

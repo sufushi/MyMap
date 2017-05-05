@@ -89,7 +89,9 @@ public class PayActivity extends Activity implements View.OnClickListener, TextW
         mItemTextView = (TextView) findViewById(R.id.tv_item);
         mItemTextView.setText(intent.getStringExtra("name"));
         mMoneyTextView = (TextView) findViewById(R.id.tv_money);
-        mMoneyTextView.setText(intent.getIntExtra("money",-1)*0.01+"");
+        double money = intent.getIntExtra("money",-1)*0.01;
+        if(money >0)mMoneyTextView.setText(money+"");
+        else mMoneyTextView.setText(money*-1+"");
         mDotIamgeView1 = (ImageView) findViewById(R.id.iv_dot1);
         mDotIamgeView2 = (ImageView) findViewById(R.id.iv_dot2);
         mDotIamgeView3 = (ImageView) findViewById(R.id.iv_dot3);
@@ -118,8 +120,14 @@ public class PayActivity extends Activity implements View.OnClickListener, TextW
                     mSharedPreferences = getSharedPreferences("main",MODE_PRIVATE);
                     mEditor = mSharedPreferences.edit();
                     Map<String, String> params = new HashMap<String, String>();
-                    params.put("money",money+"");
-                    String result = HttpUtil.submitPostDataWithCookie(params,mSharedPreferences.getString(SharePreferencesConfig.COOKIE_STRING,""), URLConfig.ACTION_CHARGE);
+                    String result;
+                    if(money>0){
+                        params.put("money",money+"");
+                        result = HttpUtil.submitPostDataWithCookie(params,mSharedPreferences.getString(SharePreferencesConfig.COOKIE_STRING,""), URLConfig.ACTION_CHARGE);
+                    }else {
+                        params.put("money",(-1*money)+"");
+                        result = HttpUtil.submitPostDataWithCookie(params,mSharedPreferences.getString(SharePreferencesConfig.COOKIE_STRING,""), URLConfig.ACTION_WITHDRAWL);
+                    }
                     Log.d(TAG," return:"+result);
                     if(result.equals("")){
                         Bundle bundle = new Bundle();
@@ -132,12 +140,20 @@ public class PayActivity extends Activity implements View.OnClickListener, TextW
                     if(result.startsWith("{")){
                         try {
                             JSONObject jsonObject = new JSONObject(result);
-                            Bundle bundle = new Bundle();
-                            bundle.putString("message",jsonObject.getString("message"));
-                            bundle.putInt("case",NOTOK);
-                            Message message = new Message();
-                            message.setData(bundle);
-                            mHandler.sendMessage(message);
+                            if(jsonObject.getInt("code") == 0){
+                                Bundle bundle = new Bundle();
+                                bundle.putInt("case",OK);
+                                Message message = new Message();
+                                message.setData(bundle);
+                                mHandler.sendMessage(message);
+                            }else{
+                                Bundle bundle = new Bundle();
+                                bundle.putString("message",jsonObject.getString("message"));
+                                bundle.putInt("case",NOTOK);
+                                Message message = new Message();
+                                message.setData(bundle);
+                                mHandler.sendMessage(message);
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

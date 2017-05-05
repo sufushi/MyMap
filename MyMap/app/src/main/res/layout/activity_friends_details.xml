@@ -59,19 +59,29 @@
             android:gravity="center_horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <LinearLayout
+            <FrameLayout
                 android:id="@+id/rl_photo"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_alignRight="@id/til_username"
-                android:gravity="center">
+                android:gravity="center"
+                >
 
                 <com.rdc.mymap.view.CircleImageView
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
                     android:id="@+id/civ_photo"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:src="@drawable/pikaqiu" />
-            </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/iv_male"
+                    android:layout_gravity="right|bottom"
+                    android:src="@drawable/male"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp" />
+            </FrameLayout>
 
             <LinearLayout
                 android:weightSum="1"
@@ -80,8 +90,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
                 >
                 <TextView
                     android:layout_width="60dp"
@@ -113,8 +123,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp">
                 <TextView
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
@@ -138,38 +148,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:background="#c0c0c0" />
-            <LinearLayout
-                android:id="@+id/ll_male"
-                android:weightSum="1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp">
-                <TextView
-                    android:layout_width="60dp"
-                    android:layout_height="wrap_content"
-                    android:text="性别:"
-                    android:maxLength="12"
-                    android:textSize="18sp"
-                    android:singleLine="true"
-                    android:layout_marginRight="20dp" />
-                <TextView
-                    android:layout_weight="1"
-                    android:id="@+id/tv_male"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLength="12"
-                    android:textSize="18sp"
-                    android:singleLine="true"
-                    android:textColor="@android:color/black"/>
-            </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="#c0c0c0" />
             <LinearLayout
                 android:id="@+id/ll_area"
                 android:weightSum="1"
@@ -177,8 +156,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp">
                 <TextView
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
@@ -209,8 +188,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp">
 
                 <TextView
                     android:layout_width="60dp"
