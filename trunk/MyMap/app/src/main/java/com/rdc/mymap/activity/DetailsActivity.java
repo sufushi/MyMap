@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
@@ -33,6 +34,7 @@ import com.rdc.mymap.view.CircleImageView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,8 +62,7 @@ public class DetailsActivity extends Activity implements View.OnClickListener {
     private LinearLayout mSignatureLinearLayout;
     private TextView mPhoneTextView;
     private LinearLayout mPhoneLinearLayout;
-    private TextView mMaleTextView;
-    private LinearLayout mMaleLinearLayout;
+    private ImageView mMaleIamgeView;
     private CircleImageView mPhotoCircleImageView;
     private ImageView mBackImageView;
     private UserObject userObject;
@@ -130,9 +131,12 @@ public class DetailsActivity extends Activity implements View.OnClickListener {
         mPhoneTextView = (TextView) findViewById(R.id.tv_phonenumber);
         mPhoneTextView.setText(userObject.getPhoneNumber());
 
-        mMaleTextView = (TextView) findViewById(R.id.tv_male);
-        if(userObject.getGender() == 1)mMaleTextView.setText("男");
-        else mMaleTextView.setText("女");
+
+        mMaleIamgeView = (ImageView) findViewById(R.id.iv_male);
+        mMaleIamgeView.setOnClickListener(this);
+        if(userObject.getGender() == 1)mMaleIamgeView.setImageResource(R.drawable.male);
+        else mMaleIamgeView.setImageResource(R.drawable.female);
+
         mUserNameLinearlayout = (LinearLayout) findViewById(R.id.ll_username);
         mUserNameLinearlayout.setOnClickListener(this);
         mAreaLinearLayout = (LinearLayout) findViewById(R.id.ll_area);
@@ -141,8 +145,6 @@ public class DetailsActivity extends Activity implements View.OnClickListener {
         mSignatureLinearLayout.setOnClickListener(this);
         mPhoneLinearLayout = (LinearLayout) findViewById(R.id.ll_phonenumber);
         mPhoneLinearLayout.setOnClickListener(this);
-        mMaleLinearLayout = (LinearLayout) findViewById(R.id.ll_male);
-        mMaleLinearLayout.setOnClickListener(this);
     }
 
     @Override
@@ -167,7 +169,7 @@ public class DetailsActivity extends Activity implements View.OnClickListener {
             case R.id.ll_phonenumber:
                 phoneDialog();
                 break;
-            case R.id.ll_male:
+            case R.id.iv_male:
                 maleDialog();
                 break;
             default:
@@ -331,9 +333,10 @@ public class DetailsActivity extends Activity implements View.OnClickListener {
     private void maleDialog(){
         final String items[]={"男","女"};
         final boolean tem = male;
+        male = true;
         AlertDialog.Builder builder=new AlertDialog.Builder(this);  //先得到构造器
-        builder.setTitle("提示"); //设置标题
-        builder.setIcon(R.mipmap.ic_launcher);//设置图标，图片id即可
+        builder.setTitle("性别"); //设置标题
+        builder.setIcon(R.drawable.sex);//设置图标，图片id即可
         builder.setSingleChoiceItems(items,0,new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -346,8 +349,8 @@ public class DetailsActivity extends Activity implements View.OnClickListener {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                if(male)  mMaleTextView.setText("男");
-                else mMaleTextView.setText("女");
+                if(male)  mMaleIamgeView.setImageResource(R.drawable.male);
+                else mMaleIamgeView.setImageResource(R.drawable.female);
                 change();
             }
         });
@@ -356,8 +359,8 @@ public class DetailsActivity extends Activity implements View.OnClickListener {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 male = tem;
-                if(tem)  mMaleTextView.setText("男");
-                else mMaleTextView.setText("女");
+                if(tem)  mMaleIamgeView.setImageResource(R.drawable.male);
+                else mMaleIamgeView.setImageResource(R.drawable.female);
             }
         });
         builder.create().show();
@@ -367,6 +370,13 @@ public class DetailsActivity extends Activity implements View.OnClickListener {
         mEditor.clear();
         mEditor.commit();
         mDataBaseHelper.clear();
+        File file = new File(Environment.getExternalStorageDirectory()+"/CollectionPhoto");
+        File files[] = file.listFiles(); // 声明目录下所有的文件 files[];
+        if(files != null)for (int i = 0; i < files.length; i++) { // 遍历目录下所有的文件
+            File photoFile = new File(files[i].getPath());// 把每个文件 用这个方法进行迭代
+            photoFile.delete();
+        }
+        file.delete();
     }
     class SearchWather implements TextWatcher{
 
