@@ -36,6 +36,7 @@ import com.baidu.mapapi.search.route.BikingRouteLine;
 import com.rdc.mymap.R;
 import com.rdc.mymap.adapter.MyStepListAdapter;
 import com.rdc.mymap.model.Node;
+import com.rdc.mymap.model.StepInfo;
 import com.rdc.mymap.utils.GeoCoderUtil;
 import com.rdc.mymap.utils.RoutePlanSearchUtil;
 import com.rdc.mymap.utils.overlayutils.BikingRouteOverlay;
@@ -72,7 +73,7 @@ public class BikingRoutePlanActivity extends Activity implements View.OnClickLis
     private PopupWindow mPopupWindow;
     private MyStepListAdapter mMyStepListAdapter;
     private List<BikingRouteLine> mBikingRouteLineList = new ArrayList<BikingRouteLine>();
-    private List<String> mBikingStepList = new ArrayList<String>();
+    private List<StepInfo> mBikingStepList = new ArrayList<StepInfo>();
 
     private static boolean isPermissionRequested = false;
 
@@ -167,7 +168,7 @@ public class BikingRoutePlanActivity extends Activity implements View.OnClickLis
             int minute = bikingRouteLine.getDuration() / 60 % 60;
             mDuration = (hour == 0 ? "" : hour + "小时") + (minute == 0 ? "" : minute + "分");
             for(BikingRouteLine.BikingStep bikingStep : bikingRouteLine.getAllStep()) {
-                mBikingStepList.add(bikingStep.getInstructions());
+                mBikingStepList.add(new StepInfo(bikingStep.getInstructions(), bikingStep.getDirection()));
             }
         }
         mHandler.sendEmptyMessage(0);
@@ -241,6 +242,7 @@ public class BikingRoutePlanActivity extends Activity implements View.OnClickLis
                 Log.e("error", "onRoutePlanSuccess");
                 Intent intent = new Intent(BikingRoutePlanActivity.this, BikeGuideActivity.class);
                 startActivity(intent);
+                finish();
             }
 
             @Override

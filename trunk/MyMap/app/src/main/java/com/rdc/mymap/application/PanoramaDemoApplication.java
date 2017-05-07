@@ -7,11 +7,15 @@ import android.widget.Toast;
 import com.baidu.lbsapi.BMapManager;
 import com.baidu.lbsapi.MKGeneralListener;
 import com.baidu.mapapi.SDKInitializer;
+import com.baidu.trace.LBSTraceClient;
 
 public class PanoramaDemoApplication extends Application {
 
     private static PanoramaDemoApplication mInstance = null;
     public BMapManager bMapManager = null;
+
+    public LBSTraceClient lbsTraceClient;
+
 
     public static PanoramaDemoApplication getInstance() {
         return mInstance;
@@ -23,6 +27,8 @@ public class PanoramaDemoApplication extends Application {
         SDKInitializer.initialize(getApplicationContext());
         mInstance = this;
         initEngineManger(this);
+        lbsTraceClient = new LBSTraceClient(this);
+
     }
 
     private void initEngineManger(Context context) {

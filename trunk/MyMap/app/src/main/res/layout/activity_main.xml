@@ -140,14 +140,26 @@
                 android:id="@+id/iv_current_location"
                 android:layout_width="38dp"
                 android:layout_height="38dp"
-                android:padding="8dp"
+                android:padding="3dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/bg_button"
                 android:src="@drawable/current_location"
                 android:layout_above="@+id/ll_bottomBar"/>
+            <ImageView
+                android:id="@+id/iv_trace"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:padding="6dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/bg_button"
+                android:src="@drawable/trace"
+                android:layout_above="@+id/iv_current_location"/>
         </RelativeLayout>
-        <include layout="@layout/layout_satmenu"/>
+        <include layout="@layout/layout_satmenu"
+            android:visibility="gone"/>
+        <include layout="@layout/layout_my_menu"/>
     </FrameLayout>
 
 </RelativeLayout>

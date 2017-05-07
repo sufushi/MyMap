@@ -29,6 +29,7 @@ import static com.rdc.mymap.config.MsgStateConfig.MSG_SHOW;
 
 public class GuideActivity extends Activity {
 
+    private String mWay;
     private BNRoutePlanNode mBNRoutePlanNode;
     private BaiduNaviCommonModule mBaiduNaviCommonModule;
     private interface RouteGuideModuleConstants {
@@ -59,7 +60,12 @@ public class GuideActivity extends Activity {
         super.onCreate(savedInstanceState);
         SDKInitializer.initialize(getApplicationContext());
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        WalkRoutePlanActivity.activityList.add(this);
+        mWay = getIntent().getStringExtra("way");
+        if(mWay.equals("walk")) {
+            WalkRoutePlanActivity.activityList.add(this);
+        } else if(mWay.equals("drive")){
+            DrivingRoutePlanActivity.activityList.add(this);
+        }
         init();
     }
 
@@ -121,7 +127,12 @@ public class GuideActivity extends Activity {
         } else {
             BNRouteGuideManager.getInstance().onDestroy();
         }
-        WalkRoutePlanActivity.activityList.remove(this);
+        if(mWay.equals("walk")) {
+            WalkRoutePlanActivity.activityList.remove(this);
+        } else if(mWay.equals("drive")) {
+            DrivingRoutePlanActivity.activityList.remove(this);
+        }
+
     }
 
     @Override

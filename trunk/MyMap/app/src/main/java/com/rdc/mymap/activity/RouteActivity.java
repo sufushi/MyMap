@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -24,13 +25,14 @@ import com.baidu.mapapi.search.busline.BusLineResult;
 import com.rdc.mymap.R;
 import com.rdc.mymap.adapter.MySearchHistoryAdapter;
 import com.rdc.mymap.adapter.MyViewPagerAdapter;
+import com.rdc.mymap.database.HistoryDataBaseHelper;
 import com.rdc.mymap.utils.BusLineSearchUtil;
 import com.rdc.mymap.utils.PoiSearchUtil;
 import com.rdc.mymap.view.UnderlineEditText;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static com.rdc.mymap.config.WayConfig.BIKING;
 import static com.rdc.mymap.config.WayConfig.DRIVING;
@@ -52,7 +54,7 @@ public class RouteActivity extends Activity implements View.OnClickListener{
     private View mCarView;
     private View mBicycleView;
     private View mWalkView;
-    private View mTaxiView;
+    //private View mTaxiView;
     private ImageView mBackImageView;
     private ImageView mSearchImageView;
     private ImageView mPlusImageView;
@@ -60,12 +62,19 @@ public class RouteActivity extends Activity implements View.OnClickListener{
     private UnderlineEditText mStartNodeEditText;
     private TextView mEndEditText;
     private LinearLayout mNearbyBusLinearLayout;
+    private TextView mBusClearRecordTextView;
+    private TextView mCarClearRecordTextView;
+    private TextView mBikeClearRecordTextView;
+    private TextView mWalkClearRecordTextView;
 
     private ListView mBusSearchHistoryListView;
+    private ListView mCarSearchHistoryListView;
+    private ListView mBikeSearchHistoryListView;
     private ListView mWalkSearchHistoryListView;
     private MySearchHistoryAdapter mMySearchHistoryAdapter;
     private List<String> mSearchHistoryList;
-    private String[] mSearchHistory = {"大夫山森林公园", "广州大学城", "GoGo新天地", "珠江新城", "广州博物馆", "广州塔", "天河客运站", "白云山", "番禺广场", "万胜围"};
+    //private String[] mSearchHistory = {"大夫山森林公园", "广州大学城", "GoGo新天地", "珠江新城", "广州博物馆", "广州塔", "天河客运站", "白云山", "番禺广场", "万胜围"};
+    private HistoryDataBaseHelper mHistoryDataBaseHelper;
 
     private Boolean isExpand = false;
 
@@ -85,18 +94,29 @@ public class RouteActivity extends Activity implements View.OnClickListener{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mPoiSearchUtil.destroy();
-        mBusLineSearchUtil.destroy();
+        //mPoiSearchUtil.destroy();
+        if(mBusLineSearchUtil != null) {
+            mBusLineSearchUtil.destroy();
+        }
     }
 
     private void init() {
+        mHistoryDataBaseHelper = HistoryDataBaseHelper.getInstance(getApplicationContext());
         initTextView();
         initViewPager();
         initImageView();
         initEditText();
         mNearbyBusLinearLayout = (LinearLayout) mBusView.findViewById(R.id.ll_nearby_bus);
         mNearbyBusLinearLayout.setOnClickListener(this);
-        searchBusLineIdList();
+        //searchBusLineIdList();
+        mBusClearRecordTextView = (TextView) mBusView.findViewById(R.id.tv_clear_record);
+        mBusClearRecordTextView.setOnClickListener(this);
+        mCarClearRecordTextView = (TextView) mCarView.findViewById(R.id.tv_clear_record);
+        mCarClearRecordTextView.setOnClickListener(this);
+        mBikeClearRecordTextView = (TextView) mBicycleView.findViewById(R.id.tv_clear_record);
+        mBikeClearRecordTextView.setOnClickListener(this);
+        mWalkClearRecordTextView = (TextView) mWalkView.findViewById(R.id.tv_clear_record);
+        mWalkClearRecordTextView.setOnClickListener(this);
      }
 
     private void initEditText() {
@@ -176,24 +196,35 @@ public class RouteActivity extends Activity implements View.OnClickListener{
         mCarView = layoutInflater.inflate(R.layout.layout_route_car, null);
         mBicycleView = layoutInflater.inflate(R.layout.layout_route_bicycle, null);
         mWalkView = layoutInflater.inflate(R.layout.layout_route_walk, null);
-        mTaxiView = layoutInflater.inflate(R.layout.layout_route_taxi, null);
+        //mTaxiView = layoutInflater.inflate(R.layout.layout_route_taxi, null);
         mViewList.add(mBusView);
         mViewList.add(mCarView);
         mViewList.add(mBicycleView);
         mViewList.add(mWalkView);
-        mViewList.add(mTaxiView);
+        //mViewList.add(mTaxiView);
         mViewPager.setAdapter(new MyViewPagerAdapter(mViewList));
         mViewPager.setCurrentItem(0);
         mViewPager.setOnPageChangeListener(new MyOnPageChangeListener());
 
         mBusSearchHistoryListView = (ListView) mBusView.findViewById(R.id.lv_search_history);
+        mCarSearchHistoryListView = (ListView) mCarView.findViewById(R.id.lv_search_history);
+        mBikeSearchHistoryListView = (ListView) mBicycleView.findViewById(R.id.lv_search_history);
         mWalkSearchHistoryListView = (ListView) mWalkView.findViewById(R.id.lv_search_history);
         mSearchHistoryList = new ArrayList<String>();
-        mSearchHistoryList = Arrays.asList(mSearchHistory);
+        List<Map> mapList = mHistoryDataBaseHelper.queryListMap("select * from record", null);
+        for (Map map : mapList) {
+            mSearchHistoryList.add(String.valueOf(map.get("name")));
+        }
+        //mSearchHistoryList = Arrays.asList(mSearchHistory);
         mMySearchHistoryAdapter = new MySearchHistoryAdapter(mSearchHistoryList, this);
         mBusSearchHistoryListView.setAdapter(mMySearchHistoryAdapter);
+        mCarSearchHistoryListView.setAdapter(mMySearchHistoryAdapter);
+        mBikeSearchHistoryListView.setAdapter(mMySearchHistoryAdapter);
         mWalkSearchHistoryListView.setAdapter(mMySearchHistoryAdapter);
-
+        mBusSearchHistoryListView.setOnItemClickListener(new MyOnItemClickListener());
+        mCarSearchHistoryListView.setOnItemClickListener(new MyOnItemClickListener());
+        mBikeSearchHistoryListView.setOnItemClickListener(new MyOnItemClickListener());
+        mWalkSearchHistoryListView.setOnItemClickListener(new MyOnItemClickListener());
     }
 
     private void initTextView() {
@@ -234,6 +265,11 @@ public class RouteActivity extends Activity implements View.OnClickListener{
                 Intent nearbyStationIntent = new Intent(RouteActivity.this, NearbyStationActivity.class);
                 startActivity(nearbyStationIntent);
                 break;
+            case R.id.tv_clear_record :
+                mHistoryDataBaseHelper.clear("delete from record");
+                mSearchHistoryList.clear();
+                mMySearchHistoryAdapter.notifyDataSetChanged();
+                break;
             default:
                 break;
         }
@@ -258,6 +294,21 @@ public class RouteActivity extends Activity implements View.OnClickListener{
     }
 
     private void startRoutePlanActivity() {
+        mHistoryDataBaseHelper.clear("delete from record");
+        mSearchHistoryList.add(mStartNodeEditText.getText().toString() + " - " + mEndEditText.getText().toString());
+        String[] strings = (String[]) mSearchHistoryList.toArray(new String[mSearchHistoryList.size()]);
+        for(int i = strings.length - 1; i >= 0; i --) {
+            String string = strings[i];
+            mHistoryDataBaseHelper.insert("record", new String[] {"name"}, new Object[] {string});
+        }
+//        mHistoryDataBaseHelper.insert("record", new String[]{"name"}, new Object[]{mStartNodeEditText.getText().toString()
+//        + " - " + mEndEditText.getText().toString()});
+        mSearchHistoryList.clear();
+        List<Map> mapList = mHistoryDataBaseHelper.queryListMap("select * from record", null);
+        for (Map map : mapList) {
+            mSearchHistoryList.add(String.valueOf(map.get("name")));
+        }
+        mMySearchHistoryAdapter.notifyDataSetChanged();
         switch (mCurIndex) {
             case 0 :
                 Intent busRoutePlanIntent = new Intent(RouteActivity.this, BusRoutePlanActivity.class);
@@ -348,6 +399,10 @@ public class RouteActivity extends Activity implements View.OnClickListener{
 
         @Override
         public void onPageScrollStateChanged(int state) {
+            mStartNodeEditText.setText("");
+            mStartNodeEditText.setHint("我的位置");
+            mEndEditText.setText("");
+            mEndEditText.setHint("输入终点");
             mCurIndex = mViewPager.getCurrentItem();
             if(mPreIndex == mCurIndex) {
                 return;
@@ -394,4 +449,15 @@ public class RouteActivity extends Activity implements View.OnClickListener{
         }
     }
 
+
+    private class MyOnItemClickListener implements AdapterView.OnItemClickListener {
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            String[] strings = mSearchHistoryList.get(position).split(" - ");
+            Log.e("error", strings[0] + " - " + strings[1]);
+            mStartNodeEditText.setText(strings[0]);
+            mEndEditText.setText(strings[1]);
+        }
+    }
 }

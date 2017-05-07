@@ -10,7 +10,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="#2d4ce6">
+        android:background="@color/colorActionbar">
         <ImageView
             android:id="@+id/iv_back"
             android:layout_width="45dp"
@@ -37,10 +37,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
-        android:background="#d2b3a3a3"
         android:layout_marginLeft="6dp"
         android:layout_marginRight="6dp"
+        android:layout_weight="2"
+        android:background="#ffffff"
         android:orientation="vertical">
 
         <TextView
@@ -49,16 +49,16 @@
             android:layout_height="0dp"
             android:layout_weight="2"
             android:background="#ffffff"
+            android:gravity="center"
             android:text="查看行程"
-            android:textSize="16sp"
             android:textColor="#2d4ce6"
-            android:gravity="center"/>
+            android:textSize="16sp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.01dp"
             android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"/>
+            android:layout_marginRight="12dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -72,6 +72,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="3"
                 android:orientation="vertical">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
@@ -94,31 +95,33 @@
                         android:id="@+id/tv_duration"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_marginLeft="10dp"
                         android:layout_weight="1"
+                        android:gravity="center_vertical"
                         android:text="12分钟"
                         android:textColor="#3d2f2f"
                         android:textSize="22sp"
-                        android:textStyle="bold"
-                        android:gravity="center_vertical"
-                        android:layout_marginLeft="10dp"/>
+                        android:textStyle="bold" />
                 </LinearLayout>
+
                 <TextView
                     android:id="@+id/tv_traffic_num"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:text="红绿灯6个"
-                    android:textSize="12sp"
+                    android:layout_marginBottom="6dp"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginBottom="6dp"/>
+                    android:layout_weight="1.5"
+                    android:text="红绿灯6个"
+                    android:textColor="#b7b2b2"
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <View
                 android:layout_width="0.001dp"
                 android:layout_height="match_parent"
-                android:background="#bcb3b3"
-                android:layout_marginTop="6dp"
-                android:layout_marginBottom="6dp"/>
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:background="#bcb3b3" />
 
             <LinearLayout
                 android:id="@+id/ll_change"
@@ -126,26 +129,28 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical">
+
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="3"
-                    android:src="@drawable/change"
+                    android:padding="10dp"
                     android:paddingLeft="15dp"
                     android:paddingRight="15dp"
                     android:paddingTop="15dp"
-                    android:paddingBottom="2dp"/>
+                    android:src="@drawable/change" />
+
                 <TextView
                     android:id="@+id/tv_way"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:layout_marginBottom="4dp"
                     android:layout_weight="1"
-                    android:text="方案 1"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:textColor="#8699f9"
                     android:gravity="center"
-                    android:layout_marginBottom="4dp"/>
+                    android:text="方案 1"
+                    android:textColor="#8699f9"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
         </LinearLayout>
@@ -154,32 +159,33 @@
             android:layout_width="match_parent"
             android:layout_height="0.01dp"
             android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"/>
+            android:layout_marginRight="12dp" />
 
         <RelativeLayout
             android:id="@+id/rl_navigate"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2"
-            android:background="#ffffff"
+            android:background="@drawable/bg_btn"
+            android:layout_marginBottom="6dp"
             android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/drive"
+                android:layout_marginRight="8dp"
                 android:layout_toLeftOf="@+id/tv_drive"
-                android:layout_marginRight="8dp"/>
+                android:src="@drawable/drive" />
 
             <TextView
                 android:id="@+id/tv_drive"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="驾驶导航"
-                android:textSize="16sp"
-                android:textColor="#2d4ce6"
                 android:layout_centerInParent="true"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:text="驾驶导航"
+                android:textColor="#f7f8fa"
+                android:textSize="18sp" />
 
         </RelativeLayout>
 

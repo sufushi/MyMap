@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.baidu.mapapi.search.route.PlanNode;
@@ -20,7 +22,7 @@ import java.util.List;
 
 import static com.rdc.mymap.config.WayConfig.TRANSIT;
 
-public class BusRoutePlanActivity extends Activity {
+public class BusRoutePlanActivity extends Activity implements View.OnClickListener {
 
     private PlanNode mStartNode;
     private PlanNode mEndNode;
@@ -34,6 +36,7 @@ public class BusRoutePlanActivity extends Activity {
     private MyBusLineListAdapter mMyBusLineListAdapter;
 
     private ListView mBusLineListView;
+    private ImageView mBackImageView;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -66,6 +69,8 @@ public class BusRoutePlanActivity extends Activity {
     }
 
     private void init() {
+        mBackImageView = (ImageView) findViewById(R.id.iv_back);
+        mBackImageView.setOnClickListener(this);
         mBusLineListView = (ListView) findViewById(R.id.lv_route_plan);
         mRoutePlanSearchUtil = new RoutePlanSearchUtil();
         Intent intent = getIntent();
@@ -88,5 +93,13 @@ public class BusRoutePlanActivity extends Activity {
 
     private void onRoutePlanSearch() {
         mHandler.sendEmptyMessage(0);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.iv_back :
+                finish();
+        }
     }
 }

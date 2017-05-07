@@ -201,7 +201,7 @@ public class RoutePlanSearchUtil {
                 Log.e("error", "lightNum=" + drivingRouteLine.getLightNum());
                 Log.e("error", "distance=" + drivingRouteLine.getDistance() + "duration=" + drivingRouteLine.getDuration());
                 for(DrivingRouteLine.DrivingStep drivingStep: drivingRouteLine.getAllStep()) {
-                    Log.e("error", "Instructions=" + drivingStep.getInstructions() + "EntranceInstructions=" + drivingStep.getEntranceInstructions());
+                    Log.e("error", "Instructions=" + drivingStep.getInstructions() + "EntranceInstructions=" + drivingStep.getEntranceInstructions() + "direction=" + drivingStep.getDirection());
                 }
             }
         }

@@ -12,7 +12,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
-import android.widget.ImageView;
 
 import com.rdc.mymap.R;
 
@@ -96,7 +95,7 @@ public class MyMenu extends ViewGroup implements View.OnClickListener{
                 View child = getChildAt(i + 1);
                 child.setVisibility(GONE);
                 int left = l;
-                int top = mInterval * (i + 1);
+                int top = mInterval * (i + 1) + 20;
                 int width = child.getMeasuredWidth();
                 int height = child.getMeasuredHeight();
                 if(mPosition == Position.LEFT_BOTTOM || mPosition == Position.RIGHT_BOTTOM) {
@@ -143,7 +142,7 @@ public class MyMenu extends ViewGroup implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.iv_main_menu :
+            case R.id.rl_main_menu :
                 dealMainMenu(300);
                 Log.e("error", "click main menu");
                 break;
@@ -220,9 +219,9 @@ public class MyMenu extends ViewGroup implements View.OnClickListener{
         for (int i = 0; i < getChildCount() - 1; i++) {
             View child = getChildAt(i + 1);
             if(i == position) {
-                child.startAnimation(scaleBigAnim(300));
+                child.startAnimation(scaleBigAnim(150));
             } else {
-                child.startAnimation(scaleSmallAnim(300));
+                child.startAnimation(scaleSmallAnim(150));
             }
             child.setClickable(false);
             child.setFocusable(false);
@@ -266,7 +265,7 @@ public class MyMenu extends ViewGroup implements View.OnClickListener{
                 findViewById(R.id.iv_main_menu).setBackgroundResource(R.drawable.uibike);
                 break;
             case 4 :
-                findViewById(R.id.iv_main_menu).setBackgroundResource(R.drawable.bluegoggo);
+                findViewById(R.id.iv_main_menu).setBackgroundResource(R.drawable.bluegogo);
                 break;
             case 5 :
                 findViewById(R.id.iv_main_menu).setBackgroundResource(R.drawable.hellobike);
@@ -274,5 +273,14 @@ public class MyMenu extends ViewGroup implements View.OnClickListener{
             default:
                 break;
         }
+    }
+
+    public Boolean isExpand() {
+        return mStatus == Status.OPEN;
+    }
+
+    public void change() {
+        dealMenuItem(-1);
+        changeStatus();
     }
 }

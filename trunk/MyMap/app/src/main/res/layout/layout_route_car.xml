@@ -1,13 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
+        android:id="@+id/tv_clear_record"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Car"
-        android:textSize="40sp"
+        android:layout_height="45dp"
+        android:background="#ffffff"
+        android:text="清除历史记录"
+        android:textColor="#a3a0a0"
         android:gravity="center"/>
+
+    <ListView
+        android:id="@+id/lv_search_history"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginTop="0.5dp"
+        android:background="#ffffff"
+        android:divider="#d6d3d3"
+        android:dividerHeight="0.01dp">
+
+    </ListView>
 
 </LinearLayout>

@@ -5,10 +5,12 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/tv_clear_record"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:background="#ffffff"
         android:text="清除历史记录"
+        android:textColor="#a3a0a0"
         android:gravity="center"/>
 
     <ListView

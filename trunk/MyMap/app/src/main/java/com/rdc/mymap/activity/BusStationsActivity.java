@@ -27,7 +27,7 @@ public class BusStationsActivity extends Activity implements View.OnClickListene
     private TextView mDirection2TextView;
     private TextView mTime1TextView;
     private TextView mTime2TextView;
-    private ListView mBusStationsTextView;
+    private ListView mBusStationsListView;
     private TextView mBuyTicketTextView;
     private LinearLayout mDirection1LinearLayout;
     private LinearLayout mDirection2LinearLayout;
@@ -38,6 +38,7 @@ public class BusStationsActivity extends Activity implements View.OnClickListene
     private List<String> mBusStationList = new ArrayList<String>();
     private MyBusStationListAdapter mMyBusStationListAdapter;
     private int mCurIndex;
+    private float mPrice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,7 @@ public class BusStationsActivity extends Activity implements View.OnClickListene
         mDirection2TextView = (TextView) findViewById(R.id.tv_direction2);
         mTime1TextView = (TextView) findViewById(R.id.tv_time1);
         mTime2TextView = (TextView) findViewById(R.id.tv_time2);
-        mBusStationsTextView = (ListView) findViewById(R.id.lv_bus_stations);
+        mBusStationsListView = (ListView) findViewById(R.id.lv_bus_stations);
         mBuyTicketTextView = (TextView) findViewById(R.id.tv_buy_ticket);
         mBuyTicketTextView.setOnClickListener(this);
         mDirection1LinearLayout = (LinearLayout) findViewById(R.id.ll_direction1);
@@ -78,8 +79,10 @@ public class BusStationsActivity extends Activity implements View.OnClickListene
         }
         mBusStationList = mBusStationInfo.getBusStationList1();
         mMyBusStationListAdapter = new MyBusStationListAdapter(mBusStationList, this);
-        mBusStationsTextView.setAdapter(mMyBusStationListAdapter);
+        mBusStationsListView.setAdapter(mMyBusStationListAdapter);
         mCurIndex = 0;
+        mPrice = intent.getFloatExtra("price", 0f);
+        mBuyTicketTextView.setText("购买车票(￥" + intent.getFloatExtra("price", 0f) + ")");
     }
 
     @Override
@@ -90,6 +93,8 @@ public class BusStationsActivity extends Activity implements View.OnClickListene
                 break;
             case R.id.tv_buy_ticket :
                 Intent payIntent = new Intent(this, PayTicketActivity.class);
+                payIntent.putExtra("bus_name", mBusStationInfo.getBusStationName());
+                payIntent.putExtra("price", mPrice);
                 startActivity(payIntent);
                 break;
             case R.id.ll_direction1 :
@@ -98,7 +103,7 @@ public class BusStationsActivity extends Activity implements View.OnClickListene
                     mDirection2View.setBackgroundColor(Color.parseColor("#949292"));
                     mBusStationList = mBusStationInfo.getBusStationList1();
                     mMyBusStationListAdapter = new MyBusStationListAdapter(mBusStationList, this);
-                    mBusStationsTextView.setAdapter(mMyBusStationListAdapter);
+                    mBusStationsListView.setAdapter(mMyBusStationListAdapter);
                     mMyBusStationListAdapter.notifyDataSetChanged();
                     mCurIndex = 0;
                 }
@@ -109,7 +114,7 @@ public class BusStationsActivity extends Activity implements View.OnClickListene
                     mDirection2View.setBackgroundColor(Color.parseColor("#9ed209"));
                     mBusStationList = mBusStationInfo.getBusStationList2();
                     mMyBusStationListAdapter = new MyBusStationListAdapter(mBusStationList, this);
-                    mBusStationsTextView.setAdapter(mMyBusStationListAdapter);
+                    mBusStationsListView.setAdapter(mMyBusStationListAdapter);
                     mMyBusStationListAdapter.notifyDataSetChanged();
                     mCurIndex = 1;
                 }
