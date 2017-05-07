@@ -35,6 +35,7 @@ import com.baidu.navisdk.adapter.BaiduNaviManager;
 import com.rdc.mymap.R;
 import com.rdc.mymap.adapter.MyStepListAdapter;
 import com.rdc.mymap.model.Node;
+import com.rdc.mymap.model.StepInfo;
 import com.rdc.mymap.utils.GeoCoderUtil;
 import com.rdc.mymap.utils.RoutePlanSearchUtil;
 import com.rdc.mymap.utils.overlayutils.WalkingRouteOverlay;
@@ -73,7 +74,7 @@ public class WalkRoutePlanActivity extends Activity implements View.OnClickListe
     private PopupWindow mPopupWindow;
     private MyStepListAdapter mMyStepListAdapter;
     private List<WalkingRouteLine> mWalkingRouteLineList = new ArrayList<WalkingRouteLine>();
-    private List<String> mWalkSteps = new ArrayList<String>();
+    private List<StepInfo> mWalkSteps = new ArrayList<StepInfo>();
     private List<LatLng> mWalkPoints = new ArrayList<LatLng>();
 
     private BNRoutePlanNode mStartBNRoutePlanNode;
@@ -112,8 +113,8 @@ public class WalkRoutePlanActivity extends Activity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SDKInitializer.initialize(getApplicationContext());
         activityList.add(this);
+        SDKInitializer.initialize(getApplicationContext());
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_walking_route_plan);
         init();
@@ -217,7 +218,7 @@ public class WalkRoutePlanActivity extends Activity implements View.OnClickListe
         walkingRouteOverlay.addToMap();
         walkingRouteOverlay.zoomToSpan();
         for(WalkingRouteLine walkingRouteLine : mWalkingRouteLineList) {
-            mWalkSteps.add(walkingRouteLine.getStarting().getTitle());
+            mWalkSteps.add(new StepInfo(walkingRouteLine.getStarting().getTitle(), 0));
             float distance = Math.round(walkingRouteLine.getDistance() / 10f) / 100f;
             DecimalFormat decimalFormat = new DecimalFormat("0.00");
             mDistance = decimalFormat.format(distance) + "公里";
@@ -228,9 +229,9 @@ public class WalkRoutePlanActivity extends Activity implements View.OnClickListe
             Log.e("error", "start=" + walkingRouteLine.getStarting().getTitle() + "end=" + walkingRouteLine.getTerminal().getTitle());
             for(WalkingRouteLine.WalkingStep walkingStep : walkingRouteLine.getAllStep()) {
                 Log.e("error", walkingStep.getInstructions());
-                mWalkSteps.add(walkingStep.getInstructions());
+                mWalkSteps.add(new StepInfo(walkingStep.getInstructions(), walkingStep.getDirection()));
             }
-            mWalkSteps.add(walkingRouteLine.getTerminal().getTitle());
+            mWalkSteps.add(new StepInfo(walkingRouteLine.getTerminal().getTitle(), 0));
             for(RouteStep routeStep : walkingRouteLine.getAllStep()) {
                 for(LatLng latLng : routeStep.getWayPoints()) {
                     Log.e("error", latLng.toString());
@@ -370,6 +371,7 @@ public class WalkRoutePlanActivity extends Activity implements View.OnClickListe
             Bundle bundle = new Bundle();
             bundle.putSerializable("route_plan_node", mBNRoutePlanNode);
             intent.putExtras(bundle);
+            intent.putExtra("way", "walk");
             startActivity(intent);
         }
 

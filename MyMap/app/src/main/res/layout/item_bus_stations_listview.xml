@@ -41,6 +41,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="市桥汽车站东门"
+            android:textColor="#4446f2"
             android:textSize="15sp"/>
         <View
             android:layout_width="match_parent"

@@ -180,7 +180,8 @@ public class NearbyInfoActivity extends Activity implements View.OnClickListener
             PoiDetailResult poiDetailResult = mPoiDetailResultList.get(i);
             Log.e("error", "detailUrl:" + poiDetailResult.detailUrl);
             mDetailUrlList.add(poiDetailResult.detailUrl);
-            NearbyInfo nearbyInfo = new NearbyInfo(poiDetailResult.getName(), null, poiDetailResult.getType(), (int) poiDetailResult.getFacilityRating(), poiDetailResult.getPrice(), poiDetailResult.getTelephone(), poiDetailResult.getAddress());
+            Log.e("error", "shopHours=" + poiDetailResult.getShopHours() + "favoriteNum=" + poiDetailResult.getFacilityRating());
+            NearbyInfo nearbyInfo = new NearbyInfo(poiDetailResult.getName(), null, "营业时间：" + poiDetailResult.getShopHours(), "评分：" + poiDetailResult.getOverallRating(), poiDetailResult.getPrice(), poiDetailResult.getTelephone(), poiDetailResult.getAddress());
             mNearbyInfoList.add(nearbyInfo);
         }
         mHandler.sendEmptyMessage(0);

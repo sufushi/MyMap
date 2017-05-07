@@ -31,8 +31,11 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera" />        <!-- 使用照相机权限 -->
-    <uses-feature android:name="android.hardware.camera.autofocus" />   <!-- 自动聚焦权限 -->
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
+    <uses-feature android:name="android.hardware.camera" /> <!-- 使用照相机权限 -->
+    <uses-feature android:name="android.hardware.camera.autofocus" /> <!-- 自动聚焦权限 -->
 
     <supports-screens
         android:anyDensity="true"
@@ -58,6 +61,10 @@
             android:name="com.baidu.location.f"
             android:enabled="true"
             android:process=":remote" />
+        <service
+            android:name="com.baidu.trace.LBSTraceService"
+            android:enabled="true"
+            android:process=":remote" />
 
         <activity
             android:name=".activity.MainActivity"
@@ -76,21 +83,19 @@
             android:name=".activity.PayActivity"
             android:screenOrientation="portrait"
             android:theme="@style/DialogStyleBottom"
-            android:windowSoftInputMode="stateVisible"
-            >
-        </activity>
+            android:windowSoftInputMode="stateVisible" />
         <activity android:name=".activity.RouteActivity" />
         <activity android:name=".activity.FriendsListActivity" />
         <activity android:name=".activity.ChatActivity" />
-        <activity android:name=".activity.CountActivity"
-            android:windowSoftInputMode="stateVisible"
+        <activity
+            android:name=".activity.CountActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            />
-        <activity android:name=".activity.WalletActivity"/>
-        <activity android:name=".activity.AddFriendsActivity"
+            android:windowSoftInputMode="stateVisible" />
+        <activity android:name=".activity.WalletActivity" />
+        <activity
+            android:name=".activity.AddFriendsActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="stateVisible"
-            />
+            android:windowSoftInputMode="stateVisible" />
         <activity android:name=".activity.PersonCenterActivity" />
         <activity android:name=".activity.NearbyActivity" />
         <activity android:name=".activity.NearbyInfoActivity" />
@@ -110,10 +115,11 @@
         <activity android:name=".activity.WalkRoutePlanActivity" />
         <activity android:name=".activity.DrivingRoutePlanActivity" />
         <activity android:name=".activity.MessageListActivity" />
-        <activity android:name=".activity.FriendsDetailsActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity
+            android:name=".activity.FriendsDetailsActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".activity.TicketListActivity" />
-        <activity android:name=".activity.BikingRoutePlanActivity"/>
+        <activity android:name=".activity.BikingRoutePlanActivity" />
         <activity android:name=".activity.GuideActivity" />
         <activity android:name=".activity.NearbyStationActivity" />
         <activity android:name=".activity.BusLineListActivity" />
@@ -122,12 +128,20 @@
         <activity
             android:name=".activity.PayTicketActivity"
             android:theme="@style/DialogStyleBottom" />
-        <activity android:name=".activity.BikeGuideActivity"></activity>
-        <activity android:name=".activity.FootprintActivity"/>
-        <activity android:name=".activity.CaptureActivity"/>
-        <activity android:name=".activity.CollectionActivity"/>
+        <activity android:name=".activity.BikeGuideActivity" />
+        <activity android:name=".activity.FootprintActivity" />
+        <activity android:name=".activity.CaptureActivity" />
+        <activity android:name=".activity.CollectionActivity" />
+        <activity android:name=".activity.QCCodeActivity" />
+        <activity android:name=".activity.TraceActivity" />
+
+        <service
+            android:name=".service.TraceService"
+            android:enabled="true"
+            android:process="system" />
+
+        <activity android:name=".activity.TraceHistoryActivity"></activity>
         <activity android:name=".activity.PhotoActivity"/>
-        <activity android:name=".activity.QCCodeActivity"> </activity>
     </application>
 
 </manifest>

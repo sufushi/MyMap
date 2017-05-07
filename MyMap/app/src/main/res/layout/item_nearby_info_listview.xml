@@ -8,6 +8,7 @@
     android:layout_marginTop="6dp">
 
     <ImageView
+        android:visibility="gone"
         android:id="@+id/iv_picture"
         android:layout_width="80dp"
         android:layout_height="80dp"
@@ -37,33 +38,47 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginLeft="4dp">
             <ImageView
-                android:id="@+id/i_star1"
+                android:visibility="gone"
+                android:id="@+id/iv_star1"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:src="@drawable/star"/>
             <ImageView
-                android:id="@+id/i_star2"
+                android:visibility="gone"
+                android:id="@+id/iv_star2"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:src="@drawable/star"/>
             <ImageView
-                android:id="@+id/i_star3"
+                android:visibility="gone"
+                android:id="@+id/iv_star3"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:src="@drawable/star"/>
             <ImageView
-                android:id="@+id/i_star4"
+                android:visibility="gone"
+                android:id="@+id/iv_star4"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:src="@drawable/star"/>
             <ImageView
-                android:id="@+id/i_star5"
+                android:visibility="gone"
+                android:id="@+id/iv_star5"
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:src="@drawable/star"/>
-
+            <TextView
+                android:id="@+id/tv_rank"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="评分：3.8"
+                android:textColor="#a4a3a3"
+                android:textSize="15sp"
+                android:layout_marginLeft="2dp"/>
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -74,12 +89,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="人均：￥" />
+                android:text="人均：￥"
+                android:textColor="#a4a3a3"/>
             <TextView
                 android:id="@+id/tv_cost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="32"
+                android:textColor="#a4a3a3"
                 android:layout_marginRight="4dp"/>
 
         </LinearLayout>
@@ -89,6 +106,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp">
             <TextView
+                android:visibility="gone"
                 android:id="@+id/tv_kind"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -101,19 +119,54 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="760m"
+                android:visibility="gone"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="4dp"/>
+            <TextView
+                android:id="@+id/tv_show_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:text="营业时间：8:00-21:30 周一至周日"
+                android:textSize="15sp"
+                android:singleLine="true"
+                android:textColor="#484747"/>
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/tv_telephone"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="15019754401"
-            android:textSize="14sp"
-            android:gravity="right"
-            android:layout_marginRight="4dp"
-            android:layout_marginTop="3dp"/>
+            android:orientation="horizontal"
+            android:layout_marginTop="3dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="联系方式："
+                android:textSize="12sp"
+                android:textColor="#a4a3a3"
+                android:layout_marginLeft="6dp"/>
+            <TextView
+                android:id="@+id/tv_telephone"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="15019754401"
+                android:singleLine="true"
+                android:textSize="14sp"
+                android:textColor="#a4a3a3"
+                android:gravity="left"
+                android:layout_marginLeft="2dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="点击进入详情 >"
+                android:textColor="#277cf2"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:layout_marginRight="4dp"/>
+        </LinearLayout>
+
+
 
     </LinearLayout>
 </LinearLayout>

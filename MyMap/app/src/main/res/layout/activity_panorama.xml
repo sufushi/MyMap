@@ -1,32 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.rdc.mymap.activity.PanoramaActivity">
 
-    <com.baidu.lbsapi.panoramaview.PanoramaView
-        android:id="@+id/pv"
-        android:clickable="true"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:background="#00ffffff">
+        <LinearLayout
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="#00ffffff">
 
-        <com.baidu.mapapi.map.MapView
-            android:id="@+id/mv"
+            <com.baidu.mapapi.map.MapView
+                android:id="@+id/mv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                android:clickable="true">
+            </com.baidu.mapapi.map.MapView>
+        </LinearLayout>
+
+        <com.baidu.lbsapi.panoramaview.PanoramaView
+            android:id="@+id/pv"
+            android:clickable="true"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="10dp"
-            android:clickable="true">
-        </com.baidu.mapapi.map.MapView>
-    </LinearLayout>
+            android:layout_height="match_parent"/>
 
-</RelativeLayout>
+    </RelativeLayout>
+
+</FrameLayout>

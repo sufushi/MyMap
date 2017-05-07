@@ -29,6 +29,58 @@
             android:layout_centerInParent="true" />
     </RelativeLayout>
 
-    <include layout="@layout/layout_mymenu"/>
+    <com.rdc.mymap.view.CircleImageView
+        android:id="@+id/civ_bicycle"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_below="@+id/rl_title"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/ofo"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/tv_bicycle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/civ_bicycle"
+        android:text="ofo单车"
+        android:textColor="#1b1515"
+        android:textSize="18sp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="10dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/tv_ofo_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_bicycle"
+        android:text="密码：123456"
+        android:textColor="#1b1515"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/iv_check"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_below="@+id/tv_ofo_password"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/check"/>
+
+    <TextView
+        android:id="@+id/tv_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_check"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:layout_marginTop="4dp"
+        android:text="解锁成功"
+        android:textColor="#0c0cf1"
+        android:textSize="20sp"/>
 
 </RelativeLayout>

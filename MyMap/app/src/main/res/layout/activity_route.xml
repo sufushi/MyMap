@@ -34,7 +34,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="4dp"
             android:padding="10dp"
-            android:src="@drawable/search" />
+            android:src="@drawable/search_pressed" />
     </RelativeLayout>
 
     <LinearLayout
@@ -88,7 +88,8 @@
             android:gravity="center"
             android:text="出租车"
             android:textSize="14sp"
-            android:textColor="#ffffff"/>
+            android:textColor="#ffffff"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

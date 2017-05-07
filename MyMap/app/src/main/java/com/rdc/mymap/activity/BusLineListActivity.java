@@ -88,6 +88,8 @@ public class BusLineListActivity extends Activity implements View.OnClickListene
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("bus_stations", mBusStationInfoList.get(position));
                 intent.putExtras(bundle);
+                intent.putExtra("price", mBusInfoList.get(position).getBusPrice());
+                Log.e("error", mBusInfoList.get(position).getBusPrice() + "");
                 startActivity(intent);
             }
         });

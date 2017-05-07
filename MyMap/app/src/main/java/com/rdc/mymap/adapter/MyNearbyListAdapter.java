@@ -45,9 +45,10 @@ public class MyNearbyListAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.item_nearby_info_listview, null, false);
             viewHolder = new ViewHolder();
             viewHolder.pictureImageView = (ImageView) convertView.findViewById(R.id.iv_picture);
+            viewHolder.rankTextView = (TextView) convertView.findViewById(R.id.tv_rank);
             viewHolder.restaurantTextView = (TextView) convertView.findViewById(R.id.tv_restaurant);
             viewHolder.costTextView = (TextView) convertView.findViewById(R.id.tv_cost);
-            viewHolder.kindTextView = (TextView) convertView.findViewById(R.id.tv_kind);
+            viewHolder.kindTextView = (TextView) convertView.findViewById(R.id.tv_show_time);
             viewHolder.telephoneTextView = (TextView) convertView.findViewById(R.id.tv_telephone);
             convertView.setTag(viewHolder);
         } else {
@@ -55,6 +56,7 @@ public class MyNearbyListAdapter extends BaseAdapter {
         }
         //viewHolder.pictureImageView.setImageBitmap(mFoodInfoList.get(position).getPicture());
         viewHolder.pictureImageView.setImageResource(R.drawable.pikaqiu);
+        viewHolder.rankTextView.setText(mFoodInfoList.get(position).getRank());
         viewHolder.restaurantTextView.setText(mFoodInfoList.get(position).getName());
         viewHolder.costTextView.setText(mFoodInfoList.get(position).getCost() + "");
         viewHolder.kindTextView.setText(mFoodInfoList.get(position).getKind());
@@ -64,6 +66,7 @@ public class MyNearbyListAdapter extends BaseAdapter {
 
     class ViewHolder {
         ImageView pictureImageView;
+        TextView rankTextView;
         TextView restaurantTextView;
         TextView costTextView;
         TextView kindTextView;

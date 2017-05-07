@@ -8,12 +8,12 @@ public class NearbyInfo {
     private String mAddress;
     private Bitmap mPicture;
     private String mKind;
-    private int mRank;
+    private String mRank;
     private double mCost;
     private String mTelephone;
     //private double mDistance;
 
-    public NearbyInfo(String mName, Bitmap mPicture, String mKind, int mRank, double mCost, String telephone, String address) {
+    public NearbyInfo(String mName, Bitmap mPicture, String mKind, String mRank, double mCost, String telephone, String address) {
         this.mName = mName;
         this.mAddress = address;
         this.mPicture = mPicture;
@@ -56,11 +56,11 @@ public class NearbyInfo {
         this.mKind = mKind;
     }
 
-    public int getRank() {
+    public String getRank() {
         return mRank;
     }
 
-    public void setRank(int mRank) {
+    public void setRank(String mRank) {
         this.mRank = mRank;
     }
 

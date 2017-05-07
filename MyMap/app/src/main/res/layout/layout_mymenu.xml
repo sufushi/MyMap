@@ -110,7 +110,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bluegoggo"/>
+            android:background="@drawable/bluegogo"/>
         <View
             android:layout_width="8dp"
             android:layout_height="match_parent"/>

@@ -100,7 +100,7 @@ public class NearbyStationActivity extends Activity implements View.OnClickListe
     private void onGetPoiInfoList() {
         for(int i = 0; i < mPoiInfoList.size(); i ++) {
             PoiInfo poiInfo = mPoiInfoList.get(i);
-            NearbyInfo nearbyInfo = new NearbyInfo(poiInfo.name, null, "", 0, 0, "", poiInfo.address);
+            NearbyInfo nearbyInfo = new NearbyInfo(poiInfo.name, null, "", "", 0, "", poiInfo.address);
             mNearbyStationList.add(nearbyInfo);
             Log.e("error", "name:" + poiInfo.name + "address:" + poiInfo.address);
         }
