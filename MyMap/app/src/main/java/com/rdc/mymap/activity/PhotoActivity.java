@@ -131,9 +131,11 @@ public class PhotoActivity extends Activity implements View.OnClickListener{
         shareMsg("皮皮虾出行","msgTitle","msg",path);
     }
     private void setLocalPhoto(){
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 2;
         path = intent.getStringExtra("path");
         if(path != null){
-            Bitmap bitmap = BitmapFactory.decodeFile(path);
+            Bitmap bitmap = BitmapFactory.decodeFile(path,options);
             if(bitmap != null) {
                 mainImageView.setImageBitmap(bitmap);
             }

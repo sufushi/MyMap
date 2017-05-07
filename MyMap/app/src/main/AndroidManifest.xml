@@ -110,6 +110,8 @@
             android:screenOrientation="sensor" />
         <activity android:name=".activity.BusRoutePlanActivity" />
         <activity android:name=".activity.WebViewActivity" />
+        <activity android:name=".activity.RegisterActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity android:name=".activity.SearchLocationActivity" />
         <activity android:name=".activity.WalkRoutePlanActivity" />
         <activity android:name=".activity.DrivingRoutePlanActivity" />

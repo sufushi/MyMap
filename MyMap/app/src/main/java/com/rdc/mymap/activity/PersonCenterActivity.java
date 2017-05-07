@@ -162,7 +162,11 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
                 }
                 break;
             case R.id.rl_message:
-                startMessageActivity();
+                if (mPreferences.getBoolean(SharePreferencesConfig.ISLOGIN_BOOLEAN, false)) {
+                    startMessageActivity();
+                } else {
+                    Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.ll_footprint:
 //                startActivityForResult(new Intent(PersonCenterActivity.this, CaptureActivity.class), REQUEST_QR_SCAN);
@@ -176,7 +180,11 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
                 }
                 break;
             case R.id.ll_ticket:
-                startTicketListActivity();
+                if (mPreferences.getBoolean(SharePreferencesConfig.ISLOGIN_BOOLEAN, false)) {
+                    startTicketListActivity();
+                } else {
+                    Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.ll_friends:
                 if (mPreferences.getBoolean(SharePreferencesConfig.ISLOGIN_BOOLEAN, false)) {
