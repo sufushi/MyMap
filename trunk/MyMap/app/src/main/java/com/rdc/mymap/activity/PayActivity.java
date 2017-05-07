@@ -110,7 +110,7 @@ public class PayActivity extends Activity implements View.OnClickListener, TextW
         mPasswordEditText.addTextChangedListener(this);
     }
     private void check(){
-        if(mPasswordEditText.getText().toString().equals("666666")) {
+        if(mPasswordEditText.getText().toString().equals("123456")) {
             Log.d(TAG,"OK!");
             Intent intent = getIntent();
             final int money = intent.getIntExtra("money",-1);

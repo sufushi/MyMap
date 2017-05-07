@@ -52,7 +52,7 @@ public class DetailsActivity extends Activity implements View.OnClickListener {
     private static final int DIALOG_SIGN = 4;
     private SharedPreferences mPreferences;
     private SharedPreferences.Editor mEditor;
-    
+
     private TextView mLogoutTextView;
     private TextView mUserNameTextView;
     private LinearLayout mUserNameLinearlayout;
@@ -157,8 +157,20 @@ public class DetailsActivity extends Activity implements View.OnClickListener {
                 finish();
                 break;
             case R.id.tv_logout:
-                LoginOut();
-                finish();
+                new AlertDialog.Builder(this)
+                        .setMessage("注销将会删除相册以及通讯消息 \n 确定退出吗？")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                LoginOut();
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        }).create().show();
                 break;
             case R.id.ll_area:
                 areaDialog();

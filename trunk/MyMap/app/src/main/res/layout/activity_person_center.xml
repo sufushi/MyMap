@@ -240,40 +240,10 @@
                     android:layout_marginRight="10dp"/>
             </LinearLayout>
             <LinearLayout
-                android:id="@+id/ll_order"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_below="@+id/ll_collection"
-                android:layout_marginTop="0.5dp"
-                android:background="#ffffff"
-                android:orientation="horizontal">
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/order"
-                    android:layout_margin="8dp"
-                    android:layout_gravity="center" />
-                <TextView
-                    android:textColor="@android:color/black"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="订单"
-                    android:textSize="16sp"
-                    android:layout_margin="5dp"
-                    android:layout_gravity="center"/>
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/go"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginRight="10dp"/>
-            </LinearLayout>
-            <LinearLayout
                 android:id="@+id/ll_about"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_below="@+id/ll_order"
+                android:layout_below="@+id/ll_collection"
                 android:layout_marginTop="0.5dp"
                 android:background="#ffffff"
                 android:orientation="horizontal">
