@@ -3,6 +3,7 @@ package com.rdc.mymap.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.BaseAdapter> {
 
     private ArrayList<ItemModel> dataList = new ArrayList<>();
     private DataBaseHelper dataBaseHelper;
+    private MyItemClickListener mItemClickListener;
     public ChatAdapter(Context context){
         dataBaseHelper = new DataBaseHelper(context,"Data.db",1);
     }
@@ -79,13 +81,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.BaseAdapter> {
         }
     }
 
-    private class ChatAViewHolder extends BaseAdapter {
+    private class ChatAViewHolder extends BaseAdapter implements View.OnClickListener {
         private CircleImageView ic_user;
         private TextView tv;
 
         public ChatAViewHolder(View view) {
             super(view);
             ic_user = (CircleImageView) itemView.findViewById(R.id.ic_user);
+            ic_user.setOnClickListener(this);
             tv = (TextView) itemView.findViewById(R.id.tv);
         }
 
@@ -98,9 +101,16 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.BaseAdapter> {
             else ic_user.setImageResource(R.drawable.pikaqiu);
             tv.setText(model.getContent());
         }
+
+        @Override
+        public void onClick(View v) {
+            if (mItemClickListener != null) {
+                mItemClickListener.onItemClick(v, getPosition());
+            }
+        }
     }
 
-    private class ChatBViewHolder extends BaseAdapter {
+    private class ChatBViewHolder extends BaseAdapter  {
         private CircleImageView ic_user;
         private TextView tv;
 
@@ -119,5 +129,20 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.BaseAdapter> {
             else ic_user.setImageResource(R.drawable.pikaqiu);
             tv.setText(model.getContent());
         }
+
+
+    }
+
+    public interface MyItemClickListener {
+        void onItemClick(View view, int position);
+    }
+
+    /**
+     * 在activity里面adapter就是调用的这个方法,将点击事件监听传递过来,并赋值给全局的监听
+     *
+     * @param myItemClickListener
+     */
+    public void setItemClickListener(ChatAdapter.MyItemClickListener myItemClickListener) {
+        this.mItemClickListener = myItemClickListener;
     }
 }

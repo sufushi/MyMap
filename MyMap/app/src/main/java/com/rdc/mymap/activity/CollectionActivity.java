@@ -2,6 +2,7 @@ package com.rdc.mymap.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -13,6 +14,7 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -171,7 +173,22 @@ public class CollectionActivity extends Activity implements View.OnClickListener
                 // Show an expanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
-                return true;
+
+                new AlertDialog.Builder(this)
+                        .setMessage("该相册需要赋予访问相机的权限，不开启将无法正常工作！\n请到权限管理处开启！")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        }).create().show();
+                return false;
 
             } else {
 
@@ -195,8 +212,22 @@ public class CollectionActivity extends Activity implements View.OnClickListener
                 // Show an expanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
-                return true;
-            } else {
+                 new AlertDialog.Builder(this)
+                        .setMessage("该相册需要赋予访问存储的权限，不开启将无法正常工作！\n请到权限管理处开启！")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        }).create().show();
+                return false;
+            } else {//false
 
                 // No explanation needed, we can request the permission.
 

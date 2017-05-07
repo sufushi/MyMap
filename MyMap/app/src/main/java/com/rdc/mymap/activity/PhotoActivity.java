@@ -154,9 +154,13 @@ public class PhotoActivity extends Activity implements View.OnClickListener{
             public void run() {
                 Bitmap bitmap = HttpUtil.getPhpop(intent.getIntExtra("id",0));
                 if(bitmap != null){
-                    File file = new File(Environment.getExternalStorageState(),"share.jpg");
-                    path = file.getPath();
-                    if(file.exists()) file.delete();
+                    Log.d(TAG," setURLPhoto bitmap != null");
+                    File destDir = new File(Environment.getExternalStorageDirectory()+"/CollectionPhoto");
+                    if (!destDir.exists()) {
+                        destDir.mkdirs();
+                    }
+                    File file = new File(destDir, "share.jpg");
+                    path =  file.getPath();
                     FileOutputStream out = null;
                     try {
                         out = new FileOutputStream(file);
@@ -190,9 +194,9 @@ public class PhotoActivity extends Activity implements View.OnClickListener{
                 intent.putExtra(Intent.EXTRA_STREAM, u);
             }
         }
-        intent.putExtra(Intent.EXTRA_SUBJECT, msgTitle);
-        intent.putExtra(Intent.EXTRA_TEXT, msgText);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        intent.putExtra(Intent.EXTRA_SUBJECT, msgTitle);
+//        intent.putExtra(Intent.EXTRA_TEXT, msgText);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(Intent.createChooser(intent, activityTitle));
     }
 }

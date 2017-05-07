@@ -83,9 +83,9 @@ public class AddFriendsActivity extends Activity implements View.OnClickListener
                         mAreaEditText.setText(userObject.getaddress());
                         mUserNameEditText.setText(userObject.getUsername());
                         if (userObject.getGender() == 1) {
-                            mMaleSpinner.setSelection(1);
-                        } else {
                             mMaleSpinner.setSelection(0);
+                        } else {
+                            mMaleSpinner.setSelection(1);
                         }
                         relativeLayout.setVisibility(View.VISIBLE);
                     } catch (JSONException e) {

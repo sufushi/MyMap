@@ -87,13 +87,12 @@
         <activity android:name=".activity.RouteActivity" />
         <activity android:name=".activity.FriendsListActivity" />
         <activity android:name=".activity.ChatActivity" />
-        <activity
-            android:name=".activity.CountActivity"
+        <activity android:name=".activity.CountActivity"
+            android:windowSoftInputMode="stateVisible"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="stateVisible" />
-        <activity android:name=".activity.WalletActivity" />
-        <activity
-            android:name=".activity.AddFriendsActivity"
+            />
+        <activity android:name=".activity.WalletActivity"/>
+        <activity android:name=".activity.AddFriendsActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="stateVisible" />
         <activity android:name=".activity.PersonCenterActivity" />

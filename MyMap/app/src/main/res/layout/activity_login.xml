@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#f7f4f4"
-    tools:context="com.rdc.mymap.activity.LoginActivity"
-    >
+    tools:context="com.rdc.mymap.activity.LoginActivity">
 
     <RelativeLayout
         android:id="@+id/rl_title"
@@ -31,35 +30,39 @@
             android:textSize="18sp" />
         />
     </RelativeLayout>
+
     <LinearLayout
-        android:layout_marginTop="20dp"
-        android:layout_below="@id/rl_title"
         android:id="@+id/ll_logo"
-        android:gravity="center"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl_title"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
         <ImageView
-            android:src="@drawable/logo"
             android:layout_width="100dp"
-            android:layout_height="100dp" />
+            android:layout_height="100dp"
+            android:src="@drawable/logo" />
+
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="皮皮虾出行"
             android:textColor="@android:color/black"
-            android:textSize="18sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:textSize="18sp" />
     </LinearLayout>
+
     <LinearLayout
-        android:layout_below="@id/ll_logo"
         android:id="@+id/ll_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingTop="20dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/ll_logo"
+        android:orientation="vertical"
+        android:paddingTop="20dp">
 
         <LinearLayout
             android:id="@+id/ll_username"
@@ -72,36 +75,37 @@
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/til_username"
-                android:textColorHint="@android:color/black"
-                app:hintTextAppearance="@style/TextInputLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                >
+                android:textColorHint="@android:color/black"
+                app:hintTextAppearance="@style/TextInputLayoutStyle">
+
                 <EditText
-                    android:theme="@style/EditTextStyle"
-                    android:singleLine="true"
-                    android:maxLength="12"
-                    android:imeOptions="actionNext"
                     android:id="@+id/et_username"
-                    android:hint="用户名"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:hint="用户名"
+                    android:imeOptions="actionNext"
+                    android:maxLength="12"
+                    android:singleLine="true"
+                    android:theme="@style/EditTextStyle" />
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/ll_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingBottom="20dp"
             android:paddingLeft="30dp"
-            android:paddingRight="30dp">
-
+            android:paddingRight="30dp"
+            android:weightSum="100">
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/til_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:textColorHint="@android:color/black"
                 app:hintTextAppearance="@style/TextInputLayoutStyle">
 
@@ -115,42 +119,66 @@
                     android:maxLength="16"
                     android:theme="@style/EditTextStyle" />
             </android.support.design.widget.TextInputLayout>
-        </LinearLayout>
 
-        <LinearLayout
-            android:paddingLeft="30dp"
-            android:paddingRight="30dp"
-            android:weightSum="100"
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingBottom="20dp">
+            android:paddingBottom="20dp"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:weightSum="100">
+
             <cn.xm.weidongjian.progressbuttonlib.ProgressButton
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="15dp"
-                android:layout_weight="50"
-                android:paddingLeft="10dp"
-                android:text="登录"
-                android:layout_gravity="center"
-                android:textColor="@android:color/black"
-                android:textSize="16sp"
+                android:layout_centerHorizontal="true"
                 android:id="@+id/pb_enter"
-                android:background="@drawable/bg_progressbutton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <cn.xm.weidongjian.progressbuttonlib.ProgressButton
-                android:layout_marginRight="5dp"
-                android:layout_marginLeft="15dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_progressbutton"
+                android:text="登录"
+                android:paddingLeft="110dp"
+                android:paddingRight="110dp"
+                android:textColor="@android:color/black" />
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:weightSum="100"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
                 android:layout_weight="50"
-                android:text="注册"
-                android:gravity="center"
-                android:paddingLeft="20dp"
-                android:textColor="@android:color/black"
-                android:textSize="16sp"
-                android:background="@drawable/bg_progressbutton"
-                android:id="@+id/pb_register"
+                android:id="@+id/tv_password"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="忘记密码"
+                android:layout_marginRight="5dp"
+                android:textColor="#17abe3"
+                android:textSize="16sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="|"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                />
+            <TextView
+                android:layout_weight="50"
+                android:id="@+id/tv_register"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:layout_marginLeft="5dp"
+                android:text="立即注册"
+                android:textColor="#707070"
+                android:textSize="16sp" />
         </LinearLayout>
+
     </LinearLayout>
 </RelativeLayout>

@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -15,9 +16,17 @@ import android.widget.Toast;
 
 import com.rdc.mymap.R;
 import com.rdc.mymap.config.SharePreferencesConfig;
+import com.rdc.mymap.config.URLConfig;
 import com.rdc.mymap.database.DataBaseHelper;
 import com.rdc.mymap.model.UserObject;
+import com.rdc.mymap.utils.HttpUtil;
 import com.rdc.mymap.view.CircleImageView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by wsoyz on 2017/4/8.
@@ -27,9 +36,11 @@ public class FriendsDetailsActivity extends Activity implements View.OnClickList
     private static final String TAG = "DetailsActivity";
     private static final int OK = 1;
     private static final int NOTOK = 2;
+    private final static int GET_DETAILS = 3;
+    private final static int GET_PHOTO = 4;
     private SharedPreferences mPreferences;
     private SharedPreferences.Editor mEditor;
-    
+
     private TextView mMessageTextView;
     private TextView mUserNameTextView;
     private TextView mAreaTextView;
@@ -40,6 +51,8 @@ public class FriendsDetailsActivity extends Activity implements View.OnClickList
     private ImageView mBackImageView;
     private UserObject userObject;
     private DataBaseHelper mDataBaseHelper;
+    private Bitmap bitmap = null;
+    private boolean isFriends = true;
     private boolean male = true;
     private Handler mHandler = new Handler() {
         @Override
@@ -49,6 +62,20 @@ public class FriendsDetailsActivity extends Activity implements View.OnClickList
                     Toast.makeText(FriendsDetailsActivity.this, msg.getData().getString("message"), Toast.LENGTH_SHORT).show();
                     break;
                 case NOTOK:
+                    break;
+                case GET_DETAILS:
+                    isFriends = false;
+                    mMessageTextView.setVisibility(View.INVISIBLE);
+                    mUserNameTextView.setText(userObject.getUsername());
+                    mAreaTextView.setText(userObject.getaddress());
+                    mSignatureTextView.setText(userObject.getSignature());
+                    mPhoneTextView.setText(userObject.getPhoneNumber());
+                    if (userObject.getGender() == 1) mMaleImageView.setImageResource(R.drawable.male);
+                    else mMaleImageView.setImageResource(R.drawable.female);
+                    break;
+                case GET_PHOTO:
+                    isFriends = false;
+                    if (bitmap != null) mPhotoCircleImageView.setImageBitmap(bitmap);
                     break;
                 default:
                     Toast.makeText(FriendsDetailsActivity.this, msg.getData().getString("message"), Toast.LENGTH_SHORT).show();
@@ -66,9 +93,7 @@ public class FriendsDetailsActivity extends Activity implements View.OnClickList
 
     @Override
     protected void onResume() {
-        Bitmap bm = mDataBaseHelper.getUserPhotoToBitmap(userObject.getUserId());
-        if (bm != null) mPhotoCircleImageView.setImageBitmap(bm);
-        else mPhotoCircleImageView.setImageResource(R.drawable.pikaqiu);
+        init();
         super.onResume();
     }
 
@@ -78,8 +103,14 @@ public class FriendsDetailsActivity extends Activity implements View.OnClickList
             finish();
         }
         mDataBaseHelper = new DataBaseHelper(this, "Data.db", 1);
-        userObject = mDataBaseHelper.getUserObjict(getIntent().getIntExtra("id",-1));
-        if(userObject == null) finish();
+        userObject = mDataBaseHelper.getUserObjict(getIntent().getIntExtra("id", -1));
+        if (userObject == null) {
+            isFriends = false;
+            userObject = new UserObject(getIntent().getIntExtra("id", -1),"非好友",1,"","","");
+            getUserObject(userObject.getUserId());
+            getUserPhoto(userObject.getUserId());
+        }
+
         mMessageTextView = (TextView) findViewById(R.id.tv_message);
         mMessageTextView.setOnClickListener(this);
 
@@ -88,7 +119,7 @@ public class FriendsDetailsActivity extends Activity implements View.OnClickList
         mPhotoCircleImageView = (CircleImageView) findViewById(R.id.civ_photo);
         mPhotoCircleImageView.setOnClickListener(this);
 
-        Bitmap bm = mDataBaseHelper.getUserPhotoToBitmap(mPreferences.getInt(SharePreferencesConfig.ID_INT, 0));
+        Bitmap bm = mDataBaseHelper.getUserPhotoToBitmap(userObject.getUserId());
         if (bm != null) mPhotoCircleImageView.setImageBitmap(bm);
         else mPhotoCircleImageView.setImageResource(R.drawable.pikaqiu);
 
@@ -105,7 +136,7 @@ public class FriendsDetailsActivity extends Activity implements View.OnClickList
         mPhoneTextView.setText(userObject.getPhoneNumber());
 
         mMaleImageView = (ImageView) findViewById(R.id.iv_male);
-        if(userObject.getGender() == 1)mMaleImageView.setImageResource(R.drawable.male);
+        if (userObject.getGender() == 1) mMaleImageView.setImageResource(R.drawable.male);
         else mMaleImageView.setImageResource(R.drawable.female);
     }
 
@@ -126,15 +157,63 @@ public class FriendsDetailsActivity extends Activity implements View.OnClickList
         }
     }
 
+    private void getUserObject(final int id) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("userId", id + "");
+                String result = HttpUtil.submitPostData(params, "utf-8", URLConfig.ACTION_SEARCH_FRIENDS_ID);
+                Log.d(TAG, " GetUserMessage result;" + result);
+                if (result == "") {
+                    return;
+                } else {
+                    try {
+                        JSONObject jsonObject = new JSONObject(result);
+                        userObject = new UserObject(jsonObject);
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("case", GET_DETAILS);
+                        Message message = new Message();
+                        message.setData(bundle);
+                        mHandler.sendMessage(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+    }
+
+    private void getUserPhoto(final int id) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                bitmap = HttpUtil.getPhpop(id);
+                Log.d(TAG, " GetUserPhoto !");
+                if (bitmap == null) {
+                    return;
+                } else {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("case", GET_PHOTO);
+                    Message message = new Message();
+                    message.setData(bundle);
+                    mHandler.sendMessage(message);
+                }
+            }
+        }).start();
+    }
+
     private void startChatActivity() {
         Intent intent = new Intent(FriendsDetailsActivity.this, ChatActivity.class);
-        intent.putExtra("id",userObject.getUserId());
+        intent.putExtra("id", userObject.getUserId());
         startActivity(intent);
     }
+
     private void startPhotoActivity() {
         Intent intent = new Intent(FriendsDetailsActivity.this, PhotoActivity.class);
-        intent.putExtra("type",PhotoActivity.TYPE_USER_PHOTO);
-        intent.putExtra("id",userObject.getUserId());
+        if(isFriends) intent.putExtra("type", PhotoActivity.TYPE_USER_PHOTO);
+        else intent.putExtra("type", PhotoActivity.TYPE_URL_PHOTO);
+        intent.putExtra("id", userObject.getUserId());
         startActivity(intent);
     }
 

@@ -206,6 +206,7 @@ public class FriendsListActivity extends Activity implements View.OnClickListene
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(this, FriendsDetailsActivity.class);
+        Log.d(TAG," check position is"+position+" name is "+list.get(position).getUserObject().getUsername()+" id is "+list.get(position).getUserObject().getUserId());
         intent.putExtra("id",list.get(position).getUserObject().getUserId());
         startActivity(intent);
     }

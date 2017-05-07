@@ -1,11 +1,13 @@
 package com.rdc.mymap.activity;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -48,11 +50,12 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
     private SharedPreferences.Editor mEditor;
 
     private ImageView mBackImageView;
+    private TextView mForgetTextView;
+    private TextView mRegisterTextView;
     private EditText mUserNameEditText;
     private EditText mPasswordEditText;
     private ProgressButton mEnterProgressButton;
     private DataBaseHelper mDataBaseHelper;
-    private ProgressButton mRegisterProgressButton;
     private int i = 0;
     private Handler mHandler = new Handler() {
         @Override
@@ -73,15 +76,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
                             mEnterProgressButton.animError();
                             mEnterProgressButton.setText("登录");
                             break;
-                        case STATE_REGISTER:
-                            mRegisterProgressButton.animError();
-                            mRegisterProgressButton.setText("注册");
-                            break;
                         default:
-                            mRegisterProgressButton.removeDrawable();
-                            mEnterProgressButton.removeDrawable();
-                            mRegisterProgressButton.setText("注册");
-                            mEnterProgressButton.setText("登录");
                             break;
                     }
                     Toast.makeText(LoginActivity.this,msg.getData().getString("message"),Toast.LENGTH_SHORT).show();
@@ -99,8 +94,10 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
     }
 
     private void init() {
-        mRegisterProgressButton = (ProgressButton)findViewById(R.id.pb_register);
-        mRegisterProgressButton.setOnClickListener(this);
+        mForgetTextView = (TextView) findViewById(R.id.tv_password);
+        mForgetTextView.setOnClickListener(this);
+        mRegisterTextView = (TextView) findViewById(R.id.tv_register);
+        mRegisterTextView.setOnClickListener(this);
         mBackImageView = (ImageView) findViewById(R.id.iv_back);
         mBackImageView.setOnClickListener(this);
         mUserNameEditText = (EditText) findViewById(R.id.et_username);
@@ -133,19 +130,25 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
                     mEnterProgressButton.setText("登录");
                 }
                 break;
-            case R.id.pb_register:
-                mRegisterProgressButton.startRotate();
-                mRegisterProgressButton.setText("注册中");
-                mUserNameEditText.setEnabled(false);
-                mPasswordEditText.setEnabled(false);
-                if (check()) {
-                    register();
-                } else {
-                    mUserNameEditText.setEnabled(true);
-                    mPasswordEditText.setEnabled(true);
-                    mRegisterProgressButton.animError();
-                    mEnterProgressButton.setText("登录");
-                }
+            case R.id.tv_password:
+                Log.d(TAG," check!@@");
+                new AlertDialog.Builder(this)
+                        .setMessage("请联系客服QQ549220297")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+//                                finish();
+                            }
+                        })
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+//                                finish();
+                            }
+                        }).create().show();
+                break;
+            case R.id.tv_register:
+                startRegisterActivity();
                 break;
             default:
                 break;
@@ -260,15 +263,10 @@ public class LoginActivity extends Activity implements View.OnClickListener, Tex
         return true;
     }
 
-    private void startDetailsActivity(){
-        Intent intent = new Intent(LoginActivity.this,DetailsActivity.class);
+
+    private void startRegisterActivity(){
+        Intent intent = new Intent(LoginActivity.this,RegisterActivity.class);
         startActivity(intent);
-        finish();
-    }
-    private void startPersonCenterActivity(){
-        Intent intent = new Intent(LoginActivity.this,PersonCenterActivity.class);
-        startActivity(intent);
-        finish();
     }
 
     @Override
