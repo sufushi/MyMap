@@ -49,6 +49,7 @@ public class AboutActivity extends Activity implements View.OnClickListener {
         mBackImageView = (ImageView) findViewById(R.id.iv_back);
         mainWebView = (WebView) findViewById(R.id.wb_main);
         mainWebView.getSettings().setJavaScriptEnabled(true);
+        mainWebView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
         mainWebView.getSettings().setSupportMultipleWindows(true);
         mainWebView.loadUrl("http://www.walmt.cn/pipixia/html/about.html");
 //        Log.d(TAG,mainWebView.getUrl());
