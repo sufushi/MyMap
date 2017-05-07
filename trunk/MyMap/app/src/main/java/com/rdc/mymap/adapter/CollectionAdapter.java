@@ -62,7 +62,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Ba
             ViewGroup.LayoutParams params = ivImage.getLayoutParams();
             //设置图片的相对于屏幕的宽高比
             params.width = screenwidth/3;
-            params.height =  (int) (200 + Math.random() * 400) ;
+            params.height =  screenwidth/3;
             ivImage.setLayoutParams(params);
         }
         @Override

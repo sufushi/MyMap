@@ -45,7 +45,7 @@ import java.util.TimerTask;
  * Created by wsoyz on 2017/4/23.
  */
 
-public class ChatActivity extends Activity implements View.OnClickListener {
+public class ChatActivity extends Activity implements View.OnClickListener, ChatAdapter.MyItemClickListener {
     private final static String TAG = "ChatActivity";
     private final static int OK = 1;
     private final static int NOTOK = 2;
@@ -77,6 +77,7 @@ public class ChatActivity extends Activity implements View.OnClickListener {
                     break;
                 }
                 case GET_DETAILS: {
+                    Log.d(TAG," getting Name !");
                     mTitleTextView.setText(userObject.getUsername());
                     break;
                 }
@@ -118,6 +119,7 @@ public class ChatActivity extends Activity implements View.OnClickListener {
         mTitleTextView = (TextView) findViewById(R.id.tv_title);
         if (userObject == null) {
             userObject = new UserObject(intent.getIntExtra("id", -1),"非好友",1,null,null,null);
+            getUserObject(intent.getIntExtra("id", -1));
         }
         mTitleTextView.setText(userObject.getUsername());
 
@@ -131,6 +133,7 @@ public class ChatActivity extends Activity implements View.OnClickListener {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setAdapter(adapter = new ChatAdapter(this));
+        adapter.setItemClickListener(this);
         mSendTextView.setOnClickListener(this);
 
         initData();
@@ -250,7 +253,7 @@ public class ChatActivity extends Activity implements View.OnClickListener {
             public void run() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("userId", id+"");
-                String result = HttpUtil.submitPostData(null,"utf-8", URLConfig.ACTION_SEARCH_FRIENDS_ID);
+                String result = HttpUtil.submitPostData(params,"utf-8", URLConfig.ACTION_SEARCH_FRIENDS_ID);
                 Log.d(TAG, " GetUserMessage result;" + result);
                 if (result == "") {
                     return;
@@ -269,6 +272,16 @@ public class ChatActivity extends Activity implements View.OnClickListener {
                 }
             }
         }).start();
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        startFriendsDetailsActicity();
+    }
+    private void startFriendsDetailsActicity(){
+        Intent intent = new Intent(ChatActivity.this,FriendsDetailsActivity.class);
+        intent.putExtra("id",userObject.getUserId());
+        startActivity(intent);
     }
     class RefreshTimerTask extends TimerTask {
         @Override

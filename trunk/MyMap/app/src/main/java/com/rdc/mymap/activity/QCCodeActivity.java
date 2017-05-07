@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rdc.mymap.R;
@@ -46,6 +47,8 @@ public class QCCodeActivity extends Activity implements View.OnClickListener {
 
     private ImageView mBackImageView;
     private ImageView RCCodeImageView;
+    private TextView mBusNameTextView;
+    private TextView mFareTextView;
     private DataBaseHelper dataBaseHelper;
     private SQLiteDatabase sqLiteDatabase;
     private Timer timer;
@@ -93,6 +96,15 @@ public class QCCodeActivity extends Activity implements View.OnClickListener {
     private void init(){
         Intent intent = getIntent();
         id = intent.getIntExtra("id",0);
+        mBusNameTextView = (TextView) findViewById(R.id.tv_name);
+        mFareTextView = (TextView) findViewById(R.id.tv_fare);
+        dataBaseHelper = new DataBaseHelper(this,"Data.db",1);
+        sqLiteDatabase = dataBaseHelper.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.query("Ticket",null,"busTicketId = ?",new String[]{id+""},null,null,null);
+        if(cursor.moveToFirst()){
+            mBusNameTextView.setText(cursor.getString(cursor.getColumnIndex("busName")));
+            mFareTextView.setText(cursor.getInt(cursor.getColumnIndex("fare"))*1.0+"");
+        }
         mBackImageView = (ImageView) findViewById(R.id.iv_back);
         mBackImageView.setOnClickListener(this);
         RCCodeImageView = (ImageView) findViewById(R.id.iv_main);
@@ -120,6 +132,7 @@ public class QCCodeActivity extends Activity implements View.OnClickListener {
             Toast.makeText(this,"验票成功",Toast.LENGTH_LONG).show();
             Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
             vibrator.vibrate(1000);
+//            vibrator.cancel();
             finish();
         }
     }
