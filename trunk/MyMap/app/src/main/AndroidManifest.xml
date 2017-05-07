@@ -141,6 +141,7 @@
 
         <activity android:name=".activity.TraceHistoryActivity"></activity>
         <activity android:name=".activity.PhotoActivity"/>
+        <activity android:name=".activity.AboutActivity"/>
     </application>
 
 </manifest>
