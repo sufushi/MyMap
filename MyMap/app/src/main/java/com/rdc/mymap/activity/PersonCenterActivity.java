@@ -166,7 +166,7 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
                 break;
             case R.id.ll_footprint:
 //                startActivityForResult(new Intent(PersonCenterActivity.this, CaptureActivity.class), REQUEST_QR_SCAN);
-
+                startTraceHistoryActivity();
                 break;
             case R.id.ll_wallet:
                 if (mPreferences.getBoolean(SharePreferencesConfig.ISLOGIN_BOOLEAN, false)) {
@@ -215,7 +215,10 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
         Intent intent = new Intent(PersonCenterActivity.this, MessageListActivity.class);
         startActivity(intent);
     }
-
+    private void startTraceHistoryActivity() {
+        Intent intent = new Intent(PersonCenterActivity.this, TraceHistoryActivity.class);
+        startActivity(intent);
+    }
     private void startWalletActivity() {
         Intent intent = new Intent(PersonCenterActivity.this, WalletActivity.class);
         startActivity(intent);
