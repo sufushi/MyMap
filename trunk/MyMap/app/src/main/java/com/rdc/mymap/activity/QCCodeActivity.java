@@ -103,7 +103,7 @@ public class QCCodeActivity extends Activity implements View.OnClickListener {
         Cursor cursor = sqLiteDatabase.query("Ticket",null,"busTicketId = ?",new String[]{id+""},null,null,null);
         if(cursor.moveToFirst()){
             mBusNameTextView.setText(cursor.getString(cursor.getColumnIndex("busName")));
-            mFareTextView.setText(cursor.getInt(cursor.getColumnIndex("fare"))*1.0+"");
+            mFareTextView.setText(cursor.getInt(cursor.getColumnIndex("fare"))*0.01+"");
         }
         mBackImageView = (ImageView) findViewById(R.id.iv_back);
         mBackImageView.setOnClickListener(this);
