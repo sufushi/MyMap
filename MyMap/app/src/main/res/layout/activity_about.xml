@@ -25,9 +25,11 @@
             android:textSize="18sp" />
     </RelativeLayout>
     <ScrollView
+        android:background="#ffffff"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <WebView
+            android:background="#ffffff"
             android:id="@+id/wb_main"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
