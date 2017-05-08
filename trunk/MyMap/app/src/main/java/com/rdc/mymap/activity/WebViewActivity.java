@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
@@ -42,6 +43,7 @@ public class WebViewActivity extends Activity {
         mTitle.setText(intent.getStringExtra("title"));
         Log.e("error", intent.getStringExtra("detailUrl"));
         mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
         mWebView.loadUrl(intent.getStringExtra("detailUrl"));
         //mWebView.loadUrl("http://www.baidu.com");
         mWebView.setWebViewClient(new WebViewClient(){

@@ -48,7 +48,8 @@ public class SuggestionSearchUtil {
             }
             mSuggestionInfoList = suggestionResult.getAllSuggestions();
             for(SuggestionResult.SuggestionInfo suggestionInfo : mSuggestionInfoList) {
-                Log.e("error", "city=" + suggestionInfo.city + "  district=" + suggestionInfo.district + "  key=" + suggestionInfo.key);
+                Log.e("error", "city=" + suggestionInfo.city + "  district=" + suggestionInfo.district + "  key=" + suggestionInfo.key
+                       + "point=" + suggestionInfo.pt);
             }
         }
     }

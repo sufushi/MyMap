@@ -184,7 +184,7 @@
                     android:hint="输入终点"
                     android:singleLine="true"
                     android:textSize="15sp"
-                    android:textColor="#1d1717" />
+                    android:textColor="#231c1c" />
             </LinearLayout>
         </LinearLayout>
 

@@ -40,13 +40,15 @@ public abstract class MyDataBaseHelper {
     }
 
     protected void open() {
-        new Thread() {
-            @Override
-            public void run() {
-                sqLiteDatabase = mySQLiteOpenHelper.getWritableDatabase();
-                Log.e("error", "sqLiteDatabase open");
-            }
-        }.start();
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                sqLiteDatabase = mySQLiteOpenHelper.getWritableDatabase();
+//                Log.e("error", "sqLiteDatabase open");
+//            }
+//        }.start();
+        sqLiteDatabase = mySQLiteOpenHelper.getWritableDatabase();
+        Log.e("error", "sqLiteDatabase open");
     }
 
     protected SQLiteDatabase getSqLiteDatabase() {

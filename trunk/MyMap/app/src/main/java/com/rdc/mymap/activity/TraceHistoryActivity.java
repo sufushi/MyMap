@@ -1,6 +1,8 @@
 package com.rdc.mymap.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
@@ -41,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class TraceHistoryActivity extends Activity {
+public class TraceHistoryActivity extends Activity implements View.OnClickListener {
 
     private MapView mMapView;
     private BaiduMap mBaiduMap;
@@ -59,6 +61,7 @@ public class TraceHistoryActivity extends Activity {
     private LBSTraceClient mLBSTraceClient;
     private OnTrackListener mOnTrackListener;
     private PanoramaDemoApplication mPanoramaDemoApplication;
+    private ImageView mBackImageView;
 
     private AtomicInteger mSequenceGenerator = new AtomicInteger();
 
@@ -73,6 +76,8 @@ public class TraceHistoryActivity extends Activity {
     private void init() {
         mPanoramaDemoApplication = (PanoramaDemoApplication) getApplicationContext();
         //mLBSTraceClient = new LBSTraceClient(getApplicationContext());
+        mBackImageView = (ImageView) findViewById(R.id.iv_back);
+        mBackImageView.setOnClickListener(this);
         mLBSTraceClient = mPanoramaDemoApplication.lbsTraceClient;
         mOnTrackListener = new OnTrackListener() {
             @Override
@@ -149,9 +154,21 @@ public class TraceHistoryActivity extends Activity {
     private void drawHistoryTrack(List<LatLng> pointList, SortType sortType) {
         mBaiduMap.clear();
         if (pointList == null || pointList.size() == 0) {
+            Log.e("error", "pointList.size() == 0");
             if(mOverlay != null) {
                 mOverlay.remove();
                 mOverlay = null;
+                AlertDialog.Builder builder = new AlertDialog.Builder(TraceHistoryActivity.this)//
+                .setTitle("提醒")//
+                .setIcon(R.mipmap.ic_launcher)//
+                .setMessage("你当前还没有记录足迹哦！")//
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                builder.show();
             }
             return;
         }
@@ -203,4 +220,14 @@ public class TraceHistoryActivity extends Activity {
         return new LatLng(location.getLatitude(), location.getLongitude());
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.iv_back :
+                finish();
+                break;
+            default:
+                break;
+        }
+    }
 }

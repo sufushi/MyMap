@@ -62,7 +62,7 @@ public class MyStepListAdapter extends BaseAdapter {
         if(mStepList.get(position).getDirection() % 90 == 0) {
             bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.arrow_up);
         } else {
-            bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.locate);
+            bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.my_locate);
             degree = -45;
         }
         Matrix matrix = new Matrix();

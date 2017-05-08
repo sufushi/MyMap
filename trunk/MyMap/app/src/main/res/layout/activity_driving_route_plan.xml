@@ -175,6 +175,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="8dp"
                 android:layout_toLeftOf="@+id/tv_drive"
+                android:layout_centerVertical="true"
                 android:src="@drawable/drive" />
 
             <TextView

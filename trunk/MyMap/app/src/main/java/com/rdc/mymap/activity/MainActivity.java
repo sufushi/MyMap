@@ -27,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -63,6 +64,7 @@ import com.rdc.mymap.database.DataBaseHelper;
 import com.rdc.mymap.service.TraceService;
 import com.rdc.mymap.utils.PermissionUtil;
 import com.rdc.mymap.utils.PoiSearchUtil;
+import com.rdc.mymap.view.LoadingDialog;
 import com.rdc.mymap.view.MyMenu;
 import com.rdc.mymap.view.SatMenu;
 
@@ -79,6 +81,7 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
 
     private MyMenu mMymenu;
     //private SatMenu mSatMenu;
+    private LoadingDialog mLoadingDialog;
     private ImageView mUserImageView;
     private LinearLayout mBottomLinearLayout;
     private ImageView mTrafficModeImageView;
@@ -89,6 +92,7 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
     private View mPanoramaView;
     private ImageView mPanoramaImageView;
     private ImageView mScanImageView;
+    private EditText mSearchEditText;
 
     private Boolean isTrafficMode = false;
     private Boolean isSettingMode = false;
@@ -141,6 +145,7 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
     };
 
     private void showInfoWindow(Message msg) {
+        mLoadingDialog.hide();
         String url = (String) msg.obj;
         Glide.with(MainActivity.this).load(url).into(mPanoramaImageView);
         LatLng sourceLatLng = new LatLng(mResultLatlng.latitude, mResultLatlng.longitude - 0.0002);
@@ -198,6 +203,7 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
 
         mMymenu = (MyMenu) findViewById(R.id.my_menu);
         mMymenu.setOnMenuItemClickListener(this);
+        mLoadingDialog = new LoadingDialog(this);
 //        mSatMenu = (SatMenu) findViewById(R.id.sm);
 //        mSatMenu.setOnSatMenuClickListener(this);
         mUserImageView = (ImageView) findViewById(R.id.iv_user);
@@ -224,6 +230,8 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
         mPanoramaImageView = (ImageView) mPanoramaView.findViewById(R.id.iv_panorama);
         mScanImageView =(ImageView) findViewById(R.id.iv_scan);
         mScanImageView.setOnClickListener(this);
+        mSearchEditText = (EditText) findViewById(R.id.et_search);
+        mSearchEditText.setOnClickListener(this);
 
         mMapView = (MapView) findViewById(R.id.mv);
         int count = mMapView.getChildCount();
@@ -413,6 +421,7 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
                 break;
             case R.id.iv_overview_mode :
                 if(!isOverviewMode) {
+                    mLoadingDialog.setMessage("正在搜索...").show();
                     searchStreetPanorama();
                     isOverviewMode = true;
                 } else {
@@ -427,15 +436,6 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
                 locate();
                 break;
             case R.id.iv_trace :
-                Intent traceIntent = new Intent(this, TraceService.class);
-                traceIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                if(isTraceMode == false) {
-                    startService(traceIntent);
-                    isTraceMode = true;
-                } else  {
-                    stopService(traceIntent);
-                    isTraceMode = false;
-                }
 
                 break;
             case R.id.iv_normal_map :
@@ -476,6 +476,10 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
             case R.id.iv_scan :
                 Intent scanIntent = new Intent(this, CaptureActivity.class);
                 startActivityForResult(scanIntent, REQUEST_SCAN);
+                break;
+            case R.id.et_search :
+                mHandler.sendEmptyMessageDelayed(0, 100);
+                break;
             default:
                 break;
         }
@@ -486,6 +490,7 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
     }
 
     private void showBicycleMap() {
+        mLatLngList.clear();
         Random random = new Random();
         double latitude = mBikesLatlng.latitude;
         double longitude = mBikesLatlng.longitude;
@@ -655,8 +660,19 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
                 launchCameraActivity();
                 break;
             case R.id.ll_item3 :
-                Intent traceHistory = new Intent(this, TraceHistoryActivity.class);
-                startActivity(traceHistory);
+//                Intent traceHistory = new Intent(this, TraceHistoryActivity.class);
+//                startActivity(traceHistory);
+                Intent traceIntent = new Intent(this, TraceService.class);
+                traceIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                if(isTraceMode == false) {
+                    startService(traceIntent);
+                    isTraceMode = true;
+                    mTraceImageView.setVisibility(View.VISIBLE);
+                } else  {
+                    stopService(traceIntent);
+                    isTraceMode = false;
+                    mTraceImageView.setVisibility(View.GONE);
+                }
                 break;
             default:
                 break;
@@ -695,7 +711,8 @@ public class MainActivity extends Activity implements SatMenu.OnSatMenuClickList
                     .longitude(latLng.longitude).build();
             mBaiduMap.setMyLocationData(myLocationData);
             mCurMarker = BitmapDescriptorFactory.fromResource(R.drawable.locate);
-            MyLocationConfiguration myLocationConfiguration = new MyLocationConfiguration(MyLocationConfiguration.LocationMode.FOLLOWING, true, mCurMarker);
+
+            MyLocationConfiguration myLocationConfiguration = new MyLocationConfiguration(MyLocationConfiguration.LocationMode.COMPASS, true, mCurMarker);
             mBaiduMap.setMyLocationConfigeration(myLocationConfiguration);
 
             mMapStatusUpdate = MapStatusUpdateFactory.newLatLngZoom(latLng, 18.0f);

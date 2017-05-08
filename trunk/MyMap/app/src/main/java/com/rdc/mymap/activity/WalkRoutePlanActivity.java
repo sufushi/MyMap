@@ -39,6 +39,7 @@ import com.rdc.mymap.model.StepInfo;
 import com.rdc.mymap.utils.GeoCoderUtil;
 import com.rdc.mymap.utils.RoutePlanSearchUtil;
 import com.rdc.mymap.utils.overlayutils.WalkingRouteOverlay;
+import com.rdc.mymap.view.LoadingDialog;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -59,6 +60,7 @@ public class WalkRoutePlanActivity extends Activity implements View.OnClickListe
     private TextView mDistanceTextView;
     private TextView mDurationTextView;
     private LinearLayout mNavigateLinearLayout;
+    private LoadingDialog mLoadingDialog;
     private MapView mMapView;
     private BaiduMap mBaiduMap;
     private RoutePlanSearchUtil mRoutePlanSearchUtil;
@@ -70,6 +72,8 @@ public class WalkRoutePlanActivity extends Activity implements View.OnClickListe
     private String mStartPlace;
     private String mEndPlace;
     private String mSDCardPath;
+    private LatLng mStartLatLng;
+    private LatLng mEndLatLng;
 
     private PopupWindow mPopupWindow;
     private MyStepListAdapter mMyStepListAdapter;
@@ -165,6 +169,11 @@ public class WalkRoutePlanActivity extends Activity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         mMapView.onResume();
+        if (mLoadingDialog != null) {
+            if(mLoadingDialog.isShowing()) {
+                mLoadingDialog.hide();
+            }
+        }
     }
 
     @Override
@@ -182,6 +191,7 @@ public class WalkRoutePlanActivity extends Activity implements View.OnClickListe
         mDurationTextView = (TextView) findViewById(R.id.tv_duration);
         mNavigateLinearLayout = (LinearLayout) findViewById(R.id.ll_navigate);
         mNavigateLinearLayout.setOnClickListener(this);
+        mLoadingDialog = new LoadingDialog(this);
         mMapView = (MapView) findViewById(R.id.mv);
         for(int i = 0; i < mMapView.getChildCount(); i++) {
             View child = mMapView.getChildAt(i);
@@ -196,6 +206,8 @@ public class WalkRoutePlanActivity extends Activity implements View.OnClickListe
         Intent intent = getIntent();
         mStartPlace = intent.getStringExtra("start_place");
         mEndPlace = intent.getStringExtra("end_place");
+        mStartLatLng = new LatLng(intent.getDoubleExtra("start_latitude", 0), intent.getDoubleExtra("start_longitude", 0));
+        mEndLatLng = new LatLng(intent.getDoubleExtra("end_latitude", 0), intent.getDoubleExtra("end_longitude", 0));
         mRoutePlanSearchUtil.search(new Node("广州", mStartPlace), new Node("广州", mEndPlace), WALKING);
         new Thread() {
             @Override
@@ -256,6 +268,7 @@ public class WalkRoutePlanActivity extends Activity implements View.OnClickListe
                 mPopupWindow.dismiss();
                 break;
             case R.id.ll_navigate :
+                mLoadingDialog.setMessage("正在进入导航").show();
                 prepareNavigate();
                 Log.e("error", "click ll_navigate");
                 break;
@@ -279,7 +292,9 @@ public class WalkRoutePlanActivity extends Activity implements View.OnClickListe
                         break;
                     }
                 }
-                routePlanToNavigate(startGeoCoder.getLatLng(), endGeoCoder.getLatLng());
+                Log.e("error", "point=" + startGeoCoder.getLatLng().toString());
+//                routePlanToNavigate(startGeoCoder.getLatLng(), endGeoCoder.getLatLng());
+                routePlanToNavigate(mStartLatLng, mEndLatLng);
             }
         }.start();
     }

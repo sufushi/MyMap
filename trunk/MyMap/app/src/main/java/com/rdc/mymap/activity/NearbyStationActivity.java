@@ -73,6 +73,7 @@ public class NearbyStationActivity extends Activity implements View.OnClickListe
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(NearbyStationActivity.this, BusLineListActivity.class);
+                intent.putExtra("title", mNearbyStationList.get(position).getName());
                 intent.putExtra("details", mNearbyStationList.get(position).getAddress());
                 startActivity(intent);
             }

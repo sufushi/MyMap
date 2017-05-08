@@ -34,7 +34,7 @@ import com.baidu.platform.comapi.map.K;
 import com.rdc.mymap.R;
 import com.rdc.mymap.application.PanoramaDemoApplication;
 
-public class PanoramaActivity extends Activity {
+public class PanoramaActivity extends Activity implements View.OnClickListener {
 
     private PanoramaView mPanoramaView;
     private MapView mMapView;
@@ -43,6 +43,7 @@ public class PanoramaActivity extends Activity {
     BitmapDescriptor mBitmapDescriptor;
     private OverlayOptions mOverlayOptions;
     private LatLng mLatlng;
+    private ImageView mBackImageView;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -69,6 +70,8 @@ public class PanoramaActivity extends Activity {
     }
 
     private void init() {
+        mBackImageView = (ImageView) findViewById(R.id.iv_back);
+        mBackImageView.setOnClickListener(this);
         PanoramaDemoApplication panoramaDemoApplication = (PanoramaDemoApplication) this.getApplication();
         if(panoramaDemoApplication.bMapManager == null) {
             panoramaDemoApplication.bMapManager = new BMapManager(panoramaDemoApplication);
@@ -135,6 +138,17 @@ public class PanoramaActivity extends Activity {
         super.onDestroy();
         mMapView.onDestroy();
         mPanoramaView.destroy();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.iv_back :
+                finish();
+                break;
+            default:
+                break;
+        }
     }
 
     private class MyPanoramaViewListener implements PanoramaViewListener {
