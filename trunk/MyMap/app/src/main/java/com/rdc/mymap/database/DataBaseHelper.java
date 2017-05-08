@@ -21,6 +21,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by wsoyz on 2017/4/11.
@@ -30,12 +32,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "DataBaseHelper";
     private static final int VERSION = 1;
+    private Lock messageLock = new ReentrantLock();
     private static final String BOOK1 = "create table Message(" +
             "date integer primary key," +
             "userid integer," +
             "isread integer," +
             "context String," +
             "ishost interger)";
+    private Lock friendsLock = new ReentrantLock();
     private static final String BOOK2 = "create table Friends(" +
             "userid integer primary key," +
             "username String," +
@@ -45,6 +49,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             "signature String," +
             "hasphoto integer," +
             "photo BLOB)";
+    private Lock ticketLock = new ReentrantLock();
     private static final String BOOK3 = "create table Ticket(" +
             "busTicketId integer primary key," +
             "purchaseDate integer," +
@@ -54,12 +59,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private static final String BOOK4 = "create table FootPrint(" +
             "_id integer primary key," +
             "name String)";
+    private Lock photoLock = new ReentrantLock();
     private static final String BOOK5 = "create table Photo(" +
             "_id integer primary key AUTOINCREMENT," +
             "path String)";
     private SQLiteDatabase sqLiteDatabase;
     private ContentValues values = new ContentValues();
-
     public DataBaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory,
                           int version) {
         super(context, name, factory, version);
@@ -75,12 +80,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL(BOOK1);
         db.execSQL(BOOK2);
         db.execSQL(BOOK3);
-        db.execSQL(BOOK4);
         db.execSQL(BOOK5);
         Log.d(TAG, "create datebase OK!");
     }
 
     public List<Ticket> getTicket() {
+        ticketLock.lock();
         List<Ticket> list = new ArrayList<Ticket>();
         sqLiteDatabase = getWritableDatabase();
         Cursor cursor = sqLiteDatabase.query("Ticket", null, null, null, null, null, "busTicketId desc");
@@ -93,8 +98,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                         cursor.getInt(cursor.getColumnIndex("fare")),
                         cursor.getString(cursor.getColumnIndex("busName"))));
             } while (cursor.moveToNext());
+            ticketLock.unlock();
             return list;
         }
+        ticketLock.unlock();
         return null;
     }
 
@@ -120,8 +127,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean saveTicket(JSONObject jsonObject) {
+        ticketLock.lock();
         sqLiteDatabase = getWritableDatabase();
-        if (jsonObject == null) return false;
+        if (jsonObject == null) {
+            ticketLock.unlock();
+            return false;
+        }
         values.clear();
         try {
             values.put("busTicketId", jsonObject.getInt("busTicketId"));
@@ -132,16 +143,22 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             values.put("fare", jsonObject.getInt("fare"));
             sqLiteDatabase.replace("Ticket", null, values);
             Log.d(TAG, "saving ticket context;" + jsonObject.getString("busName"));
+            ticketLock.unlock();
             return true;
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        ticketLock.unlock();
         return false;
     }
 
     public boolean saveMessage(MessageObject messageObject) {
+        messageLock.lock();
         Log.d(TAG, " saving message" + messageObject.getContext());
-        if (messageObject.isnull()) return false;
+        if (messageObject.isnull()) {
+            messageLock.unlock();
+            return false;
+        }
         else {
             sqLiteDatabase = getWritableDatabase();
             values.clear();
@@ -152,11 +169,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             values.put("ishost", messageObject.getIshost());
             Log.d(TAG, " saving message:" + messageObject.getContext() + " id:" + messageObject.getUserid());
             sqLiteDatabase.replace("Message", null, values);
+            messageLock.unlock();
             return true;
         }
     }
 
     public List<MessageObject> getMessage(int userid) {
+        messageLock.lock();
         List<MessageObject> messageList = new ArrayList<MessageObject>();
         sqLiteDatabase = getWritableDatabase();
         Cursor cursor = sqLiteDatabase.query("Message", null, "userid = ?", new String[]{userid + ""}, null, null, null);
@@ -169,13 +188,16 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                         cursor.getInt(cursor.getColumnIndex("ishost")) == 1);
                 messageList.add(messageObject);
             } while (cursor.moveToNext());
+            messageLock.unlock();
             return messageList;
         } else {
+            messageLock.unlock();
             return null;
         }
     }
 
     public List<MessageObject> getUnReadMessage(int userid) {
+        messageLock.lock();
         List<MessageObject> messageList = new ArrayList<MessageObject>();
         sqLiteDatabase = getWritableDatabase();
         Cursor cursor = sqLiteDatabase.query("Message", null, "userid = ? and isread = 0", new String[]{userid + ""}, null, null, null);
@@ -188,13 +210,16 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                         cursor.getInt(cursor.getColumnIndex("ishost")) == 1);
                 messageList.add(messageObject);
             } while (cursor.moveToNext());
+            messageLock.unlock();
             return messageList;
         } else {
+            messageLock.unlock();
             return null;
         }
     }
 
     public boolean readAllMessage(int userid) {
+        messageLock.lock();
         Cursor cursor = sqLiteDatabase.query("Message", null, "userid = ? and isread = 0", new String[]{userid + ""}, null, null, null);
         if (cursor.moveToFirst()) {
             do {
@@ -206,15 +231,21 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 values.put("isread", 1);
                 sqLiteDatabase.replace("Message", null, values);
             } while (cursor.moveToNext());
+            messageLock.unlock();
             return true;
         } else {
+            messageLock.unlock();
             return false;
         }
     }
 
     public boolean saveMessage(int userid, String context, long date, boolean isread, boolean ishost) {
+        messageLock.lock();
         sqLiteDatabase = getWritableDatabase();
-        if (userid < 0 || date < 0) return false;
+        if (userid < 0 || date < 0) {
+            messageLock.unlock();
+            return false;
+        }
         values.clear();
         values.put("userid", userid);
         values.put("context", context);
@@ -225,10 +256,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         else values.put("ishost", 0);
         Log.d(TAG, " saving message:" + context + " id:" + userid);
         sqLiteDatabase.replace("Message", null, values);
+        messageLock.unlock();
         return true;
     }
 
     public List<Integer> getMessageId() {
+        messageLock.lock();
         List<Integer> list = new ArrayList<Integer>();
         sqLiteDatabase = getWritableDatabase();
         Cursor cursor = sqLiteDatabase.query("Message", null, null, null, null, null, "date desc");
@@ -239,13 +272,16 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     list.add(cursor.getInt(cursor.getColumnIndex("userid")));
                 }
             } while (cursor.moveToNext());
+            messageLock.unlock();
             return list;
         } else {
+            messageLock.unlock();
             return null;
         }
     }
 
     public int getUnReadNumber(int id) {
+        messageLock.lock();
         int tem = 0;
         sqLiteDatabase = getWritableDatabase();
         Cursor cursor;
@@ -257,13 +293,16 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             do {
                 tem++;
             } while (cursor.moveToNext());
+            messageLock.unlock();
             return tem;
         } else {
+            messageLock.unlock();
             return -1;
         }
     }
 
     public List<UserObject> getFriendsList() {
+        friendsLock.lock();
         List<UserObject> list = new ArrayList<UserObject>();
         sqLiteDatabase = getWritableDatabase();
         Cursor cursor = sqLiteDatabase.query("Friends", null, null, null, null, null, "username ASC");
@@ -279,15 +318,21 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 );
                 list.add(userObject);
             } while (cursor.moveToNext());
+            friendsLock.unlock();
             return list;
         } else {
+            friendsLock.unlock();
             return null;
         }
     }
 
     public boolean saveUser(UserObject userObject) {
+        friendsLock.lock();
         sqLiteDatabase = getWritableDatabase();
-        if (userObject.isEmpty()) return false;
+        if (userObject.isEmpty()) {
+            friendsLock.unlock();
+            return false;
+        }
         values.clear();
         values.put("userid", userObject.getUserId());
         values.put("username", userObject.getUsername());
@@ -308,6 +353,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             Log.d(TAG, " save:" + userObject.getUsername() + " id:" + userObject.getUserId() + " and photo undone!");
         }
         sqLiteDatabase.replace("Friends", null, values);
+        friendsLock.unlock();
         return true;
     }
 
@@ -318,7 +364,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean saveUserPhoto(int id, Bitmap bitmap) {
-        if (bitmap == null || id < 0) return false;
+        photoLock.lock();
+        if (bitmap == null || id < 0) {
+            photoLock.unlock();
+            return false;
+        }
         Log.d(TAG, "saving Photo id = " + id);
         sqLiteDatabase = getWritableDatabase();
         Cursor cursor = sqLiteDatabase.query("Friends", null, "userid = ?", new String[]{id + ""}, null, null, null);
@@ -340,10 +390,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         } else {
             Log.d(TAG, "cursor is empty");
         }
+        photoLock.unlock();
         return false;
     }
 
     public Bitmap getUserPhotoToBitmap(int id) {
+        friendsLock.lock();
         Log.d(TAG, "gettingPhoto id = " + id);
         sqLiteDatabase = getWritableDatabase();
         Cursor cursor = sqLiteDatabase.query("Friends", null, "userid = ?", new String[]{id + ""}, null, null, null);
@@ -351,23 +403,28 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             Log.d(TAG, "cursor not empty");
             if (cursor.getInt(cursor.getColumnIndex("hasphoto")) == 1) {
                 byte[] pic = cursor.getBlob(cursor.getColumnIndex("photo"));
+                friendsLock.unlock();
                 return BitmapFactory.decodeByteArray(pic, 0, pic.length);
             }
         } else {
             Log.d(TAG, "cursor is empty");
         }
+        friendsLock.unlock();
         return null;
     }
 
     public boolean saveCollectionPhoto(File file) {
+        photoLock.lock();
         Log.d(TAG, "saving Collection Photo " );
         if (file.exists()) {
             sqLiteDatabase = getWritableDatabase();
             values.clear();
             values.put("path",file.getPath());
             sqLiteDatabase.insert("Photo",null,values);
+            photoLock.unlock();
             return true;
         }else{
+            photoLock.unlock();
             return false;
         }
     }
@@ -386,6 +443,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 //        return null;
 //    }
     public ArrayList<String> getCollectionPathList(){
+        photoLock.lock();
         Log.d(TAG, "getting Collection Path List");
         ArrayList<String> list = new ArrayList<String>();
         sqLiteDatabase = getWritableDatabase();
@@ -395,14 +453,17 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 list.add(cursor.getString(cursor.getColumnIndex("path")));
             }while(cursor.moveToNext());
             Log.d(TAG, "cursor not empty");
+            photoLock.unlock();
             return list;
         } else {
             Log.d(TAG, "cursor is empty");
         }
+        photoLock.unlock();
         return null;
     }
 
     public byte[] getUserPhotoToByte(int id) {
+        friendsLock.lock();
         Log.d(TAG, "gettingPhoto id = " + id);
         sqLiteDatabase = getWritableDatabase();
         Cursor cursor = sqLiteDatabase.query("Friends", null, "userid = ?", new String[]{id + ""}, null, null, null);
@@ -410,15 +471,18 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             Log.d(TAG, "cursor not empty");
             if (cursor.getInt(cursor.getColumnIndex("hasphoto")) == 1) {
                 byte[] pic = cursor.getBlob(cursor.getColumnIndex("photo"));
+                friendsLock.unlock();
                 return pic;
             }
         } else {
             Log.d(TAG, "cursor is empty");
         }
+        friendsLock.unlock();
         return null;
     }
 
     public UserObject getUserObjict(int id) {
+        friendsLock.lock();
         Log.d(TAG, "gettingUserObjict id = " + id);
         sqLiteDatabase = getWritableDatabase();
         Cursor cursor = sqLiteDatabase.query("Friends", null, "userid = ?", new String[]{id + ""}, null, null, null);
@@ -431,11 +495,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndex("phonenumber")),
                     cursor.getString(cursor.getColumnIndex("signature"))
             );
+            friendsLock.unlock();
             return userObject;
 //            int userId, String username, int gender, String address, String phoneNumber, String signature, int money
         } else {
             Log.d(TAG, "cursor is empty");
         }
+        friendsLock.unlock();
         return null;
     }
 
