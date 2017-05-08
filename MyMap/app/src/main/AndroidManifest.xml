@@ -67,7 +67,7 @@
             android:process=":remote" />
 
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".activity.SplashScreenActivity"
             android:theme="@style/AppBaseTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -85,6 +85,7 @@
             android:theme="@style/DialogStyleBottom"
             android:windowSoftInputMode="stateVisible" />
         <activity android:name=".activity.RouteActivity" />
+        <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.FriendsListActivity" />
         <activity android:name=".activity.ChatActivity" />
         <activity android:name=".activity.CountActivity"
