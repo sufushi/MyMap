@@ -37,7 +37,8 @@ public class HistoryDataBaseHelper extends MyDataBaseHelper {
     @Override
     protected String[] getDbCreateSql(Context context) {
         String[] strings = new String[1];
-        strings[0] = "create table record (id int primary key, name varchar(200))";
+        strings[0] = "create table record (id int primary key, name varchar(200)," +
+                " start_latitude double, start_longitude double, end_latitude double, end_longitude double)";
         return strings;
     }
 

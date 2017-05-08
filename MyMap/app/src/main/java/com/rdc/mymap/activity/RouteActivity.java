@@ -27,7 +27,9 @@ import com.rdc.mymap.adapter.MySearchHistoryAdapter;
 import com.rdc.mymap.adapter.MyViewPagerAdapter;
 import com.rdc.mymap.database.HistoryDataBaseHelper;
 import com.rdc.mymap.utils.BusLineSearchUtil;
+import com.rdc.mymap.utils.GeoCoderUtil;
 import com.rdc.mymap.utils.PoiSearchUtil;
+import com.rdc.mymap.view.LoadingDialog;
 import com.rdc.mymap.view.UnderlineEditText;
 
 import java.util.ArrayList;
@@ -73,15 +75,21 @@ public class RouteActivity extends Activity implements View.OnClickListener{
     private ListView mWalkSearchHistoryListView;
     private MySearchHistoryAdapter mMySearchHistoryAdapter;
     private List<String> mSearchHistoryList;
+    private List<LatLng> mStartPointHistoryList;
+    private List<LatLng> mEndPointHistoryList;
     //private String[] mSearchHistory = {"大夫山森林公园", "广州大学城", "GoGo新天地", "珠江新城", "广州博物馆", "广州塔", "天河客运站", "白云山", "番禺广场", "万胜围"};
     private HistoryDataBaseHelper mHistoryDataBaseHelper;
 
     private Boolean isExpand = false;
+    private LatLng mStartLatLng;
+    private LatLng mEndLatLng;
 
     private PoiSearchUtil mPoiSearchUtil;
+    private GeoCoderUtil mGeoCoderUtil;
     private BusLineSearchUtil mBusLineSearchUtil;
     private List<String> mBusLineIdList = new ArrayList<String>();
     private List<BusLineResult> mBusLineResultList = new ArrayList<BusLineResult>();
+    private LoadingDialog mLoadingDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -100,7 +108,18 @@ public class RouteActivity extends Activity implements View.OnClickListener{
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(mLoadingDialog != null) {
+            if(mLoadingDialog.isShowing()) {
+                mLoadingDialog.hide();
+            }
+        }
+    }
+
     private void init() {
+        mLoadingDialog = new LoadingDialog(this);
         mHistoryDataBaseHelper = HistoryDataBaseHelper.getInstance(getApplicationContext());
         initTextView();
         initViewPager();
@@ -117,6 +136,7 @@ public class RouteActivity extends Activity implements View.OnClickListener{
         mBikeClearRecordTextView.setOnClickListener(this);
         mWalkClearRecordTextView = (TextView) mWalkView.findViewById(R.id.tv_clear_record);
         mWalkClearRecordTextView.setOnClickListener(this);
+        mGeoCoderUtil = new GeoCoderUtil();
      }
 
     private void initEditText() {
@@ -211,9 +231,13 @@ public class RouteActivity extends Activity implements View.OnClickListener{
         mBikeSearchHistoryListView = (ListView) mBicycleView.findViewById(R.id.lv_search_history);
         mWalkSearchHistoryListView = (ListView) mWalkView.findViewById(R.id.lv_search_history);
         mSearchHistoryList = new ArrayList<String>();
+        mStartPointHistoryList = new ArrayList<LatLng>();
+        mEndPointHistoryList = new ArrayList<LatLng>();
         List<Map> mapList = mHistoryDataBaseHelper.queryListMap("select * from record", null);
         for (Map map : mapList) {
             mSearchHistoryList.add(String.valueOf(map.get("name")));
+            mStartPointHistoryList.add(new LatLng((float) map.get("start_latitude"), (float) map.get("start_longitude")));
+            mEndPointHistoryList.add(new LatLng((float) map.get("end_latitude"), (float) map.get("end_longitude")));
         }
         //mSearchHistoryList = Arrays.asList(mSearchHistory);
         mMySearchHistoryAdapter = new MySearchHistoryAdapter(mSearchHistoryList, this);
@@ -251,6 +275,7 @@ public class RouteActivity extends Activity implements View.OnClickListener{
                 plus();
                 break;
             case R.id.iv_search :
+                mLoadingDialog.show();
                 startRoutePlanActivity();
                 break;
             case R.id.udt_start :
@@ -281,11 +306,13 @@ public class RouteActivity extends Activity implements View.OnClickListener{
             case 0 :
                 if(data != null && data.getStringExtra("Location") != null) {
                     mStartNodeEditText.setText(data.getStringExtra("Location"));
+                    mStartLatLng = new LatLng(data.getDoubleExtra("latitude", 0), data.getDoubleExtra("longitude", 0));
                 }
                 break;
             case 2 :
                 if(data != null && data.getStringExtra("Location") != null) {
                     mEndEditText.setText(data.getStringExtra("Location"));
+                    mEndLatLng = new LatLng(data.getDoubleExtra("latitude", 0), data.getDoubleExtra("longitude", 0));
                 }
                 break;
             default:
@@ -294,27 +321,37 @@ public class RouteActivity extends Activity implements View.OnClickListener{
     }
 
     private void startRoutePlanActivity() {
-        mHistoryDataBaseHelper.clear("delete from record");
-        mSearchHistoryList.add(mStartNodeEditText.getText().toString() + " - " + mEndEditText.getText().toString());
-        String[] strings = (String[]) mSearchHistoryList.toArray(new String[mSearchHistoryList.size()]);
-        for(int i = strings.length - 1; i >= 0; i --) {
-            String string = strings[i];
-            mHistoryDataBaseHelper.insert("record", new String[] {"name"}, new Object[] {string});
+        SharedPreferences posSharedPreferences = getSharedPreferences("position", Context.MODE_PRIVATE);
+        LatLng latlng = new LatLng((double) posSharedPreferences.getFloat("latitude", 0),
+                (double) posSharedPreferences.getFloat("longitude", 0));
+        mStartLatLng = latlng;
+        recordSerachHistory();
+        new Thread() {
+            @Override
+            public void run() {
+                mGeoCoderUtil.setLatLng(mStartLatLng);
+                mGeoCoderUtil.reverseGeoCode();
+                while (true) {
+                    if(mGeoCoderUtil.getAddress() != null) {
+                        break;
+                    }
+                }
+                launchRoutePlanActivity();
+            }
+        }.start();
+    }
+
+    private void launchRoutePlanActivity() {
+        String start_place = mStartNodeEditText.getText().toString();
+        if(start_place.equals("") || start_place.equals("我的位置")) {
+            start_place = mGeoCoderUtil.getAddress();
         }
-//        mHistoryDataBaseHelper.insert("record", new String[]{"name"}, new Object[]{mStartNodeEditText.getText().toString()
-//        + " - " + mEndEditText.getText().toString()});
-        mSearchHistoryList.clear();
-        List<Map> mapList = mHistoryDataBaseHelper.queryListMap("select * from record", null);
-        for (Map map : mapList) {
-            mSearchHistoryList.add(String.valueOf(map.get("name")));
-        }
-        mMySearchHistoryAdapter.notifyDataSetChanged();
         switch (mCurIndex) {
             case 0 :
                 Intent busRoutePlanIntent = new Intent(RouteActivity.this, BusRoutePlanActivity.class);
                 busRoutePlanIntent.putExtra("start_city", "广州");
                 busRoutePlanIntent.putExtra("end_city", "广州");
-                busRoutePlanIntent.putExtra("start_place", mStartNodeEditText.getText().toString());
+                busRoutePlanIntent.putExtra("start_place", start_place);
                 busRoutePlanIntent.putExtra("end_place", mEndEditText.getText().toString());
                 busRoutePlanIntent.putExtra("way", TRANSIT);
                 startActivity(busRoutePlanIntent);
@@ -323,8 +360,12 @@ public class RouteActivity extends Activity implements View.OnClickListener{
                 Intent driveRoutePlanIntent = new Intent(RouteActivity.this, DrivingRoutePlanActivity.class);
                 driveRoutePlanIntent.putExtra("start_city", "广州");
                 driveRoutePlanIntent.putExtra("end_city", "广州");
-                driveRoutePlanIntent.putExtra("start_place", mStartNodeEditText.getText().toString());
+                driveRoutePlanIntent.putExtra("start_place", start_place);
                 driveRoutePlanIntent.putExtra("end_place", mEndEditText.getText().toString());
+                driveRoutePlanIntent.putExtra("start_latitude", mStartLatLng.latitude);
+                driveRoutePlanIntent.putExtra("start_longitude", mStartLatLng.longitude);
+                driveRoutePlanIntent.putExtra("end_latitude", mEndLatLng.latitude);
+                driveRoutePlanIntent.putExtra("end_longitude", mEndLatLng.longitude);
                 driveRoutePlanIntent.putExtra("way", DRIVING);
                 startActivity(driveRoutePlanIntent);
                 break;
@@ -332,8 +373,12 @@ public class RouteActivity extends Activity implements View.OnClickListener{
                 Intent bikingRoutePlanIntent = new Intent(RouteActivity.this, BikingRoutePlanActivity.class);
                 bikingRoutePlanIntent.putExtra("start_city", "广州");
                 bikingRoutePlanIntent.putExtra("end_city", "广州");
-                bikingRoutePlanIntent.putExtra("start_place", mStartNodeEditText.getText().toString());
+                bikingRoutePlanIntent.putExtra("start_place", start_place);
                 bikingRoutePlanIntent.putExtra("end_place", mEndEditText.getText().toString());
+                bikingRoutePlanIntent.putExtra("start_latitude", mStartLatLng.latitude);
+                bikingRoutePlanIntent.putExtra("start_longitude", mStartLatLng.longitude);
+                bikingRoutePlanIntent.putExtra("end_latitude", mEndLatLng.latitude);
+                bikingRoutePlanIntent.putExtra("end_longitude", mEndLatLng.longitude);
                 bikingRoutePlanIntent.putExtra("way", BIKING);
                 startActivity(bikingRoutePlanIntent);
                 break;
@@ -341,8 +386,12 @@ public class RouteActivity extends Activity implements View.OnClickListener{
                 Intent walkRoutePlanIntent = new Intent(RouteActivity.this, WalkRoutePlanActivity.class);
                 walkRoutePlanIntent.putExtra("start_city", "广州");
                 walkRoutePlanIntent.putExtra("end_city", "广州");
-                walkRoutePlanIntent.putExtra("start_place", mStartNodeEditText.getText().toString());
+                walkRoutePlanIntent.putExtra("start_place", start_place);
                 walkRoutePlanIntent.putExtra("end_place", mEndEditText.getText().toString());
+                walkRoutePlanIntent.putExtra("start_latitude", mStartLatLng.latitude);
+                walkRoutePlanIntent.putExtra("start_longitude", mStartLatLng.longitude);
+                walkRoutePlanIntent.putExtra("end_latitude", mEndLatLng.latitude);
+                walkRoutePlanIntent.putExtra("end_longitude", mEndLatLng.longitude);
                 walkRoutePlanIntent.putExtra("way", WALKING);
                 startActivity(walkRoutePlanIntent);
                 break;
@@ -351,7 +400,39 @@ public class RouteActivity extends Activity implements View.OnClickListener{
             default:
                 break;
         }
+    }
 
+    private void recordSerachHistory() {
+        mHistoryDataBaseHelper.clear("delete from record");
+        String myPoint = mStartNodeEditText.getText().toString();
+        if(myPoint.equals("")) {
+            myPoint = "我的位置";
+        }
+        mSearchHistoryList.add(myPoint + " - " + mEndEditText.getText().toString());
+        mStartPointHistoryList.add(mStartLatLng);
+        mEndPointHistoryList.add(mEndLatLng);
+        LatLng[] satrtLatLngs = (LatLng[]) mStartPointHistoryList.toArray(new LatLng[mStartPointHistoryList.size()]);
+        LatLng[] endLatLngs = (LatLng[]) mEndPointHistoryList.toArray(new LatLng[mEndPointHistoryList.size()]);
+        String[] strings = (String[]) mSearchHistoryList.toArray(new String[mSearchHistoryList.size()]);
+        for(int i = strings.length - 1; i >= 0; i --) {
+            String string = strings[i];
+            LatLng start = satrtLatLngs[i];
+            LatLng end = endLatLngs[i];
+            mHistoryDataBaseHelper.insert("record", new String[] {"name", "start_latitude", "start_longitude", "end_latitude", "end_longitude"},
+                    new Object[] {string, start.latitude, start.longitude, end.latitude, end.longitude});
+        }
+//        mHistoryDataBaseHelper.insert("record", new String[]{"name"}, new Object[]{mStartNodeEditText.getText().toString()
+//        + " - " + mEndEditText.getText().toString()});
+        mSearchHistoryList.clear();
+        mStartPointHistoryList.clear();
+        mEndPointHistoryList.clear();
+        List<Map> mapList = mHistoryDataBaseHelper.queryListMap("select * from record", null);
+        for (Map map : mapList) {
+            mSearchHistoryList.add(String.valueOf(map.get("name")));
+            mStartPointHistoryList.add(new LatLng((float) map.get("start_latitude"), (float) map.get("start_longitude")));
+            mEndPointHistoryList.add(new LatLng((float) map.get("end_latitude"), (float) map.get("end_longitude")));
+        }
+        mMySearchHistoryAdapter.notifyDataSetChanged();
     }
 
     private void plus() {
@@ -449,7 +530,6 @@ public class RouteActivity extends Activity implements View.OnClickListener{
         }
     }
 
-
     private class MyOnItemClickListener implements AdapterView.OnItemClickListener {
 
         @Override
@@ -458,6 +538,9 @@ public class RouteActivity extends Activity implements View.OnClickListener{
             Log.e("error", strings[0] + " - " + strings[1]);
             mStartNodeEditText.setText(strings[0]);
             mEndEditText.setText(strings[1]);
+            mStartLatLng = mStartPointHistoryList.get(position);
+            mEndLatLng = mEndPointHistoryList.get(position);
+            Log.e("error", "mStartLatLng=" + mStartLatLng.toString() + "mEndLatLng=" + mEndLatLng.toString());
         }
     }
 }

@@ -39,6 +39,7 @@ public class BusStationsActivity extends Activity implements View.OnClickListene
     private MyBusStationListAdapter mMyBusStationListAdapter;
     private int mCurIndex;
     private float mPrice;
+    private String mBusName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +69,8 @@ public class BusStationsActivity extends Activity implements View.OnClickListene
 
         Intent intent = getIntent();
         mBusStationInfo = (BusStationInfo) intent.getSerializableExtra("bus_stations");
-        mTitleTextView.setText(mBusStationInfo.getBusStationName());
+        mBusName = intent.getStringExtra("title");
+        mTitleTextView.setText(mBusName);
         mDirection1TextView.setText(mBusStationInfo.getDirection1());
         mTime1TextView.setText(mBusStationInfo.getStartTime() + " - " + mBusStationInfo.getEndTime());
         if(mBusStationInfo.getBusStationList2() == null) {
@@ -93,7 +95,7 @@ public class BusStationsActivity extends Activity implements View.OnClickListene
                 break;
             case R.id.tv_buy_ticket :
                 Intent payIntent = new Intent(this, PayTicketActivity.class);
-                payIntent.putExtra("bus_name", mBusStationInfo.getBusStationName());
+                payIntent.putExtra("bus_name", mBusName);
                 payIntent.putExtra("price", mPrice);
                 startActivity(payIntent);
                 break;

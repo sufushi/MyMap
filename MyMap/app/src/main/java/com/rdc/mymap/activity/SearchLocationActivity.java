@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.sug.SuggestionResult;
 import com.rdc.mymap.R;
 import com.rdc.mymap.adapter.MySearchHistoryAdapter;
@@ -34,6 +35,7 @@ public class SearchLocationActivity extends Activity implements View.OnClickList
 
     private SuggestionSearchUtil mSuggestionSearchUtil;
     private List<String> mSuggestionList = new ArrayList<String>();
+    private List<LatLng> mLatLngList = new ArrayList<LatLng>();
     private MySearchSuggestionAdapter mMyaSearchSuggestionAdapter;
 
     private Handler mHandler = new Handler() {
@@ -81,6 +83,7 @@ public class SearchLocationActivity extends Activity implements View.OnClickList
     private void onSuggestionSearch() {
         for(SuggestionResult.SuggestionInfo suggestionInfo : mSuggestionSearchUtil.getSuggestionInfoList()) {
             mSuggestionList.add(suggestionInfo.key);
+            mLatLngList.add(suggestionInfo.pt);
             Log.e("error", suggestionInfo.key);
         }
         mHandler.sendEmptyMessage(0);
@@ -111,6 +114,7 @@ public class SearchLocationActivity extends Activity implements View.OnClickList
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             mSuggestionSearchUtil.getSuggestionInfoList().clear();
             mSuggestionList.clear();
+            mLatLngList.clear();
             mSuggestionSearchUtil.searchSuggestion("广州", s.toString());
             new Thread() {
                 @Override
@@ -137,6 +141,8 @@ public class SearchLocationActivity extends Activity implements View.OnClickList
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Intent intent = new Intent();
             intent.putExtra("Location", mSuggestionList.get(position));
+            intent.putExtra("latitude", mLatLngList.get(position).latitude);
+            intent.putExtra("longitude", mLatLngList.get(position).longitude);
             SearchLocationActivity.this.setResult(0, intent);
             finish();
         }

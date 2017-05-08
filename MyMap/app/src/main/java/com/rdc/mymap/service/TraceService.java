@@ -33,6 +33,7 @@ import com.baidu.trace.model.ProcessOption;
 import com.baidu.trace.model.PushMessage;
 import com.baidu.trace.model.StatusCodes;
 import com.baidu.trace.model.TraceLocation;
+import com.rdc.mymap.application.PanoramaDemoApplication;
 import com.rdc.mymap.model.CurrentLocation;
 import com.rdc.mymap.utils.NetUtil;
 
@@ -59,15 +60,18 @@ public class TraceService extends Service {
     private RealTimeHandler mRealTimeHandler = new RealTimeHandler();
     private RealTimeLocRunnable mRealTimeLocRunnable;
 
+    private PanoramaDemoApplication mPanoramaDemoApplication;
 
     @Override
     public void onCreate() {
         super.onCreate();
         Log.e("error", "TraceService onCreate");
+        mPanoramaDemoApplication = (PanoramaDemoApplication) getApplicationContext();
         mLocRequest = new LocRequest(mServiceId);
         mEntityName = ((TelephonyManager) this.getSystemService(TELEPHONY_SERVICE)).getDeviceId();
         mTrace = new Trace(mServiceId, mEntityName, mIsNeedObjectStorage);
-        mLBSTraceClient = new LBSTraceClient(getApplicationContext());
+        //mLBSTraceClient = new LBSTraceClient(getApplicationContext());
+        mLBSTraceClient = mPanoramaDemoApplication.lbsTraceClient;
         mLBSTraceClient.setInterval(mGatherInterval, mPackInterval);
         initListener();
         mLBSTraceClient.startTrace(mTrace, mOnTraceListener);

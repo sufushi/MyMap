@@ -40,6 +40,7 @@ import com.rdc.mymap.model.StepInfo;
 import com.rdc.mymap.utils.GeoCoderUtil;
 import com.rdc.mymap.utils.RoutePlanSearchUtil;
 import com.rdc.mymap.utils.overlayutils.BikingRouteOverlay;
+import com.rdc.mymap.view.LoadingDialog;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -60,6 +61,7 @@ public class BikingRoutePlanActivity extends Activity implements View.OnClickLis
     private TextView mDistanceTextView;
     private TextView mDurationTextView;
     private LinearLayout mNavigateLinearLayout;
+    private LoadingDialog mLoadingDialog;
 
     private String mDistance;
     private String mDuration;
@@ -103,6 +105,16 @@ public class BikingRoutePlanActivity extends Activity implements View.OnClickLis
         init();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(mLoadingDialog != null) {
+            if(mLoadingDialog.isShowing()) {
+                mLoadingDialog.hide();
+            }
+        }
+    }
+
     private void requestPermission() {
         if(Build.VERSION.SDK_INT >= 23 && !isPermissionRequested) {
             isPermissionRequested = true;
@@ -136,10 +148,13 @@ public class BikingRoutePlanActivity extends Activity implements View.OnClickLis
         mDurationTextView = (TextView) findViewById(R.id.tv_duration);
         mNavigateLinearLayout = (LinearLayout) findViewById(R.id.ll_navigate);
         mNavigateLinearLayout.setOnClickListener(this);
+        mLoadingDialog = new LoadingDialog(this);
         mRoutePlanSearchUtil = new RoutePlanSearchUtil();
         Intent intent = getIntent();
         mStartPlace = intent.getStringExtra("start_place");
         mEndPlace = intent.getStringExtra("end_place");
+        mStartLatlng = new LatLng(intent.getDoubleExtra("start_latitude", 0), intent.getDoubleExtra("start_longitude", 0));
+        mEndLatlng = new LatLng(intent.getDoubleExtra("end_latitude", 0), intent.getDoubleExtra("end_longitude", 0));
         mRoutePlanSearchUtil.search(new Node("广州", mStartPlace), new Node("广州", mEndPlace), BIKING);
         new Thread() {
             @Override
@@ -184,12 +199,14 @@ public class BikingRoutePlanActivity extends Activity implements View.OnClickLis
                 showPopupWindow();
                 break;
             case R.id.ll_navigate :
+                mLoadingDialog.setMessage("正在进入导航").show();
                 mBikeNavigateHelper = BikeNavigateHelper.getInstance();
                 mBikeNavigateHelper.initNaviEngine(this, new IBEngineInitListener() {
                     @Override
                     public void engineInitSuccess() {
                         Log.e("error", "engineInitSuccess");
-                        prepareNavigate();
+                        //prepareNavigate();
+                        mHandler.sendEmptyMessage(1);
                     }
 
                     @Override

@@ -38,6 +38,7 @@ import com.rdc.mymap.model.StepInfo;
 import com.rdc.mymap.utils.GeoCoderUtil;
 import com.rdc.mymap.utils.RoutePlanSearchUtil;
 import com.rdc.mymap.utils.overlayutils.DrivingRouteOverlay;
+import com.rdc.mymap.view.LoadingDialog;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -64,11 +65,14 @@ public class DrivingRoutePlanActivity extends Activity implements View.OnClickLi
     private TextView mWayTextView;
     private LinearLayout mChangeLinearLayout;
     private RelativeLayout mDrivingNavigateRelativeLayout;
+    private LoadingDialog mLoadingDialog;
 
     private String mStartCity;
     private String mEndCity;
     private String mStartPlace;
     private String mEndPlace;
+    private LatLng mStartLatLng;
+    private LatLng mEndLatLng;
     private int mCurWay;
     private String mSDCardPath;
 
@@ -122,6 +126,16 @@ public class DrivingRoutePlanActivity extends Activity implements View.OnClickLi
         init();
         if (initDirs()) {
             initNavigate();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(mLoadingDialog != null) {
+            if(mLoadingDialog.isShowing()) {
+                mLoadingDialog.hide();
+            }
         }
     }
 
@@ -179,10 +193,13 @@ public class DrivingRoutePlanActivity extends Activity implements View.OnClickLi
         mChangeLinearLayout.setOnClickListener(this);
         mDrivingNavigateRelativeLayout = (RelativeLayout) findViewById(R.id.rl_navigate);
         mDrivingNavigateRelativeLayout.setOnClickListener(this);
+        mLoadingDialog = new LoadingDialog(this);
         mRoutePlanSearchUtil = new RoutePlanSearchUtil();
         Intent intent = getIntent();
         mStartPlace = intent.getStringExtra("start_place");
         mEndPlace = intent.getStringExtra("end_place");
+        mStartLatLng = new LatLng(intent.getDoubleExtra("start_latitude", 0), intent.getDoubleExtra("start_longitude", 0));
+        mEndLatLng = new LatLng(intent.getDoubleExtra("end_latitude", 0), intent.getDoubleExtra("end_longitude", 0));
         mRoutePlanSearchUtil.search(new Node("广州", mStartPlace), new Node("广州", mEndPlace), DRIVING);
         new Thread() {
             @Override
@@ -248,6 +265,7 @@ public class DrivingRoutePlanActivity extends Activity implements View.OnClickLi
     }
 
     private void prepareNavigate() {
+        mLoadingDialog.setMessage("正在进入导航").show();
         final GeoCoderUtil startGeoCoder = new GeoCoderUtil();
         final GeoCoderUtil endGeoCoder = new GeoCoderUtil();
         startGeoCoder.setAddress(mStartPlace);
@@ -262,7 +280,8 @@ public class DrivingRoutePlanActivity extends Activity implements View.OnClickLi
                         break;
                     }
                 }
-                routePlanToNavigate(startGeoCoder.getLatLng(), endGeoCoder.getLatLng());
+//                routePlanToNavigate(startGeoCoder.getLatLng(), endGeoCoder.getLatLng());
+                routePlanToNavigate(mStartLatLng, mEndLatLng);
             }
         }.start();
     }
@@ -276,6 +295,7 @@ public class DrivingRoutePlanActivity extends Activity implements View.OnClickLi
         mStartBNRoutePlanNode = new BNRoutePlanNode(startLongitude, startLatitude, mStartPlace, null);
         mEndBNRoutePlanNode = new BNRoutePlanNode(endLongitude, endLatitude, mEndPlace, null);
         if(mStartBNRoutePlanNode != null && mEndBNRoutePlanNode != null) {
+            //mHandler.sendEmptyMessage(3);
             List<BNRoutePlanNode> bnRoutePlanNodeList = new ArrayList<BNRoutePlanNode>();
             bnRoutePlanNodeList.add(mStartBNRoutePlanNode);
             bnRoutePlanNodeList.add(mEndBNRoutePlanNode);

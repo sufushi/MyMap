@@ -11,6 +11,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.baidu.mapapi.search.busline.BusLineResult;
 import com.rdc.mymap.R;
@@ -27,6 +28,7 @@ import java.util.List;
 public class BusLineListActivity extends Activity implements View.OnClickListener{
 
     private ImageView mBackImageView;
+    private TextView mTitleTextView;
     private ListView mBusLineListView;
     private LoadingView mLoadingView;
     private List<BusInfo> mBusInfoList = new ArrayList<BusInfo>();
@@ -78,6 +80,8 @@ public class BusLineListActivity extends Activity implements View.OnClickListene
     private void init() {
         mBackImageView = (ImageView) findViewById(R.id.iv_back);
         mBackImageView.setOnClickListener(this);
+        mTitleTextView = (TextView) findViewById(R.id.tv_title);
+        mTitleTextView.setText(getIntent().getStringExtra("title"));
         mLoadingView = (LoadingView) findViewById(R.id.loading_view);
         mLoadingView.setVisibility(View.VISIBLE);
         mBusLineListView = (ListView) findViewById(R.id.lv_bus_line);
@@ -89,6 +93,7 @@ public class BusLineListActivity extends Activity implements View.OnClickListene
                 bundle.putSerializable("bus_stations", mBusStationInfoList.get(position));
                 intent.putExtras(bundle);
                 intent.putExtra("price", mBusInfoList.get(position).getBusPrice());
+                intent.putExtra("title", mBusInfoList.get(position).getBusName());
                 Log.e("error", mBusInfoList.get(position).getBusPrice() + "");
                 startActivity(intent);
             }
