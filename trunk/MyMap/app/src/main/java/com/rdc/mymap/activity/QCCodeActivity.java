@@ -110,7 +110,7 @@ public class QCCodeActivity extends Activity implements View.OnClickListener {
         RCCodeImageView = (ImageView) findViewById(R.id.iv_main);
         Resources res=getResources();
         Bitmap logo= BitmapFactory.decodeResource(res, R.drawable.logo);
-        RCCodeImageView.setImageBitmap(RCCode.createQRCodeWithLogo("www.walmt.cn/pipixia/useBusTicket?busTicketId="+id,300,logo));
+        RCCodeImageView.setImageBitmap(RCCode.createQRCodeWithLogo("http://www.walmt.cn/pipixia/useBusTicket?busTicketId="+id,300,logo));
     }
 
     @Override
