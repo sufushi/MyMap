@@ -145,6 +145,7 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
         mPhotoCircleImageView.setOnClickListener(this);
 
         mUsernameTextView = (TextView) findViewById(R.id.tv_username);
+        mUsernameTextView.setOnClickListener(this);
         mDataBaseHelper = new DataBaseHelper(this, "Data.db", 1);
     }
 
@@ -154,6 +155,12 @@ public class PersonCenterActivity extends Activity implements View.OnClickListen
             case R.id.iv_back:
                 finish();
                 break;
+            case R.id.tv_username:
+                if (mPreferences.getBoolean(SharePreferencesConfig.ISLOGIN_BOOLEAN, false)) {
+                    startDetailsActivity();
+                } else {
+                    startLoginActivity();
+                }
             case R.id.civ_photo:
                 if (mPreferences.getBoolean(SharePreferencesConfig.ISLOGIN_BOOLEAN, false)) {
                     startDetailsActivity();
